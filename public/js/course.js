@@ -54,7 +54,7 @@ for (var i = 0; i < data.length; i++) {//begin for loop
 
 }//end for loop
 
-//add the option values to the select list with an id of lga
+//add the option values to the select list with an id of subject
 document.getElementById("subject").innerHTML = html.join('');
 });
 

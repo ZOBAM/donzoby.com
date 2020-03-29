@@ -8,6 +8,7 @@ use App\User;
 use App\Comment;
 use App\Profile_picture;
 use App\Post_image;
+use Auth;
 
 class CoursesController extends Controller
 {
@@ -124,7 +125,12 @@ class CoursesController extends Controller
                 if ($id!=0) {//an id is provided
                     $topic = Post::findOrFail($id);
                     $topic->timestamps = false;//prevent updating of time stamps
-                    $topic->post_hits = ++$topic->post_hits; $topic->save();
+                    //check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
+                    //adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
+                    $developer_email = (isset(Auth::user()->email))? Auth::user()->email : false;
+                    if ($_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com") {
+                        $topic->post_hits = ++$topic->post_hits; $topic->save();
+                    }
                     $post_image = Post_image::where('post_id',$id)->first();//get image for FB share
                     if ($post_image) {
                     	//$post_image = URL('public/images/donzoby-logo-wtbg.png');
