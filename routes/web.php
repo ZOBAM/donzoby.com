@@ -38,7 +38,7 @@ Route::post('/profile-picture','ProfilePictureController@index')->name('picture'
 
 Route::get('/member/{item?}/{action?}', 'MemberController@index')->name('member')->middleware('verified');
 
-Route::resource('/post', 'PostController2');
+Route::resource('/post', 'PostController');
 
 Route::post('/image-upload', 'PictureUploadController@index')->name('image');
 
