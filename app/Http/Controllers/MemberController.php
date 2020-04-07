@@ -30,6 +30,10 @@ class MemberController extends Controller
             $view = "profile";
             return view('member',compact('view'));
         }
+        if ($item=="create" && $action=="create-data-plan") {//display profile details
+            $view = "create-data-plan";
+            return view('member',compact('view'));
+        }
         else if ($item=="profile" && $action=="edit") {//edit profile
             $view = "edit_profile";
             $user_data = User::find(Auth::id());

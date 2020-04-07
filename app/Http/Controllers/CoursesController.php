@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Post;
-use App\User;
-use App\Comment;
-use App\Profile_picture;
-use App\Post_image;
+use App\{Post,User,Comment,Profile_picture,Post_image,Data_plan};
 use Auth;
 
 class CoursesController extends Controller
@@ -34,7 +30,8 @@ class CoursesController extends Controller
     		'ms-office' => "Microsoft Office Tutorials ",
     		'office-operations' => "Office Operations Tutorials",
     		'internet-usage' => "Internet Usage Tutorials",
-    		'mobile-usage' => "Mobile Phone Usage Tutorials"
+			'mobile-usage' => "Mobile Phone Usage Tutorials",
+			'data-plans' => "Consolidated Data Plans in Nigeria"
     	);
     	$courses_descriptions = array(//array of description for each of the courses
     		'graphics' => "Learn how to create vector graphics and work with bitmap images on the computer. Everyday graphics skills is covered here. Design logos, crop and resize images etc. Gimp, Photoshop and CorelDraw are covered here.",
@@ -45,7 +42,8 @@ class CoursesController extends Controller
     		'ms-office' => "Easy Microsoft Office tutorials that will help you accomplish important tasks easily at the office. Write and format letters, MOUs, make PowerPoint presentations, analyze results with Excel spreadsheet and manage data with Access.",
     		'office-operations' => "We want to make your life in the office lot easier with clearly illustrated tutorials on carrying out office tasks such as paper work and machine operations.",
     		'internet-usage' => "Donzoby gives you some common tips and tricks for making the most of the internet without wasting the whole day online.",
-    		'mobile-usage' => "Donzoby mobile guide gives necessary tips to help you utilize the great features of your phones without losing a hair"
+    		'mobile-usage' => "Donzoby mobile guide gives necessary tips to help you utilize the great features of your phones without losing a hair",
+			'data-plans' => "No need visiting multiple sites to check out data plans from various networks, Donzoby.com has them in one place!"
     	);
     	$subjects_descriptions = array(
     		'html'=> "Pages of Websites  are created with HTML. Learn practical HTML at Donzoby.com and build your first website in a short time.", 
@@ -115,48 +113,51 @@ class CoursesController extends Controller
     	);
 
 
-    	$courses = array('login', 'register','graphics', 'web-design', 'server-dev', 'mobile-app-dev', 'windows-dev', 'ms-office', 'office-operations', 'internet-usage', 'mobile-usage');//array of all courses
+    	$courses = array('login', 'register','graphics', 'web-design', 'server-dev', 'mobile-app-dev', 'windows-dev', 'ms-office', 'office-operations', 'internet-usage', 'mobile-usage','data-plans');//array of all courses
         if (in_array($course, $courses)) {//check if course in url is in array
 
         	$post_image = URL('public/images/dzb-'.$course.'.png');
 
             $subjects = array('html', 'css', 'javascript', 'jquery', 'bootstrap','coreldraw', 'photoshop', 'gimp','php', 'sql', 'mysql', 'laravel','android-kotlin', 'android-java', 'ios-swift','c-sharp', 'java','ms-word', 'ms-powerpoint','ms-excel', 'ms-access','paper-work', 'machine-operations','online-services', 'browsers', 'miscellaneous','android-phones', 'iphones', 'service-providers', 'apps', 'hardware');
             if (in_array($subject, $subjects)) {
-                if ($id!=0) {//an id is provided
-                    $topic = Post::findOrFail($id);
-                    $topic->timestamps = false;//prevent updating of time stamps
-                    //check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
-                    //adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
-                    $developer_email = (isset(Auth::user()->email))? Auth::user()->email : false;
-                    if ($_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com") {
-                        $topic->post_hits = ++$topic->post_hits; $topic->save();
-                    }
-                    $post_image = Post_image::where('post_id',$id)->first();//get image for FB share
-                    if ($post_image) {
-                    	//$post_image = URL('public/images/donzoby-logo-wtbg.png');
-                    	$post_image = URL('public/'.$post_image->link);                    	         	
-                    }
-                    else{
-                    	$post_image = URL('public/images/donzoby-logo-wtbg.png');
-                    }
-                    $description = $topic->post_description;//meta description
-                    $title = $topic->post_topic;//page title
-                    $comments = Comment::where('comment_post_id',$id)->get();
-                    if(count($comments)>0){
-				    $i = 0;
-				    foreach($comments as $comment){
-				    	$comment_authors = User::where('id',$comment->user_id)->first();					
-			    		$comments[$i]->author_name=$comment_authors->name;
-			    		$author_image = Profile_picture::where('user_id',$comment_authors->id)->first();
-			    		if ($author_image) {
-			    			$comments[$i]->author_image_link=URL('public/'.$author_image->link);
-			    		 }else{$comments[$i]->author_image_link=URL('public/images/donzoby-logo-wtbg.png');}
-				    $i++;  
-				    }//endforeach
-				    }//endif
+				if ($id!=0) {//an id is provided
+					if(is_numeric($id)){
+						$topic = Post::findOrFail($id);
+						$topic->timestamps = false;//prevent updating of time stamps
+						//check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
+						//adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
+						$developer_email = (isset(Auth::user()->email))? Auth::user()->email : false;
+						if ($_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com") {
+							$topic->post_hits = ++$topic->post_hits; $topic->save();
+						}
+						$post_image = Post_image::where('post_id',$id)->first();//get image for FB share
+						if ($post_image) {
+							//$post_image = URL('public/images/donzoby-logo-wtbg.png');
+							$post_image = URL('public/'.$post_image->link);                    	         	
+						}
+						else{
+							$post_image = URL('public/images/donzoby-logo-wtbg.png');
+						}
+						$description = $topic->post_description;//meta description
+						$title = $topic->post_topic;//page title
+						//get comments
+						$comments = Comment::where('comment_post_id',$id)->get();
+						if(count($comments)>0){
+							$i = 0;
+							foreach($comments as $comment){
+								$comment_authors = User::where('id',$comment->user_id)->first();					
+								$comments[$i]->author_name=$comment_authors->name;
+								$author_image = Profile_picture::where('user_id',$comment_authors->id)->first();
+								if ($author_image) {
+									$comments[$i]->author_image_link=URL('public/'.$author_image->link);
+								}else{$comments[$i]->author_image_link=URL('public/images/donzoby-logo-wtbg.png');}
+							$i++;  
+							}//endforeach
+						}//endif
+					}//end if id is numeric
                     //$subject = 'HTML';
                     return view('courses.master',compact('topic','subject','posts','listed_subjects','comments','description','title','post_image'));
-                }
+				}//end id not 0 or data-plans
                 else{//invalid id provided, just list topics under the specified subject
                     $description = $subjects_descriptions[$subject];//meta description
                     $title = $subjects_titles[$subject];//page title

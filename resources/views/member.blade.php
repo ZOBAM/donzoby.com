@@ -58,7 +58,7 @@ images_upload_handler: function (blobInfo, success, failure) {
 @section('mainContent')
 <div class='container-fluid' id='main-content'>
     <div class="row">
-    <div class="col-sm-2" id="side-bar-links">
+    <div class="col-md-2" id="side-bar-links">
 
      <!--  very bad approach, change as soon as possible! -->
               @php
@@ -95,6 +95,7 @@ images_upload_handler: function (blobInfo, success, failure) {
                   <div class="collapse" id="create">
                     <a href="{{ url('/post/create') }}" class="list-group-item">Post</a>
                     <a href="{{ url('/article/create') }}" class="list-group-item">Article</a>
+                    <a href="{{ url('member/create/create-data-plan') }}" class="list-group-item">Data Plan</a>
                   </div>
 
                   <a href="#sagged-prop" class="list-group-item  header" data-toggle="collapse" data-parent="#MainMenu">Posts <i class="fa fa-caret-down"></i></a>
@@ -112,7 +113,7 @@ images_upload_handler: function (blobInfo, success, failure) {
                 </div>
               </div>
         </div>
-    <div class = "col-sm-10" id="center-col">  
+    <div class = "col-md-10" id="center-col">  
 
 <!---------------------- Display Delete notification ----------------------------------------------------->
 
@@ -131,135 +132,138 @@ images_upload_handler: function (blobInfo, success, failure) {
           <p>Thanks for your kind understanding.<i class="fa fa-thumbs-up"></i></p>
           @else
          <form method="POST" action="{{ url('post') }}" enctype="multipart/form-data">
-                        {{ csrf_field() }}
+            {{ csrf_field() }}
 
-                        <div class="form-group row">
-                            <label for="course" class="col-sm-2 col-form-label text-sm-right">{{ __('Course') }}</label>
+            <div class="form-group row">
+                <label for="course" class="col-sm-2 col-form-label text-sm-right">{{ __('Course') }}</label>
 
-                            <div class="col-sm-8">
-                                <select id="course" class="form-control{{ $errors->has('course') ? ' is-invalid' : '' }}" name="course" value="{{ old('course') }}" required >
-                                    <option value="graphics">Graphics</option>    
-                                    <option value="web design">Web Design</option>
-                                    <option value="server dev">Server Dev.</option>    
-                                    <option value="mobile app dev">Mobile App Dev.</option>
-                                    <option value="windows dev">Windows Dev.</option>    
-                                    <option value="ms office">MS Office</option>
-                                    <option value="office operations">Office Operations</option> 
-                                    <option value="mobile usage">Mobile Usage</option>
-                                    <option value="internet usage">Internet Usage</option>  
-                                        
-                                        
-                                </select>
+                <div class="col-sm-8">
+                    <select id="course" class="form-control{{ $errors->has('course') ? ' is-invalid' : '' }}" name="course" value="{{ old('course') }}" required >
+                        <option value="graphics">Graphics</option>    
+                        <option value="web design">Web Design</option>
+                        <option value="server dev">Server Dev.</option>    
+                        <option value="mobile app dev">Mobile App Dev.</option>
+                        <option value="windows dev">Windows Dev.</option>    
+                        <option value="ms office">MS Office</option>
+                        <option value="office operations">Office Operations</option> 
+                        <option value="mobile usage">Mobile Usage</option>
+                        <option value="internet usage">Internet Usage</option>  
+                            
+                            
+                    </select>
 
-                                @if ($errors->has('course'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('course') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                    @if ($errors->has('course'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('course') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
 
-                        <div class="form-group row">
-                            <label for="subject" class="col-sm-2 col-form-label text-sm-right">{{ __('Subject ') }}</label>
+            <div class="form-group row">
+                <label for="subject" class="col-sm-2 col-form-label text-sm-right">{{ __('Subject ') }}</label>
 
-                            <div class="col-sm-8">
-                                <select id="subject" type="subject" class="form-control{{ $errors->has('subject') ? ' is-invalid' : '' }}" name="subject" value="{{ old('subject') }}" >
-                                <option value="">---Select a course first---</option>
+                <div class="col-sm-8">
+                    <select id="subject" type="subject" class="form-control{{ $errors->has('subject') ? ' is-invalid' : '' }}" name="subject" value="{{ old('subject') }}" >
+                    <option value="">---Select a course first---</option>
 
-                            </select>
+                </select>
 
-                                @if ($errors->has('subject'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('subject') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                    @if ($errors->has('subject'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('subject') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
 
-                        <div class="form-group row">
-                            <label for="topic" class="col-sm-2 col-form-label text-sm-right">{{ __('Topic') }}</label>
+            <div class="form-group row">
+                <label for="topic" class="col-sm-2 col-form-label text-sm-right">{{ __('Topic') }}</label>
 
-                            <div class="col-sm-8">
-                                <input id="topic" type="text" class="form-control{{ $errors->has('topic') ? ' is-invalid' : '' }}" name="topic" value="{{ old('topic') }}" required autofocus>
+                <div class="col-sm-8">
+                    <input id="topic" type="text" class="form-control{{ $errors->has('topic') ? ' is-invalid' : '' }}" name="topic" value="{{ old('topic') }}" required autofocus>
 
-                                @if ($errors->has('topic'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('topic') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>                        
+                    @if ($errors->has('topic'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('topic') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>                        
 
-                        <div class="form-group row">
-                            <label for="post_content" class="col-sm-2 col-form-label text-sm-right">{{ __('Post Body') }}</label>
+            <div class="form-group row">
+                <label for="post_content" class="col-sm-2 col-form-label text-sm-right">{{ __('Post Body') }}</label>
 
-                            <div class="col-sm-8">
-                                <textarea  id="post_content" rows="19" type="text" class="form-control{{ $errors->has('post_content') ? ' is-invalid' : '' }}" name="post_content" >{{old('post_content') }}</textarea>
+                <div class="col-sm-8">
+                    <textarea  id="post_content" rows="19" type="text" class="form-control{{ $errors->has('post_content') ? ' is-invalid' : '' }}" name="post_content" >{{old('post_content') }}</textarea>
 
-                                @if ($errors->has('post_content'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('post_content') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>                  
-
-
-                        <div class="form-group row">
-                            <label for="post_tags" class="col-sm-2 col-form-label text-sm-right">{{ __('Tags') }}</label>
-
-                            <div class="col-sm-8">
-                                <input id="post_tags" type="text" class="form-control{{ $errors->has('post_tags') ? ' is-invalid' : '' }}" name="post_tags" value="{{ old('post_tags') }}" required autofocus>
-
-                                @if ($errors->has('post_tags'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('post_tags') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="post_desc" class="col-sm-2 col-form-label text-sm-right">{{ __('Post Description/Excerpt') }}</label>
-
-                            <div class="col-sm-8">
-                                <textarea  id="post_desc" type="text" class="form-control{{ $errors->has('post_desc') ? ' is-invalid' : '' }}" name="post_desc"  required >{{ old('post_desc') }}</textarea>
-
-                                @if ($errors->has('post_desc'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('post_desc') }}</strong>
-                                    </span>{{ old('post_desc') }}
-                                @endif
-                            </div>
-                        </div> 
+                    @if ($errors->has('post_content'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('post_content') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>                  
 
 
-                        <div class="form-group row">
-                            <label for="post_status" class="col-sm-2 col-form-label text-sm-right">{{ __('Post Status') }}</label>
+            <div class="form-group row">
+                <label for="post_tags" class="col-sm-2 col-form-label text-sm-right">{{ __('Tags') }}</label>
 
-                            <div class="col-sm-8">
-                                <select id="post_status" class="form-control{{ $errors->has('post_status') ? ' is-invalid' : '' }}" name="post_status" value="{{ old('post_status') }}" required >
-                                    <option value="for rent">Publish Now</option>  <option value="for sale">Publish Later</option>
-                                </select>
+                <div class="col-sm-8">
+                    <input id="post_tags" type="text" class="form-control{{ $errors->has('post_tags') ? ' is-invalid' : '' }}" name="post_tags" value="{{ old('post_tags') }}" required autofocus>
 
-                                @if ($errors->has('post_status'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('post_status') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                    @if ($errors->has('post_tags'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('post_tags') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-sm-6 offset-sm-4 text-right">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Submit Post') }} <i class="fa fa-save"></i>
-                                </button>
-                            </div>
-                        </div>
+            <div class="form-group row">
+                <label for="post_desc" class="col-sm-2 col-form-label text-sm-right">{{ __('Post Description/Excerpt') }}</label>
+
+                <div class="col-sm-8">
+                    <textarea  id="post_desc" type="text" class="form-control{{ $errors->has('post_desc') ? ' is-invalid' : '' }}" name="post_desc"  required >{{ old('post_desc') }}</textarea>
+
+                    @if ($errors->has('post_desc'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('post_desc') }}</strong>
+                        </span>{{ old('post_desc') }}
+                    @endif
+                </div>
+            </div> 
+
+
+            <div class="form-group row">
+                <label for="post_status" class="col-sm-2 col-form-label text-sm-right">{{ __('Post Status') }}</label>
+
+                <div class="col-sm-8">
+                    <select id="post_status" class="form-control{{ $errors->has('post_status') ? ' is-invalid' : '' }}" name="post_status" value="{{ old('post_status') }}" required >
+                        <option value="for rent">Publish Now</option>  <option value="for sale">Publish Later</option>
+                    </select>
+
+                    @if ($errors->has('post_status'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('post_status') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <div class="form-group row mb-0">
+                <div class="col-sm-6 offset-sm-4 text-right">
+                    <button type="submit" class="btn btn-primary">
+                        {{ __('Submit Post') }} <i class="fa fa-save"></i>
+                    </button>
+                </div>
+            </div>
          </form>
           @endif
 
+    <!--------------------------- List out available posts by the member ------------------------------------->
+        @elseif($view == 'create-data-plan')
+        @include('data-plans')
     <!--------------------------- List out available posts by the member ------------------------------------->
     <!--------------------------- List out available posts by the member ------------------------------------->
          @elseif($view == 'posts' )

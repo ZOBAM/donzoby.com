@@ -13,6 +13,20 @@ html body {
     /*height: 100vh;*/
     margin: 0;
     opacity: 0.95;
+    //create data plan formatting
+    label:first-child {
+      font-weight: bold; color: #6C3A5A; font-size: smaller;padding-bottom: 0px;margin-bottom: -9px
+    }
+    #pages-links {
+      a{display: inline-block; border: 2px solid skyblue; padding: 4px; margin: 0px 1vw;min-width: 3em;text-align: center}
+      a:hover{
+        background-color: darkslategrey;color: white;
+      }
+      .active-page{
+        background-color: darkslategrey;color: white;
+      }
+    }
+    .data-delete-link{color: dodgerblue; cursor: pointer;}
 }
 #wrapper{
     .rounded-corner(20px);
@@ -21,17 +35,17 @@ html body {
   background-color: white;
   width: 98%;
   margin: auto;
-    h1{
-        font-family: @font-face-h1;
-        text-align: center;
-        margin-top: 15px;
-        color: #00511B;
-        font-size: 5vh;
-    }
-    .error{
-color:red;
-font-family:verdana, Helvetica;
-}
+  h1{
+    font-family: @font-face-h1;
+    text-align: center;
+    margin-top: 15px;
+    color: #00511B;
+    font-size: 5vh;
+  }
+  .error{
+    color:red;
+    font-family:verdana, Helvetica;
+  }
 }
 nav{text-align: center !important;}
 #navBar{
@@ -51,7 +65,6 @@ nav{text-align: center !important;}
 #display-image{
     width:100%; max-height:400px; text-align: center; overflow: auto;
     background-image: url('../images/logo-bg.png');background-position: right center;
-
     .col-sm-12{background-image: url('../images/log-bg.png');background-position: left center;
     }
     a{
