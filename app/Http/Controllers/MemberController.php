@@ -30,7 +30,7 @@ class MemberController extends Controller
             $view = "profile";
             return view('member',compact('view'));
         }
-        if ($item=="create" && $action=="create-data-plan") {//display profile details
+        if ($item=="create" && $action=="create-data-plan") {//create data plans
             $view = "create-data-plan";
             return view('member',compact('view'));
         }

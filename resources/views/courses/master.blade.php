@@ -45,20 +45,20 @@
         	@endisset
         	@isset($topic)
         	<div id="bread-comb">
-        	<i class="fas fa-location-arrow"></i>
-        	<a href="/">Home</a> <i class="fa fa-angle-double-right"></i>
-        	<a href="/{{str_replace(' ','-',$topic->course)}}">{{ucwords($topic->course)}}</a> <i class="fa fa-angle-double-right"></i>
-        	<a href="/{{str_replace(' ','-',$topic->course)}}/{{str_replace(' ','-',strtolower($topic->subject))}}">{{$topic->subject}}</a> <i class="fa fa-angle-double-right"></i>
-        	{{$topic->post_topic}}
+                <i class="fas fa-location-arrow"></i>
+                <a href="/">Home</a> <i class="fa fa-angle-double-right"></i>
+                <a href="/{{str_replace(' ','-',$topic->course)}}">{{ucwords($topic->course)}}</a> <i class="fa fa-angle-double-right"></i>
+                <a href="/{{str_replace(' ','-',$topic->course)}}/{{str_replace(' ','-',strtolower($topic->subject))}}">{{$topic->subject}}</a> <i class="fa fa-angle-double-right"></i>
+                {{$topic->post_topic}}
         	</div>
-        		<h1 id="topic">{{$topic->post_topic}}</h1>
-        		<div id="post-details">
-	        		<span>Last Update: {{date("M d, Y",strtotime($topic->updated_at))}}</span><span class="float-right"><i class="fa fa-eye"></i> {{$topic->post_hits}} times.</span>
-	        	</div>
-	        	<div id="post-content">
-	        		{!! $topic->post_content !!}
-	        	</div>
-        		
+            <h1 id="topic">{{$topic->post_topic}}</h1>
+            <div id="post-details">
+                <span>Last Update: {{date("M d, Y",strtotime($topic->updated_at))}}</span><span class="float-right"><i class="fa fa-eye"></i> {{$topic->post_hits}} times.</span>
+            </div>
+            <div id="post-content">
+                {!! $topic->post_content !!}
+            </div>
+
 
 <!-- -------------------------- Facebook Share button ---------------------- -->
 <!-- -------------------------- Facebook Share button ---------------------- -->
@@ -87,19 +87,19 @@
                 	<div class="col-sm-12" style="background-color: #EFF1EF;border-top: 4px solid #BDC6BD">
                 		By {{$comment->author_name}} On {{date("M d, Y",strtotime($comment->created_at))}}
                 	</div>
-                	<div class="col-sm-2" style="margin: 5px 0px"> 
-                		<img src="{{$comment->author_image_link}}" style="max-width: 50px"> 
+                	<div class="col-sm-2" style="margin: 5px 0px">
+                		<img src="{{$comment->author_image_link}}" style="max-width: 50px">
                 	</div>
-                	<div class="col-sm-10" style="margin: 5px 0px"> 
+                	<div class="col-sm-10" style="margin: 5px 0px">
                 		{{$comment->comment_content}}
                 	</div>
                 	<div class="col-sm-12" style="border-top: 4px solid #EFF1EF">
                 		<a href=""><i class="col-sm-4 fa fa-thumbs-up"></i></a>
                 		@isset(Auth::user()->id)
-                		@if($comment->user_id == Auth::user()->id) 
-                		<a href="{{ url('comment/'.$comment->id.'/edit') }}" class="col-sm-4">Edit</a>	
+                		@if($comment->user_id == Auth::user()->id)
+                		<a href="{{ url('comment/'.$comment->id.'/edit') }}" class="col-sm-4">Edit</a>
                 		<a href="{{ url('comment/'.$comment->id.'/delete') }}" class="col-sm-4">Delete</a>
-                		@endif 
+                		@endif
                 		@endisset
                 	</div>
                 	</div>
@@ -109,11 +109,11 @@
 <!-- -------------------------- display form for logged in user to write new comment ---------------------- -->
 <!-- -------------------------- display form for logged in user to write new comment ---------------------- -->
         		@guest
-        			<i class="fas fa-pencil-square"></i><a href="{{ url('register') }}" class="align-middle">Register</a> or 
+        			<i class="fas fa-pencil-square"></i><a href="{{ url('register') }}" class="align-middle">Register</a> or
                 <a class="" href="{{ url('login') }}">Login</a> to write comments.
         		@else
 
-	                <?php 
+	                <?php
 	                	$button_text = session()->has('comment_content')? "Update Comment" : "Submit Comment";
 	                	$head_text = session()->has('comment_content')? "Edit a Comment" : "Write a Comment";
 	                	$form_action = session()->has('comment_content')? url('comment/'.$comment->id.'/update') : url('comment/'.$topic->id);

@@ -261,7 +261,8 @@ images_upload_handler: function (blobInfo, success, failure) {
          </form>
           @endif
 
-    <!--------------------------- List out available posts by the member ------------------------------------->
+    <!--------------------------- List out available Data plans by the member ------------------------------------->
+    <!--------------------------- List out available Data plans by the member ------------------------------------->
         @elseif($view == 'create-data-plan')
         @include('data-plans')
     <!--------------------------- List out available posts by the member ------------------------------------->

@@ -7,7 +7,7 @@
     </div>
 </div>
 <h3 class="text-center">Add A New Data Plan To The Database</h3>
-<form method="POST" action="/member/data-plan/create" id="data-plan-form">
+<form method="POST" action="/member/data-plan/edit/94" id="data-plan-form">
     {{ csrf_field() }}
     <div class="row">
         <div class="col-sm-6 form-group">
@@ -22,7 +22,7 @@
         </div>
         <div class="col-sm-6 form-group">
             <label for="plan_title">Data Plan Title:</label>
-            <input type="text" class="form-control form-control-sm" name="plan_title" placeholder="Enter Data Plan Title" id="plan_title" required>
+            <input type="text" class="form-control form-control-sm" name="title" placeholder="Enter Data Plan Title" id="plan_title" required>
         </div>  
     </div>
     <div class="row">
@@ -65,7 +65,7 @@
         </div>
         <div class="col-sm-6 form-group">
             <label for="data_price">Data Price:</label>
-            <input type="text" class="form-control form-control-sm" placeholder="Enter Data Plan Price" name="data_price" id="data_price" required>
+            <input type="text" class="form-control form-control-sm" placeholder="Enter Data Plan Price" name="price" id="data_price" required>
         </div>  
     </div>
     <div class="row">

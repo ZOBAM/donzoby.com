@@ -27,6 +27,22 @@ html body {
       }
     }
     .data-delete-link{color: dodgerblue; cursor: pointer;}
+    .data-delete-link:hover{border-bottom: 2px dotted deepskyblue;}
+    .data-delete-link:active{color: dodgerblue; cursor: pointer; background-color: green;}
+    .how_to_sub{color:darkgreen;background-color: #EFF1EF}
+    .how_to_sub+td{color:darkgreen;background-color: rgb(217, 223, 207)}
+    //displaying data plans formating
+    #relate-plans{
+        border-top: 3px groove grey;
+        h3{border-left: 2vw solid grey; border-right: 2vw solid grey}
+        div{text-align: center;}
+        div.related-children{padding: 0.8em; border: 0.5vw solid#EFF1EF;margin-bottom: 0.5vw;}
+        span{display: inline-block;text-align: center}
+        span.data-price{
+            border-radius: 100%; border: 1vw solid grey; padding: 0.8em;
+        }
+        span:last-child{background-color: #454545; color: white;display: block}
+    }
 }
 #wrapper{
     .rounded-corner(20px);
@@ -88,8 +104,8 @@ nav{text-align: center !important;}
       }
       #left-nav{
         a{
-          display: block; 
-          background-color: #fff; 
+          display: block;
+          background-color: #fff;
           border-bottom:2px solid #EFF1EF;
           border-left: 4px solid #EFF1EF;
           padding: 0.3em;
@@ -97,7 +113,7 @@ nav{text-align: center !important;}
           font-size: 0.9em;
         }
         p{
-          background-color: #F7F7F7;color: #000;text-align: center;margin: 0; 
+          background-color: #F7F7F7;color: #000;text-align: center;margin: 0;
           border: 1px solid #EFF1EF;border-left: 8px solid #868686; border-top: 1px solid #868686;
           border-radius: 10em 5em;
           box-shadow: 3px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
@@ -108,7 +124,7 @@ nav{text-align: center !important;}
           border: 1px solid #EAEEEA;background-color: #CFCFCF; margin-bottom: 1em;
           h5{text-align: center;font-family: Agency, "Arial";padding: 0.5em;}
           a{color: #737373;
-          border: 1px solid #B4B6B9; 
+          border: 1px solid #B4B6B9;
           margin-top: 5px;
           border-radius: 4px;
           box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);}
@@ -126,7 +142,7 @@ nav{text-align: center !important;}
         .card-text {padding: 0.5em 0.5em; border: 2px solid #EDEEEF;border-radius: 4px;}
         .card-links a{
           display: inline-block;
-          padding: 0.1em 0.3em;border: 1px solid #B4B6B9; 
+          padding: 0.1em 0.3em;border: 1px solid #B4B6B9;
           font-family: Helvetica,Arial;
           border-radius: 4px; color: #53606F;
           margin: 0 0.5em;
@@ -135,19 +151,19 @@ nav{text-align: center !important;}
         }
         .card-links a:hover{
           padding: 0.1em 0.3em;
-          border: 1px solid #000; 
+          border: 1px solid #000;
           font-family: Helvetica,Arial;
-          border-radius: 4px; 
+          border-radius: 4px;
           color: #000;
           margin: 0 0.5em;
           min-width: 5em;
           box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.59);
           text-decoration: none;
         }
-        .card-title{font-family: Palatino;font-size: 1.9em;text-transform: uppercase; 
+        .card-title{font-family: Palatino;font-size: 1.9em;text-transform: uppercase;
           a{color: #001}
         }
-        .card-footer{width: 100%} 
+        .card-footer{width: 100%}
         .card-links{width: 100%; text-align: center;}
         .card-footer{
           font-weight: bold;
@@ -163,7 +179,7 @@ nav{text-align: center !important;}
   #bread-comb{border-bottom: 1px solid #D1D6D1; margin-bottom: 1em; font-size: 0.8em;background-color: #EFF1EF;
     a{color: #535397}
   }
-      
+
 }/*end main content*/
 
 #uploadDone{
@@ -331,7 +347,7 @@ footer{
   img{max-width: 230px!important;max-height: 230px!important;}
      .card-links a{
           display: inline-block;
-          padding: 0.1em 0.3em;border: 1px solid #B4B6B9; 
+          padding: 0.1em 0.3em;border: 1px solid #B4B6B9;
           font-family: Helvetica,Arial;
           border-radius: 0px; color: #fef;
           margin: 0 0.5em;
@@ -340,5 +356,7 @@ footer{
       #courses-list-wrapper{
         margin-bottom: 1.5em;
       }
-       
+
 }
+////////////////////////////////////////////
+strong{font-weight: bold;}

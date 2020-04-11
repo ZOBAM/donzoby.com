@@ -35,7 +35,7 @@ Route::post('/comment/{id}/update','CommentController@update')->name('comment_up
 Route::get('/comment/{id}/delete','CommentController@destroy')->name('comment_delete');
 Route::post('/profile-picture','ProfilePictureController@index')->name('picture');
 //the post will save new data plan while get will fetch and edit existing ones
-Route::post('/member/data-plan/create', 'DataPlanController@store')->middleware('verified');
+Route::post('/member/data-plan/{create?}/{id?}', 'DataPlanController@store')->middleware('verified');
 Route::get('/member/data-plan/{id?}', 'DataPlanController@create')->middleware('verified');
 Route::get('/member/{item?}/{action?}', 'MemberController@index')->name('member')->middleware('verified');
 //handle all post with this resource controller
