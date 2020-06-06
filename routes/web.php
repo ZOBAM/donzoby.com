@@ -44,6 +44,7 @@ Route::post('/image-upload', 'PictureUploadController@index')->name('image');
 
 Auth::routes();
 
+Route::post('/mobile-usage/service-providers/data-plans/{id?}/{topic?}', 'DataPlanController@index');
 Route::get('/mobile-usage/service-providers/data-plans/{id?}/{topic?}', 'DataPlanController@index');
 Route::get('/{course?}/{subject?}/{id?}/{topic?}', 'CoursesController@index')->name('courses');
 

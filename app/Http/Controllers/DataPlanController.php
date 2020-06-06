@@ -84,8 +84,6 @@ class DataPlanController extends Controller
         $view = "courses.data-plans";
         if(is_numeric($id)){
             $data_plan = Data_plan::where('id',$id)->first();
-            $data_plan->volume = $this->format_values($data_plan->volume,'volume');
-            $data_plan->validity = $this->format_values($data_plan->validity,'validity');
             $data_plan->timestamps = false;//prevent updating of time stamps
             //check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
             //adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
@@ -93,6 +91,8 @@ class DataPlanController extends Controller
             if ($_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com") {
                 $data_plan->hits = ++$data_plan->hits; $data_plan->save();
             }
+            $data_plan->volume = $this->format_values($data_plan->volume,'volume');
+            $data_plan->validity = $this->format_values($data_plan->validity,'validity');
             $title = $data_plan->title;
             return view($view,compact('data_plan','title'));
         }
@@ -101,6 +101,28 @@ class DataPlanController extends Controller
             $upper_price_limit = 5000;//5k based on the average earning of a Nigerian
             $data_plans;
             //handle preferences from link parameters
+			if(isset($_GET['ng'])){
+			$response =	[
+				  [
+					"type"=> "Overnight",
+					"price"=> 25.99
+				  ],
+				  [
+					"type"=> "2-Day",
+					"price"=> 9.99
+				  ],
+				  [
+					"type"=> "Postal",
+					"price"=> 2.99
+				  ]
+				];
+				/* $response =	[1, 2, 3]; */
+				
+				return response($response)
+				 ->header('Access-Control-Allow-Origin', 'http://localhost:4200')
+				->header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+				/*->header('Access-Control-Allow-Headers', 'Content-Type') */; 
+			}
             if (isset($_GET['validity']) || isset($_GET['volume']) || isset($_GET['provider'] )) {
                 if(isset($_GET['validity']) && is_numeric($_GET['validity'])){
                     $validity = $_GET['validity'];

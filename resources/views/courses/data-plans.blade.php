@@ -163,11 +163,13 @@
                 </a>
             @endforeach
             <h3>Data Plans By Volume</h3>
+            <div style="max-height: 40vh; overflow: auto;">
             @foreach($data_plans['volume'] as $data_plan)
                 <a href="/mobile-usage/service-providers/data-plans?volume={{$data_plan->volume}}">
                     <p>{{$data_plan->link_volume}} ({{$data_plan->data_plan_count}} data plans)</p>
                 </a>
             @endforeach
+            </div>
 
             @endif
             @endisset
