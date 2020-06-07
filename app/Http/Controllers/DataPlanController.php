@@ -129,7 +129,7 @@ class DataPlanController extends Controller
 			$response =	[
 				  [
 					"type"=> "Overnight",
-					"price"=> 25.99
+					"price"=> 26.99
 				  ],
 				  [
 					"type"=> "2-Day",
