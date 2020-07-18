@@ -55,14 +55,13 @@
 
 
 @section('navBar')
-
-  <nav class="navbar navbar-expand-sm navbar-light justify-content-center sticky-top" id="navBar">
+  <nav class="navbar navbar-expand-lg navbar-light justify-content-center sticky-top" id="navBar">
     <!-- Brand <nav class="navbar navbar-expand-md bg-dark ">-->
     <div class="mx-auto d-sm-flex d-block flex-sm">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="navbar-brand" href="{{ url('/') }}">
-            <img src="{{URL('images/favicon.png')}}" class="img-responsive" alt="Solid Agents"/> DZB
+            <img src="{{URL('images/favicon.png')}}" class="img-responsive" alt="Solid Agents"/>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -82,26 +81,26 @@
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="/web-design"  data-toggle="dropdown">Web Design</a>
+            <a class="nav-link dropdown-toggle" href="/web-design"  data-toggle="dropdown">Front-end</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{{ url('/web-design/html') }}">HTML</a>
-              <a class="dropdown-item" href="{{ url('/web-design/css') }}">CSS</a>
-              <a class="dropdown-item" href="{{ url('/web-design/javascript') }}">JavaScript</a>
-              <a class="dropdown-item" href="{{ url('/web-design/jquery') }}">JQuery</a>
-              <a class="dropdown-item" href="{{ url('/web-design/bootstrap') }}">Bootstrap</a>
+              <a class="dropdown-item" href="{{ url('/front-end/html') }}">HTML</a>
+              <a class="dropdown-item" href="{{ url('/front-end/css') }}">CSS</a>
+              <a class="dropdown-item" href="{{ url('/front-end/javascript') }}">JavaScript</a>
+              <a class="dropdown-item" href="{{ url('/front-end/jquery') }}">JQuery</a>
+              <a class="dropdown-item" href="{{ url('/front-end/bootstrap') }}">Bootstrap</a>
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="/server-dev"  data-toggle="dropdown">Server Dev.</a>
+            <a class="nav-link dropdown-toggle" href="/server-dev"  data-toggle="dropdown">Back-end</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{{ url('/server-dev/php') }}">PHP</a>
-              <a class="dropdown-item" href="{{ url('/server-dev/sql') }}">SQL</a>
-              <a class="dropdown-item" href="{{ url('/server-dev/laravel') }}">Laravel</a>
-              <a class="dropdown-item" href="{{ url('/server-dev/mysql') }}">MySql</a>
+              <a class="dropdown-item" href="{{ url('/back-end/php') }}">PHP</a>
+              <a class="dropdown-item" href="{{ url('/back-end/sql') }}">SQL</a>
+              <a class="dropdown-item" href="{{ url('/back-end/laravel') }}">Laravel</a>
+              <a class="dropdown-item" href="{{ url('/back-end/mysql') }}">MySql</a>
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="/mobile-app-dev"  data-toggle="dropdown">Mobile App Dev.</a>
+            <a class="nav-link dropdown-toggle" href="/mobile-app-dev"  data-toggle="dropdown">Mobile Dev</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{{ url('/mobile-app-dev/android-kotlin') }}">Android Kotlin</a>
               <a class="dropdown-item" href="{{ url('/mobile-app-dev/android-java') }}">Android Java</a>
@@ -109,7 +108,7 @@
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="/windows-dev"  data-toggle="dropdown">Windows Dev.</a>
+            <a class="nav-link dropdown-toggle" href="/windows-dev"  data-toggle="dropdown">Windows Dev</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{{ url('/windows-dev/c-sharp') }}">C# (C Sharp)</a>
               <a class="dropdown-item" href="{{ url('/windows-dev/java') }}">Java</a>
@@ -132,7 +131,7 @@
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="/internet-usage"  data-toggle="dropdown">Internet Usage</a>
+            <a class="nav-link dropdown-toggle" href="/internet-usage"  data-toggle="dropdown">Internet Use</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{{ url('/internet-usage/browsers') }}">Browsers</a>
               <a class="dropdown-item" href="{{ url('/internet-usage/online-services') }}">Online Services</a>

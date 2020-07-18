@@ -345,15 +345,12 @@ tinymce.init({
         <?php
         $num_images = preg_match_all('/src="([^"]+)"/i', $post->post_content, $matches);
         //var_dump($matches);
-        print_r($matches[1]);
+        //print_r($matches[1]);
         $db_image = "images/courses/MS PowerPoint/cocet.png";
         $my_str = '<p>You canYou can alwasy trust your life and everything into the hands of our ever caring Lord and savior. You can<img src="http://www.donzoby.net/images/courses/MS PowerPoint/cocet.png" alt="" width="268" height="129" /><img src="http://www.donzoby.net/images/courses/MS PowerPoint/kolic logo.png" alt="" width="266" height="270" /></p>';
         if(strpos($my_str,$db_image)==false){
           echo "<hr>String not found";
         }
-
-        $str = 23;
-        echo "<hr>".str_pad($str,5,"0",STR_PAD_LEFT);
 
         ?>
         <h1>Edit "{{$post->post_topic}}" Post</h1>

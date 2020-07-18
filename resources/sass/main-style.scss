@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Acme&family=Exo+2&family=Oxygen&display=swap');
+
 $font-face-h1:'Raleway';
 @mixin rounded-corner($radius:10px){
       border-radius: $radius;
@@ -6,16 +8,19 @@ $font-face-h1:'Raleway';
 	padding:0px;
 	margin:0px;
 }
-html body {
-    background-color: #EFF1EF;
-    font-family:sans-serif;
-    font-weight: 100;
-    /*height: 100vh;*/
+html body{
     margin: 0;
+}
+body {
+    background-color: #EFF1EF;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 100%;
+    //font-weight: 100;
+    /*height: 100vh;*/
     opacity: 0.95;
     //create data plan formatting
     label:first-child {
-      font-weight: bold; color: #6C3A5A; font-size: smaller;padding-bottom: 0px;margin-bottom: -9px
+      font-weight: bold; color: #6C3A5A; font-size: smaller;padding-bottom: 0px;margin-bottom: 5px
     }
     #pages-links {
       a{display: inline-block; border: 2px solid skyblue; padding: 4px; margin: 0px 1vw;min-width: 3em;text-align: center}
@@ -67,7 +72,7 @@ nav{text-align: center !important;}
 #navBar{
   background-color: #EFF1EF;
   font-size: 1.1em;
-  font-family: "Times New Roman",Helvetica,Arial;
+  font-family: "Exo 2",Arial;
   a,li{
     color: #000;
     text-decoration: none;
@@ -88,99 +93,104 @@ nav{text-align: center !important;}
 }
 
 #main-content{
-   margin-top: 1em;
-   p{max-width: 100% !important;}
+    line-height: 1.8;
+    margin-top: 1em;
+    font-size: 1.1em;
+    h2,h3{
+        font-family: "Acme";
+    }
+    p{max-width: 100% !important;}
     li{
         margin-left: 2.5em;
         text-indent: 0em;
     }
-      .thumbnail{
-      border: 1px solid #D1D6D1;
-      padding:0.1em 0.1em 0.1em 0.1em;
-      margin-bottom: 2em;
-      @include rounded-corner(10px);
-      .prop-detail{width: 100%; background-color: #E6E7E8;padding:0.3em; text-align: center;
-                    .detail-header{color: #6e808f}
-                  }
-      img{max-height: 193px}
-      }
-      #left-nav{
+    .thumbnail{
+    border: 1px solid #D1D6D1;
+    padding:0.1em 0.1em 0.1em 0.1em;
+    margin-bottom: 2em;
+    @include rounded-corner(10px);
+    .prop-detail{width: 100%; background-color: #E6E7E8;padding:0.3em; text-align: center;
+                .detail-header{color: #6e808f}
+                }
+    img{max-height: 193px}
+    }
+    #left-nav{
         a{
-          display: block;
-          background-color: #fff;
-          border-bottom:2px solid #EFF1EF;
-          border-left: 4px solid #EFF1EF;
-          padding: 0.3em;
-          color: #3636FE;
-          font-size: 0.9em;
+            display: block;
+            background-color: #fff;
+            border-bottom:2px solid #EFF1EF;
+            border-left: 4px solid #EFF1EF;
+            padding: 0.3em;
+            color: #3636FE;
+            font-size: 0.8em;
         }
         p{
-          background-color: #F7F7F7;color: #000;text-align: center;margin: 0;
-          border: 1px solid #EFF1EF;border-left: 8px solid #868686; border-top: 1px solid #868686;
-          border-radius: 10em 5em;
-          box-shadow: 3px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-          font-family:"Trebuchet MS", "Times New Roman",Helvetica,Arial;font-size: 1em;
+            background-color: #F7F7F7;color: #000;text-align: center;margin: 0;
+            border: 1px solid #EFF1EF;border-left: 8px solid #868686; border-top: 1px solid #868686;
+            border-radius: 10em 5em;
+            box-shadow: 3px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            font-size: 1em;
         }
         #courses-list-wrapper{border: 2px solid #EAEEEA;margin-top: 2em}
         #courses-list{
-          border: 1px solid #EAEEEA;background-color: #CFCFCF; margin-bottom: 1em;
-          h5{text-align: center;font-family: Agency, "Arial";padding: 0.5em;}
-          a{color: #737373;
-          border: 1px solid #B4B6B9;
-          margin-top: 5px;
-          border-radius: 4px;
-          box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);}
-          .fa{color: #CED5CE;}
+            border: 1px solid #EAEEEA;background-color: #CFCFCF; margin-bottom: 1em;
+            h5{text-align: center;font-family: Agency, "Arial";padding: 0.5em;}
+            a{color: #737373;
+            border: 1px solid #B4B6B9;
+            margin-top: 5px;
+            border-radius: 4px;
+            box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);}
+            .fa{color: #CED5CE;}
         }
-      }
-      .card-deck{
+    }
+    .card-deck{
         padding: 0.6em;
         box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
         margin-bottom: 1.9em;
         img{
-        max-width: 250px;
+            max-width: 250px;
         }
-        h4{ text-align: center;}
-        .card-text {padding: 0.5em 0.5em; border: 2px solid #EDEEEF;border-radius: 4px;}
-        .card-links a{
-          display: inline-block;
-          padding: 0.1em 0.3em;border: 1px solid #B4B6B9;
-          font-family: Helvetica,Arial;
-          border-radius: 4px; color: #53606F;
-          margin: 0 0.5em;
-          min-width: 5em;
-          box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
-        }
-        .card-links a:hover{
-          padding: 0.1em 0.3em;
-          border: 1px solid #000;
-          font-family: Helvetica,Arial;
-          border-radius: 4px;
-          color: #000;
-          margin: 0 0.5em;
-          min-width: 5em;
-          box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.59);
-          text-decoration: none;
-        }
-        .card-title{font-family: Palatino;font-size: 1.9em;text-transform: uppercase;
-          a{color: #001}
-        }
-        .card-footer{width: 100%}
-        .card-links{width: 100%; text-align: center;}
-        .card-footer{
-          font-weight: bold;
-          .featured{font-style: italic;font-weight: normal;}
-        }
-        .card-body{margin-bottom: 0px; padding-bottom: 0px;
-          p{font-family:Verdana, "Times New Roman",Helvetica,Arial;font-size: 1em;}
-        }
-      }/*end card deck*/
-  #post-details{border-top: 1px solid #E0E0EB; border-bottom: 1px solid #E0E0EB; font-size: 0.7em;}
-  #post-content{padding-top: 1em;}
-  #donzoby-info{padding: 1em;font-family:Verdana, "Times New Roman",Helvetica,Arial; font-size: 1.0em;}
-  #bread-comb{border-bottom: 1px solid #D1D6D1; margin-bottom: 1em; font-size: 0.8em;background-color: #EFF1EF;
-    a{color: #535397}
-  }
+    h4{ text-align: center;}
+    .card-text {padding: 0.5em 0.5em; border: 2px solid #EDEEEF;border-radius: 4px;}
+    .card-links a{
+        display: inline-block;
+        padding: 0.1em 0.3em;border: 1px solid #B4B6B9;
+        font-family: Helvetica,Arial;
+        border-radius: 4px; color: #53606F;
+        margin: 0 0.5em;
+        min-width: 5em;
+        box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
+    }
+    .card-links a:hover{
+        padding: 0.1em 0.3em;
+        border: 1px solid #000;
+        font-family: Helvetica,Arial;
+        border-radius: 4px;
+        color: #000;
+        margin: 0 0.5em;
+        min-width: 5em;
+        box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.59);
+        text-decoration: none;
+    }
+    .card-title{font-family: Palatino;font-size: 1.9em;text-transform: uppercase;
+        a{color: #001}
+    }
+    .card-footer{width: 100%}
+    .card-links{width: 100%; text-align: center;}
+    .card-footer{
+        font-weight: bold;
+        .featured{font-style: italic;font-weight: normal;}
+    }
+    .card-body{margin-bottom: 0px; padding-bottom: 0px;
+        p{font-family:'Oxygen', "Times New Roman",Helvetica,Arial;font-size: 1em;}
+    }
+    }/*end card deck*/
+    #post-details{border-top: 1px solid #E0E0EB; border-bottom: 1px solid #E0E0EB; font-size: 0.7em;}
+    #post-content{padding-top: 1em;}
+    #donzoby-info{padding: 1em;font-size: 1.0em;}
+    #bread-comb{border-bottom: 1px solid #D1D6D1; margin-bottom: 1em; font-size: 0.8em;background-color: #EFF1EF;
+        a{color: #535397}
+    }
 
 }/*end main content*/
 
@@ -360,4 +370,4 @@ footer{
 
 }
 ////////////////////////////////////////////
-strong{font-weight: bold; color: blue}
+strong{font-weight: bold; color: rgb(14, 2, 20)}

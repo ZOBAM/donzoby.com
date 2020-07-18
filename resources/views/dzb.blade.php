@@ -9,10 +9,10 @@
 @section('mainContent')
 <div class='container-fluid' id='main-content'>
 	<div class="row">
-    <div class = "col-sm-2" id="left-nav">
+    <div class = "col-lg-2" id="left-nav">
 			@include('layouts.left-nav')
     </div>
-    <div class = "col-sm-7" id="center-col">
+    <div class = "col-lg-7" id="center-col">
             <!-- <h1>Welcome to DTech where we do tech with conscience!</h1> -->
 
 
@@ -78,7 +78,7 @@
 	</div>   <!-------------------------------- ends card-deck --------------------------------->
 
     </div> <!-------------------------------- ends center column --------------------------------->
-    <div class = "col-sm-3" id="right-col">
+    <div class = "col-lg-3" id="right-col">
     	@include('layouts.right-col')
     </div>
 	</div>
