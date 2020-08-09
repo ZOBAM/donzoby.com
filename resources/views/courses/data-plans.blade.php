@@ -46,6 +46,9 @@
                         <td>Volume:</td><td>{{$data_plan->volume}}</td>
                     </tr>
                     <tr>
+                        <td>Price:</td><td>₦{{$data_plan->price}}</td>
+                    </tr>
+                    <tr>
                         <td>Validity:</td><td>{{$data_plan->validity}}</td>
                     </tr>
                     <tr>
@@ -72,6 +75,28 @@
                 <div class="col-sm-8 offset-sm-2">
                     <h3 class="text-center">Related Data Plans</h3>
                 </div>
+                @foreach($related as $plan)
+                <div class="col">
+                    <a href="/mobile-usage/service-providers/data-plans/{{$plan->id}}/{{$plan->title}}">
+                        <div class="related-children">
+                            <span class="data-price">{{$plan->volume}}<br>₦{{$plan->price}}</span><br>
+                            <span>{{$plan->provider}}</span>
+                        </div>
+                    </a>
+                </div>
+                @endforeach
+                <!-- <div class="col-sm-4">
+                    <div class="related-children">
+                        <span class="data-price">3.5GB<br>2000</span><br>
+                        <span>9mobile</span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="related-children">
+                        <span class="data-price">3.5GB<br>2000</span><br>
+                        <span>Glo</span>
+                    </div>
+                </div>
                 <div class="col-sm-4">
                     <div class="related-children">
                         <span class="data-price">3.5GB<br>2000</span><br>
@@ -89,25 +114,7 @@
                         <span class="data-price">3.5GB<br>2000</span><br>
                         <span>Glo</span>
                     </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="related-children">
-                        <span class="data-price">3.5GB<br>2000</span><br>
-                        <span>MTN</span>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="related-children">
-                        <span class="data-price">3.5GB<br>2000</span><br>
-                        <span>9mobile</span>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="related-children">
-                        <span class="data-price">3.5GB<br>2000</span><br>
-                        <span>Glo</span>
-                    </div>
-                </div>
+                </div> -->
             </div>
             @endisset
             <!-- list various data plans -->

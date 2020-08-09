@@ -1,3 +1,4 @@
+@import 'dzbVariables';
 @import url('https://fonts.googleapis.com/css2?family=Acme&family=Exo+2&family=Oxygen&display=swap');
 
 $font-face-h1:'Raleway';
@@ -12,7 +13,7 @@ html body{
     margin: 0;
 }
 body {
-    background-color: #EFF1EF;
+    background-color: $lighter-grey-1;
     font-family: 'Oxygen', sans-serif;
     font-size: 100%;
     //font-weight: 100;
@@ -143,22 +144,18 @@ nav{text-align: center !important;}
             .fa{color: #CED5CE;}
         }
     }
-    .card-deck{
+    .card{
         padding: 0.6em;
         box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
-        margin-bottom: 1.9em;
-        img{
-            max-width: 250px;
-        }
+        margin: 1.1em 0em;
     h4{ text-align: center;}
-    .card-text {padding: 0.5em 0.5em; border: 2px solid #EDEEEF;border-radius: 4px;}
     .card-links a{
         display: inline-block;
-        padding: 0.1em 0.3em;border: 1px solid #B4B6B9;
-        font-family: Helvetica,Arial;
+        padding: 0.2em;
+        border: 1px solid #B4B6B9;
         border-radius: 4px; color: #53606F;
-        margin: 0 0.5em;
-        min-width: 5em;
+        margin: 0 0.2em;
+        min-width: 3em;
         box-shadow: -4px 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
     }
     .card-links a:hover{

@@ -1,5 +1,12 @@
 
-	@isset($posts)
+        <a href="/mobile-usage/service-providers/data-plans" style="color: #00ADEF;">
+    <div style="background-color: #B8B8B8; margin-bottom: 0.4em; text-align: center;border-radius: 0.3em;">
+            <span style="width: 96%; border: 0.25em solid #dfe0e0;border-radius: 0.3em; margin: 0.2em auto; display:inline-block; background-color: white; line-height: 1.5em; font-weight: bolder; font-size: larger;"> Consolidated Data Plans in Nigeria
+            <span style="font-size: small; font-family: monospace; color: rgb(12, 17, 2);"><br> All Plans in One Place</span>
+        </span>
+    </div>
+        </a>
+    @isset($posts)
 		@foreach($listed_subjects as $sub)
 			<p>{{$sub}}</p>
 			@foreach($posts as $post)
@@ -9,17 +16,3 @@
 			@endforeach
 		@endforeach
 	@endisset
-<div id="courses-list-wrapper" style="background-color: grey;">
-	<div id="courses-list">
-		<h5>List of Courses</h5>
-		<a href="/graphics"><i class="fa fa-angle-right"></i> Graphics</a>
-		<a href="/web-design"><i class="fa fa-angle-right"></i> Web Design</a>
-		<a href="/server-dev"><i class="fa fa-angle-right"></i> Server Dev.</a>
-		<a href="/mobile-app-dev"><i class="fa fa-angle-right"></i> Mobile App Dev.</a>
-		<a href="/windows-dev"><i class="fa fa-angle-right"></i> Windows Dev.</a>
-		<a href="/msoffice"><i class="fa fa-angle-right"></i> MS Office</a>
-		<a href="/office-operations"><i class="fa fa-angle-right"></i> Office Operations</a>
-		<a href="/internet-usage"><i class="fa fa-angle-right"></i> Internet Usage</a>
-		<a href="/mobile-usage"><i class="fa fa-angle-right"></i> Mobile Usage</a>
-	</div>
-</div>

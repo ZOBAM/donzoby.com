@@ -31,6 +31,10 @@ class MemberController extends Controller
             return view('member',compact('view'));
         }
         if ($item=="create" && $action=="create-data-plan") {//create data plans
+            $approved_emails = ['upc4you@gmail.com', 'giftibe04@gmail.com'];
+            if(!in_array(Auth::user()->email, $approved_emails)){
+                return redirect()->back();
+            }
             $view = "create-data-plan";
             return view('member',compact('view'));
         }

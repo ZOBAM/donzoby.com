@@ -8,7 +8,18 @@ use Auth;
 
 class DataPlanController extends Controller
 {
-    public $data_plans_per_page = 5;
+    public $data_plans_per_page = 10;
+    public $related_data_plans = [];
+
+    public function get_related_plans($plan){
+        if(count($plan)>0){
+            foreach($plan as $data_plan){
+                $data_plan->volume = $this->format_values($data_plan->volume, 'volume');
+                $data_plan->validity = $this->format_values($data_plan->validity, 'validity');
+                $this->get_related_plans[] = $data_plan;
+            }
+        }
+    }//end get_related_plans
     private function format_values($data, $type){
         if($type == "volume"){
             return ($data<1024)? $data.'MB (Megabytes)' : round(($data/1024),2).'GB (Gigabytes) ';
@@ -28,24 +39,24 @@ class DataPlanController extends Controller
     public function store(Request $request,$create = false,$id = false){
         $this->validate($request, [
             'provider' => 'required|string|max:10|min:3',
-            'title' => 'required|string|max:240|min:17',
+            'title' => 'required|string|max:240|min:12',
             'volume' => 'numeric|required|min:10|max:2048000',
             'price' => 'numeric|required|min:25|max:500000',
-            'bonus_all' => 'numeric|min:5|max:20480|nullable',
-            'bonus_new_sim' => 'numeric|min:5|max:20480|nullable',
+            'bonus_all' => 'numeric|min:0|max:20480|nullable',
+            'bonus_new_sim' => 'numeric|min:0|max:20480|nullable',
             'validity' => 'numeric|required|min:1|max:8760',
             'use_period' => 'string|required|min:5|max:7',
             'how_to_sub' => 'string|required|min:5|max:240',
             'description' => 'string|min:5|max:940|nullable',
         ]);
-        //return $id;
+        //return $request;
         if($create == "create"){
             $data_plan = new Data_plan;
-            $response_msg = "Data Plan Saved: $request->title";
+            $response_msg['info'] = "Data Plan Saved: $request->title";
         }
         else {
             $data_plan = Data_plan::where('id',$id)->first();
-            $response_msg = "Data Plan Updated: $request->title";
+            $response_msg['info'] = "Data Plan Updated: $request->title";
         }
         $data_plan->provider = $request->provider;
         $data_plan->title = $request->title;
@@ -59,6 +70,7 @@ class DataPlanController extends Controller
         $data_plan->description = $request->description;
         $data_plan->creator = Auth::id();
         if($data_plan->save()){
+            $response_msg['data_plan'] = $data_plan;
            return $response_msg;
         }
     }//end store
@@ -70,13 +82,13 @@ class DataPlanController extends Controller
                 return response()->json([
                     'msg' => 'Data Plan Successfully Deleted',
                     'per_page' => $this->data_plans_per_page,
-                    'data_plans_count'=> $data_plans_count
+                    'data_plans_count'=> $data_plans_count - 1
                 ]);
                // return "Data Plan Successfully Deleted";
             }
         }
         else{
-            $data_plans = Data_plan::orderBy('created_at','desc')->paginate($this->data_plans_per_page);
+            $data_plans = Data_plan::orderBy('created_at','desc')->get();
             return $data_plans;
         }
     }
@@ -94,7 +106,13 @@ class DataPlanController extends Controller
             $data_plan->volume = $this->format_values($data_plan->volume,'volume');
             $data_plan->validity = $this->format_values($data_plan->validity,'validity');
             $title = $data_plan->title;
-            return view($view,compact('data_plan','title'));
+            //get related data plans
+            $this->get_related_plans(Data_plan::where('price','<',$data_plan->price)->where('provider',$data_plan->provider)->orderBy('price','DESC')->take(2)->get());
+            $this->get_related_plans(Data_plan::where('price','>',$data_plan->price)->where('provider',$data_plan->provider)->orderBy('price','ASC')->take(2)->get());
+            $this->get_related_plans(Data_plan::where('price','<',$data_plan->price)->where('provider','!=',$data_plan->provider)->orderBy('price','DESC')->take(1)->get());
+            $this->get_related_plans(Data_plan::where('price','>',$data_plan->price)->where('provider','!=',$data_plan->provider)->orderBy('price','ASC')->take(1)->get());
+            $related = $this->get_related_plans;
+            return view($view,compact('data_plan','title','related'));
         }
         else{//no specific id and therefore list out data plans
             $lower_price_limit = 350;//5h based on the average earning of a Nigerian

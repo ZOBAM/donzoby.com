@@ -41,7 +41,7 @@ class PostController extends Controller
         }
 
         //fetch post from db and get excerpts
-        $posts = Post::where('author_id','=',Auth::id())->paginate(10);
+        $posts = Post::where('author_id','=',Auth::id())->orderBy('created_at','DESC')->paginate(10);
         if(count($posts)>0){
             $i = 0;
             foreach($posts as $data){

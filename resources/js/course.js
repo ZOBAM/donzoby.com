@@ -1,25 +1,25 @@
 $(document).ready(function() {
  //$('#lga').select2();
 //$("#course").select2();
-  $("#course").bind('click', function(){            
+  $("#course").bind('click', function(){
          var course = $(this).val(); //alert(course);
-		
+
 
 switch (course) {
-  case "web design":
-  var data = ['HTML', 'CSS', 'JavaScript', 'jQuery', 'Bootstrap']; 
+  case "front end":
+  var data = ['HTML', 'CSS', 'JavaScript', 'jQuery', 'Bootstrap'];
    break;
- 
- case "web dev":
+
+ case "back end":
   var data = ['PHP', 'SQL', 'MySql', 'Laravel'];
    break;
-    case "mobile app dev":
+    case "mobile dev":
   var data = ['Andoid Kotlin','Andoid Java', 'iOS Swift'];
    break;
-   case "server dev":
+   case "windows dev":
   var data = ['C-Sharp', 'Java'];
    break;
-   
+
    case "ms office":
   var data = ['MS Word', 'MS PowerPoint', 'MS Excel', 'MS Access'];
    break;
@@ -27,7 +27,7 @@ switch (course) {
   var data = ['Paper Work', 'Machine Operations'];
 
    break;
-   
+
    case "internet usage":
   var data = ['Online Services','Browsers', 'Miscellaneous'];
 
@@ -40,8 +40,8 @@ switch (course) {
   var data =  ['CorelDraw', 'Photoshop', 'Gimp'];
 
  }
-	
-	
+
+
 
 
 var i;

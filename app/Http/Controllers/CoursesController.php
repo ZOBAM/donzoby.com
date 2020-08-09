@@ -11,7 +11,12 @@ class CoursesController extends Controller
     //
     public function index($course=1,$subject=2,$id=0,$topic="2")//{course}/{subject?}/{id?}/{topic?}
     {
-    	$posts = Post::get()->take(12);
+    	//$posts = Post::get()->take(12);
+        $posts = Post::take(12)->get();
+        foreach($posts as $post){
+            $post->course = str_replace('web design','front end',$post->course);
+            $post->save();
+        }
     	$listed_subjects;
     	foreach ($posts as $value) {//get array of fetched post's subjects
     		$listed_subjects[] = $value->subject;
@@ -23,8 +28,8 @@ class CoursesController extends Controller
 
     	$courses_titles = array(//array of description for each of the courses
     		'graphics' => "Graphics Tutorials",
-    		'web-design' => "Web Design Tutorials",
-    		'web-dev' => "Web Development Tutorials",
+    		'front-end' => "Web Front-end Tutorials",
+    		'back-end' => "Web Back-end Tutorials",
     		'mobile-app-dev' => "Mobile App Development Tutorials",
     		'windows-dev' => "Windows App Development Tutorials",
     		'ms-office' => "Microsoft Office Tutorials ",
@@ -35,8 +40,8 @@ class CoursesController extends Controller
     	);
     	$courses_descriptions = array(//array of description for each of the courses
     		'graphics' => "Learn how to create vector graphics and work with bitmap images on the computer. Everyday graphics skills is covered here. Design logos, crop and resize images etc. Gimp, Photoshop and CorelDraw are covered here.",
-    		'web-design' => "Start learning how to design websites. Our course covers subjects like HTML, CSS, Bootstrap etc. and scripting languages such as JavaScript used for layout, formatting and animating web pages.",
-    		'server-dev' => "Start learning server side programming for websites and manage website data using databases. Subjects covered here include: PHP, MySQL, SQL, Laravel etc.",
+    		'front-end' => "Start learning how to design websites. Our course covers subjects like HTML, CSS, Bootstrap etc. and scripting languages such as JavaScript used for layout, formatting and animating web pages.",
+    		'back-end' => "Start learning server side programming for websites and manage website data using databases. Subjects covered here include: PHP, MySQL, SQL, Laravel etc.",
     		'mobile-app-dev' => "Learn the basics of building mobile applications on the Android platform and then advance to professional mobile app developer. Simple and easy Kotlin and Java tutorial for Android.",
     		'windows-dev' => "Learn how to build windows applications easily with care given to best practices. Start programming in C Sharp (C#) and Java by following our well written windows development course.",
     		'ms-office' => "Easy Microsoft Office tutorials that will help you accomplish important tasks easily at the office. Write and format letters, MOUs, make PowerPoint presentations, analyze results with Excel spreadsheet and manage data with Access.",
@@ -113,7 +118,7 @@ class CoursesController extends Controller
     	);
 
 
-    	$courses = array('login', 'register','graphics', 'web-design', 'server-dev', 'mobile-app-dev', 'windows-dev', 'ms-office', 'office-operations', 'internet-usage', 'mobile-usage','data-plans');//array of all courses
+    	$courses = array('login', 'register','graphics', 'front-end', 'back-end', 'mobile-app-dev', 'windows-dev', 'ms-office', 'office-operations', 'internet-usage', 'mobile-usage','data-plans');//array of all courses
         if (in_array($course, $courses)) {//check if course in url is in array
 
         	$post_image = URL('images/dzb-'.$course.'.png');

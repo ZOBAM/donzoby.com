@@ -4,7 +4,7 @@
 
 @section('links')
     @include('layouts.member-links')
-    <script src="{{asset('js/course.js')}}" type="text/javascript"></script>
+    <script src="{{asset('js/course.js')}}" type="text/javascript" defer></script>
 <!--  <script>
  tinymce.init({
  selector:'textarea',
@@ -156,9 +156,9 @@ tinymce.init({
                 <div class="col-sm-4">
                     <select id="course" class="form-control{{ $errors->has('course') ? ' is-invalid' : '' }}" name="course" value="{{ old('course') }}" required >
                         <option value="graphics">Graphics</option>
-                        <option value="web design">Web Design</option>
-                        <option value="server dev">Server Dev.</option>
-                        <option value="mobile app dev">Mobile App Dev.</option>
+                        <option value="front end">Web Design</option>
+                        <option value="back end">Server Dev.</option>
+                        <option value="mobile dev">Mobile App Dev.</option>
                         <option value="windows dev">Windows Dev.</option>
                         <option value="ms office">MS Office</option>
                         <option value="office operations">Office Operations</option>
@@ -365,9 +365,9 @@ tinymce.init({
                             <div class="col-sm-8">
                                 <select id="course" class="form-control{{ $errors->has('course') ? ' is-invalid' : '' }}" name="course" value="{{ old('course') }}" required >
                                     <option value="graphics">Graphics</option>
-                                    <option value="web design">Web Design</option>
-                                    <option value="server dev">Server Dev.</option>
-                                    <option value="mobile app dev">Mobile App Dev.</option>
+                                    <option value="front end">Web Design</option>
+                                    <option value="back end">Server Dev.</option>
+                                    <option value="mobile dev">Mobile App Dev.</option>
                                     <option value="windows dev">Windows Dev.</option>
                                     <option value="ms office">MS Office</option>
                                     <option value="office operations">Office Operations</option>
