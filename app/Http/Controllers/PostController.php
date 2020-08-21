@@ -121,7 +121,7 @@ class PostController extends Controller
                 $user->post_count =  (($user->post_count+1));//increment sagged items
                 $user->save();
                 //fectch image link form post content and save in the database
-                $num_images = preg_match_all('/src="([^"]+)"/i', $request->post_content, $matches);
+                $num_images = preg_match_all('/src="([^"]+.[^s])"/i', $request->post_content, $matches);
                 $link_matches = $matches[1];
                 if ($num_images>0) {
                     foreach ($link_matches as $image) {
@@ -241,7 +241,7 @@ class PostController extends Controller
         //images saved in db
         $db_images = Post_image::where('post_id', $id)->get();if ($post->save()) {
         //check if image links are available in the post content
-        $pattern = '/src="([^"]+)"/i';
+        $pattern = '/src="([^"]+.[^s])"/i';
         $num_images = preg_match_all($pattern, $request->post_content, $matches);
         $link_matches = $matches[1];
 
