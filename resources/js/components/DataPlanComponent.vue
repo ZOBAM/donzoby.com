@@ -29,16 +29,22 @@
                     {{ formatValues(data.value, 'validity') }}
                 </template>
                 <template v-slot:cell(action)="data">
-                    <button @click="deleteDP(data.item.id,data.index)"> Del </button>
-                    <button @click="edit(data.item.id,data.index)"> Edit </button>
+                    <button class="action-button btn-danger" @click="deleteDP(data.item.id,data.index)"> Del <b-icon icon="trash"></b-icon> </button>
+                    <button class="action-button btn-primary" @click="edit(data.item.id,data.index)"> Edit <b-icon icon="pencil"></b-icon></button>
                 </template>
             </b-table>
-            <b-pagination
-            v-model="currentPage"
-            :total-rows="rows"
-            :per-page="perPage"
-            aria-controls="my-table"
-            ></b-pagination>
+            <b-container fluid class="page-nav-container">
+                <b-row>
+                    <b-col>
+                        <b-pagination
+                        v-model="currentPage"
+                        :total-rows="rows"
+                        :per-page="perPage"
+                        aria-controls="my-table"
+                        ></b-pagination>
+                    </b-col>
+                </b-row>
+            </b-container>
         </div>
         <b-container fluid>
             <h3 class = "text-center" >{{formHeading}}</h3>
@@ -51,6 +57,7 @@
                         v-model="form.provider"
                         :options="provider"
                         required size="sm"
+                        @change="dataPlanTitle()"
                         ></b-form-select>
                     </b-form-group>
                 </b-col>
@@ -76,17 +83,19 @@
                         :options="volume"
                         placeholder = "Enter Data Volume"
                         list="volume-list"
+                        @change="dataPlanTitle()"
                         ></b-form-input>
                         <b-form-datalist id="volume-list" :options="volume"></b-form-datalist>
                     </b-form-group>
                 </b-col>
                 <b-col>
-                    <b-form-group id="input-group-4" label="Data Price:" label-for="data_price">
+                    <b-form-group id="input-group-4" label="Data Price (₦):" label-for="data_price">
                         <b-form-input
                         id="data_price" name ="price"
                         v-model="form.price"
                         required size="sm"
                         placeholder="Enter Data Plan Price"
+                        @change="dataPlanTitle()"
                         ></b-form-input>
                     </b-form-group>
                 </b-col>
@@ -172,8 +181,9 @@ export default {
             // formHeading: 'Add New Data Plan',
             dismissSecs: 5,
             dismissCountDown: 0,
-            url: 'http://www.donzoby.net/member/data-plan',
+            url: '/member/data-plan',
             submitURL: "/member/data-plan/create",
+            submitEditURL: null,
             isEditing: false,
             editedPlan: null,
             editedPlanIndex: null,
@@ -184,13 +194,14 @@ export default {
             dP: null,
             fields: [
                 's_no',
-                'provider',
+                {key: 'provider', sortable: true},
                 'title',
                 {
                     key: 'volume',
                     label: 'Volume',
+                    sortable: true
                 },
-                'price',
+                {key: 'price', sortable: true},
                 {
                     key: 'validity',
                     label: 'Validity',
@@ -203,8 +214,8 @@ export default {
                 title: '',
                 volume: '',
                 price: '',
-                bonus_all: '',
-                bonus_new_sim: '',
+                bonus_all: 0,
+                bonus_new_sim: 0,
                 validity: '',
                 use_period: null,
                 how_to_sub: '',
@@ -234,10 +245,10 @@ export default {
                     'use_period':data.use_period
                 }))
             }
-            console.log(this.dP)
+            //console.log(this.dP)
         },
         edit (id,index) {
-            this.submitURL = "/member/data-plan/edit/"+id
+            this.submitEditURL = "/member/data-plan/edit/"+id
             this.isEditing = true
             let dataPlan = this.dataPlans.filter(plan => {
                 return plan.id == id
@@ -259,11 +270,10 @@ export default {
         deleteDP: function(id,index){
             let response = confirm("Are you sure you want to delete this data plan?\n Click OK to delete or cancel to go back");
             if(response){
-                let url = "/member/data-plan/" + id
                 let _this = this
-                axios.get(url)
+                axios.get("/member/data-plan/" + id)
                 .then(function (response) {
-                    console.log(response.data)
+                    //console.log(response.data)
                     _this.dP.splice(index,1)
                     _this.rows--
                     _this.info = response.data.msg
@@ -295,7 +305,7 @@ export default {
             }
             else{
                 //alert(typeof(elemResource));
-                var value = inputValue.toUpperCase().trim();
+                var value = (inputValue)? inputValue.toUpperCase().trim() : '';
                 if(value.lastIndexOf('GB') != -1){
                     value = value.trim().replace('GB','')* 1 * 1024;
                 }
@@ -319,9 +329,9 @@ export default {
             this.form.validity = this.formatValues(this.form.validity)
             //handle form submission
             var _this = this;
-            axios.post(_this.submitURL, this.form)
+            let postURL = _this.isEditing? _this.submitEditURL : _this.submitURL
+            axios.post(postURL, this.form)
             .then(function (response) {
-                console.log(response.data);
                 _this.info = response.data.info;
                 _this.dismissCountDown = 5;
                 if(_this.isEditing){
@@ -337,18 +347,31 @@ export default {
                 for(let field in _this.form){
                     _this.form[field] = null
                 }
-                //alert("Submitted!")
+                //alert(_this.isEditing)
             })
             .catch(function (error) {
                 console.log(error);
             });
+        },
+    dataPlanTitle(){
+            let tempTitle
+        if(this.form.title.lastIndexOf(' ') != -1){
+            this.form.title = ''
         }
+        else{ tempTitle = this.form.title
+        }
+        let newTitle = this.form.provider == 'mtn'? `${this.form.provider.toUpperCase()}`: `${this.form.provider.charAt(0).toUpperCase()}${this.form.provider.slice(1)}`
+        newTitle += tempTitle? ` ${tempTitle}` : ''
+        newTitle += ` ${this.form.volume.toUpperCase()} for ₦`
+        newTitle += `${(this.form.price*1).toLocaleString('en-US', {style: 'currency', currency: 'NGN'}).slice(4)} Data Plan`
+        this.form.title = newTitle
+
+    }
     },
     mounted () {
         var _this = this;
         axios.get(this.url)
         .then(function (response) {
-            console.log(response.data.data)
             _this.dataPlans = response.data
             _this.getDataPlans(response.data)
             _this.rows = _this.dataPlans.length
@@ -360,8 +383,16 @@ export default {
     },
     computed: {
         formHeading(){
-            return this.isEditing? 'Editing Data Plan: '+this.editedPlan.title : 'Add New Data Plan'
+            return this.isEditing? 'Editing: '+this.editedPlan.title : 'Add New Data Plan'
         }
     }
 }
 </script>
+<style scoped lang="scss">
+.page-nav-container{
+    width: 100%; overflow:auto;
+}
+.action-button{
+    white-space: nowrap;
+}
+</style>

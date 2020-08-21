@@ -55,7 +55,7 @@
                         <td>Bonus for all:</td><td>{{$data_plan->bonus_all}}</td>
                     </tr>
                     <tr>
-                        <td>Bonus for New Subscribers:</td><td>{{$data_plan->bonus_new_sim}}</td>
+                        <td>Bonus (New SIM):</td><td>{{$data_plan->bonus_new_sim}}</td>
                     </tr>
                     <tr>
                         <td>How to subscribe:</td><td>{{$data_plan->how_to_sub}}</td>
@@ -67,7 +67,7 @@
                         <td>Hits:</td><td>{{$data_plan->hits}} <i class="fa fa-eye"></i></td>
                     </tr>
                     <tr>
-                        <td>More info:</td><td>{{$data_plan->description}}</td>
+                        <td>More info:</td><td>{!! $data_plan->description !!}</td>
                     </tr>
                 </table>
             </div>

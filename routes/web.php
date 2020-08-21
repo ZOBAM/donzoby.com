@@ -16,6 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::mixin(new \Laravel\Ui\AuthRouteMethods());
 Route::auth(['verify' => true]);
 
+//clear cache
+Route::get('/clear', function() {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('config:cache');
+    Artisan::call('view:clear');
+    return "Cleared!";
+ });
+
 Route::get('/about-donzoby', function () {
     return view('about');
 });
@@ -41,7 +50,7 @@ Route::post('/profile-picture','ProfilePictureController@index')->name('picture'
 //the post will save new data plan while get will fetch and edit existing ones
 Route::post('/member/data-plan/{create?}/{id?}', 'DataPlanController@store')->middleware('verified');
 Route::get('/member/data-plan/{id?}', 'DataPlanController@create')->middleware('verified');
-Route::get('/member/{item?}/{action?}', 'MemberController@index')->name('member')->middleware('verified');
+Route::get('/member/{item?}/{action?}', 'MemberController@index')->middleware('verified');
 //handle all post with this resource controller
 Route::resource('/post', 'PostController');
 Route::post('/image-upload', 'PictureUploadController@index')->name('image');

@@ -1,6 +1,8 @@
 <!Doctype html>
 <html lang="{{ app()->getLocale() }}">
     <head>
+      <!-- Global site tag (gtag.js) - Google Adsense -->
+    <script data-ad-client="ca-pub-1802657423657343" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       <!-- Global site tag (gtag.js) - Google Analytics -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131304679-1"></script>
       <script>

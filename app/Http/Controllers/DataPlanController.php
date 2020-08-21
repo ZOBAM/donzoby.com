@@ -14,14 +14,17 @@ class DataPlanController extends Controller
     public function get_related_plans($plan){
         if(count($plan)>0){
             foreach($plan as $data_plan){
-                $data_plan->volume = $this->format_values($data_plan->volume, 'volume');
+                $data_plan->volume = $this->format_values($data_plan->volume, 'volume',false);
                 $data_plan->validity = $this->format_values($data_plan->validity, 'validity');
                 $this->get_related_plans[] = $data_plan;
             }
         }
     }//end get_related_plans
-    private function format_values($data, $type){
+    private function format_values($data, $type, $full_unit_name = true){
         if($type == "volume"){
+            if(!$full_unit_name){
+                return ($data<1024)? $data.'MB' : round(($data/1024),2).'GB';
+            }
             return ($data<1024)? $data.'MB (Megabytes)' : round(($data/1024),2).'GB (Gigabytes) ';
         }
         if($type == "validity"){
@@ -31,7 +34,7 @@ class DataPlanController extends Controller
     //programmatically generate a description diff from inputted one
     private function get_desc($data_plan_object,$single_obj = false){
         foreach($data_plan_object as $obj){
-            $obj->data_plan_desc = "This data plan from <strong> ".ucwords($obj->provider)."</strong> offers you ".$this->format_values($obj->volume,'volume')." for <strong>N$obj->price </strong>and will last for <strong>".$this->format_values($obj->validity,'validity') ."</strong>.";
+            $obj->data_plan_desc = "This data plan from <strong> ".ucwords($obj->provider)."</strong> offers you ".$this->format_values($obj->volume,'volume')." for <strong>₦$obj->price </strong>and will last for <strong>".$this->format_values($obj->validity,'validity') ."</strong>.";
         }
         return $data_plan_object;
     }//end get desc
@@ -41,7 +44,7 @@ class DataPlanController extends Controller
             'provider' => 'required|string|max:10|min:3',
             'title' => 'required|string|max:240|min:12',
             'volume' => 'numeric|required|min:10|max:2048000',
-            'price' => 'numeric|required|min:25|max:500000',
+            'price' => 'numeric|required|min:20|max:500000',
             'bonus_all' => 'numeric|min:0|max:20480|nullable',
             'bonus_new_sim' => 'numeric|min:0|max:20480|nullable',
             'validity' => 'numeric|required|min:1|max:8760',
@@ -104,6 +107,8 @@ class DataPlanController extends Controller
                 $data_plan->hits = ++$data_plan->hits; $data_plan->save();
             }
             $data_plan->volume = $this->format_values($data_plan->volume,'volume');
+            $data_plan->bonus_new_sim = $this->format_values($data_plan->bonus_new_sim,'volume');
+            $data_plan->bonus_all = $this->format_values($data_plan->bonus_all,'volume');
             $data_plan->validity = $this->format_values($data_plan->validity,'validity');
             $title = $data_plan->title;
             //get related data plans
