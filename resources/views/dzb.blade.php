@@ -32,7 +32,10 @@
                 <hr>
             </div>
             <div class="card-footer text-muted">
-                <span class="float-left">Latest Addition:<span class="featured float-right"> Simplified HTML5 Form</span></span>
+                <span class="float-left">Latest Addition:</span>
+                    <span class="featured float-right">
+                        <a href="/front-end/{{$latest['front-end']->subject}}/{{$latest['front-end']->id}}/{{str_replace(' ','-',$latest['front-end']->post_topic)}}">{{$latest['front-end']->post_topic}}</a>
+                    </span>
             </div>
         </div>
 
@@ -53,7 +56,11 @@
                 <hr>
             </div>
             <div class="card-footer text-muted">
-                <span class="float-left">Latest Addition:<span class="featured float-right"> Simplified HTML5 Form</span></span>
+                <span class="float-left">Latest Addition:
+                </span>
+                    <span class="featured float-right">
+                        <a href="/graphics/{{$latest['graphics']->subject}}/{{$latest['graphics']->id}}/{{str_replace(' ','-',$latest['graphics']->post_topic)}}">{{$latest['graphics']->post_topic}}</a>
+                    </span>
             </div>
         </div><!-------------------------------- ends card-deck --------------------------------->
 
@@ -76,7 +83,11 @@
                 <hr>
             </div>
             <div class="card-footer text-muted">
-                <span class="float-left">Latest Addition:<span class="featured float-right"> Simplified HTML5 Form</span></span>
+                <span class="float-left">Latest Addition:
+                </span>
+                    <span class="featured float-right">
+                        <a href="/back-end/{{$latest['back-end']->subject}}/{{$latest['back-end']->id}}/{{str_replace(' ','-',$latest['back-end']->post_topic)}}">{{$latest['back-end']->post_topic}}</a>
+                    </span>
             </div>
         </div><!-------------------------------- ends card-deck --------------------------------->
 

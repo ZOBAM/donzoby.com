@@ -22,7 +22,9 @@ class CoursesController extends Controller
     		$listed_subjects[] = $value->subject;
     	}
     	$listed_subjects = array_unique($listed_subjects);//return unique subjects in the array
-
+        $latest['front-end'] = Post::where('course','front end')->orderBy('created_at','DESC')->first();
+        $latest['graphics'] = Post::where('course','graphics')->orderBy('created_at','DESC')->first();
+        $latest['back-end'] = Post::where('course','back end')->orderBy('created_at','DESC')->first();
     	$course = strtolower($course);
     	$subject = strtolower($subject);
 
@@ -181,7 +183,7 @@ class CoursesController extends Controller
             }
         }
         else{//meaning the course is not in array of courses, return to home page
-        	return view('dzb',compact('posts','listed_subjects'));
+        	return view('dzb',compact('posts','listed_subjects','latest'));
         }
     }//end index
 }
