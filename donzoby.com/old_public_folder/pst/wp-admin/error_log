@@ -1,0 +1,2 @@
+[07-Apr-2020 09:37:50 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/donzobyc/public_html/pst/wp-includes/class-wp-admin-bar.php:546) in /home/donzobyc/public_html/pst/wp-includes/pluggable.php on line 1281
+[07-Apr-2020 09:37:50 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/donzobyc/public_html/pst/wp-includes/class-wp-admin-bar.php:546) in /home/donzobyc/public_html/pst/wp-includes/pluggable.php on line 1284
