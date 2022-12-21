@@ -13,50 +13,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::mixin(new \Laravel\Ui\AuthRouteMethods());
-Route::auth(['verify' => true]);
-
-//clear cache
-Route::get('/clear', function() {
-    Artisan::call('cache:clear');
-    Artisan::call('config:clear');
-    Artisan::call('config:cache');
-    Artisan::call('view:clear');
-    return "Cleared!";
- });
-
-Route::get('/about-donzoby', function () {
-    return view('about');
-});
-Route::get('/mission-&-vision', function () {
-    return view('mission-vision');
-});
-Route::get('/privacy-policy', function () {
-    return view('privacy-policy');
-});
-Route::get('/register', function () {
-    return view('auth.register');
+Route::get('/', function () {
+    return view('welcome');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__ . '/auth.php';
+
+Route::get('/test', function () {
+    $arr = [1, 1, 0, 1, 1, 0, 0];
+    //check if the first and second element are different
+    //keep tab of subsequent element and check if they are different
+    function getReverse($arr)
+    {
+        $reversCount = 0;
+        if ($arr[0] == $arr[1]) {
+            if ($arr[0] == 0) {
+                $arr[1] = 1;
+            }
+            $arr[0] = 0;
+            $reversCount++;
+        }
+        for ($i = 2; $i < count($arr); $i++) {
+            if ($arr[$i] == $arr[$i - 1]) {
+                $arr[$i] = $arr[$i] == 0 ? 1 : 0;
+                $reversCount++;
+            }
+        }
+        return $reversCount;
+    }
+    return getReverse($arr);
 });
-
-Route::post('/comment/{post_id}','CommentController@store')->name('comment')->middleware('verified');
-Route::get('/comment/{id}/edit','CommentController@edit')->name('comment_edit');
-Route::post('/comment/{id}/update','CommentController@update')->name('comment_update');
-Route::get('/comment/{id}/delete','CommentController@destroy')->name('comment_delete');
-Route::post('/profile-picture','ProfilePictureController@index')->name('picture');
-//the post will save new data plan while get will fetch and edit existing ones
-Route::post('/member/data-plan/{create?}/{id?}', 'DataPlanController@store')->middleware('verified');
-Route::get('/member/data-plan/{id?}', 'DataPlanController@create')->middleware('verified');
-Route::get('/member/{item?}/{action?}', 'MemberController@index')->middleware('verified');
-//handle all post with this resource controller
-Route::resource('/post', 'PostController');
-Route::post('/image-upload', 'PictureUploadController@index')->name('image');
-
-Auth::routes();
-
-Route::post('/mobile-usage/service-providers/data-plans/{id?}/{topic?}', 'DataPlanController@index');
-Route::get('/mobile-usage/service-providers/data-plans/{id?}/{topic?}', 'DataPlanController@index');
-Route::get('/{course?}/{subject?}/{id?}/{topic?}', 'CoursesController@index')->name('courses');

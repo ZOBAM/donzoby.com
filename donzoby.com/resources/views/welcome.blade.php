@@ -1,100 +1,41 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
 
-        <title>Laravel</title>
-
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+    <div class="py-12">
+        <section class="tw-flex tw-flex-col md:tw-flex-row tw-p-8">
+            <div class="left-front-end tw-w-full md:tw-w-4/5">
+                <h2>Front End</h2>
+                <p>
+                    Our front-end course/tutorials are focused on those programming/scripting languages (e.g html, css etc) mainly used on the client side (browsers) to layout, format and animate the front end of web applications.
+                </p>
+                <div class="tw-p-8 tw-flex tw-flex-col md:tw-flex-row tw-justify-around tw-bg-gradient-to-tr tw-from-slate-300 tw-to-gray-100">
+                    <div class="">
+                        <ul class="tw-font-bold">
+                            <li class="tw-p-2">Introduction to JavaScript</li>
+                            <li class="tw-p-2">Say Hello in JavaScript</li>
+                            <li class="tw-p-2">Introduction to JavaScript</li>
+                            <li class="tw-p-2">Say Hello in JavaScript</li>
+                        </ul>
+                    </div>
+                    <div class="">
+                        <button class="tw-block tw-p-2 tw-bg-blue-400 tw-rounded-md tw-text-white tw-my-2">Learn HTML</button>
+                        <button class="tw-block tw-p-2 tw-bg-blue-400 tw-rounded-md tw-text-white tw-my-2">Learn CSS</button>
+                        <button class="tw-block tw-p-2 tw-bg-blue-400 tw-rounded-md tw-text-white tw-my-2">Learn JAVASCRIPT</button>
+                        <button class="tw-block tw-p-2 tw-bg-blue-400 tw-rounded-md tw-text-white tw-my-2">Learn Vue JS</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </body>
-</html>
+            <div class="right-front-end tw-w-full md:tw-w-1/5 tw-bg-blue-200">
+                <p>
+                    The right side comes here soonest.
+                </p>
+            </div>
+        </section>
+        <section></section>
+        <section></section>
+    </div>
+</x-app-layout>
