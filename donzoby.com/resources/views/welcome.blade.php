@@ -13,7 +13,7 @@
                     Our front-end course/tutorials are focused on those programming/scripting languages (e.g html, css etc) mainly used on the client side (browsers) to layout, format and animate the front end of web applications.
                 </p>
                 <div class="tw-p-8 tw-flex tw-flex-col md:tw-flex-row tw-justify-around tw-bg-gradient-to-tr tw-from-slate-300 tw-to-gray-100">
-                    <div class="">
+                    <div class="tw-flex tw-justify-center tw-items-center">
                         <ul class="tw-font-bold">
                             <li class="tw-p-2">Introduction to JavaScript</li>
                             <li class="tw-p-2">Say Hello in JavaScript</li>
