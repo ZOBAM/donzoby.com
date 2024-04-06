@@ -1,0 +1,55 @@
+div.user-dp-container {
+    text-align: center;
+
+    img {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    span {
+        color: #699BF7;
+    }
+
+    &.thumbnail {
+        img {
+            width: 90px;
+            height: 90px;
+        }
+        span{
+            font-size: .8rem;
+            color: #545353;
+        }
+    }
+}
+
+div.user-details {
+    text-align: center;
+
+    td {
+        color: black;
+        font-weight: 600;
+        text-align: right;
+
+        span {
+            font-weight: normal;
+            color: #545353;
+            margin-right: 2rem;
+        }
+
+        &.comment {
+            color: #699BF7;
+        }
+    }
+
+    td:nth-child(even) {
+        text-align: left;
+    }
+}
+
+div.left-links{
+    a{
+        display: block;
+    }
+}

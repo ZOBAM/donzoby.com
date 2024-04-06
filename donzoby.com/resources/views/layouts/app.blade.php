@@ -9,32 +9,61 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/navbar-style.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/main-style.css') }}" rel="stylesheet">
+
+    <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        @include('layouts.navbar')
-
-        <!-- Page Heading -->
-        <!-- <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header> -->
-
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+    <div class='col-sm-8'>
+        <h1 style="font-size: 0.9em" class="float-left">Tech Tutorials for The Elects</h1>
+        @guest
+            <a href="{{ url('register') }}" class="float-right align-middle">Register</a>
+            <a class="float-right" href="{{ url('login') }}">Login</a>
+        @else
+            <a href = "{{ url('user-area') }}" style="text-transform: uppercase;" class="float-right">
+                {{ Auth::user()->name }}</a>
+            <a class="float-right" href="{{ route('logout') }}"
+                onclick="event.preventDefault();
+                document.getElementById('logout-form').submit();">
+                {{ __('Logout') }}
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                {{ csrf_field() }}
+            </form>
+        @endguest
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    @include('layouts.navigation')
+
+    <!-- Page Content -->
+    <main class="tw-p-4">
+        <div class="container-fluied">
+            <div class="row">
+                <div class="left-nav col-12 col-md-2">
+                    <x-left-nav :$posts :$listedSubjects />
+                </div>
+                <div class="col-12 col-md-7">
+                    <!-- <h1>Welcome to DTech where we do tech with conscience!</h1> -->
+                    {{ $slot }}
+
+                </div>
+                <div class="col-12 col-md-3">
+                    <p class="tw-text-green-300 tw-font-bold">Let see how we can make this work</p>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+    <script src="https://kit.fontawesome.com/b379d389cf.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

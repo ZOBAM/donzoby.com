@@ -2,16 +2,23 @@
 
 namespace App\View\Components;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\Component;
+use Illuminate\View\View;
 
 class AppLayout extends Component
 {
     /**
-     * Get the view / contents that represents the component.
-     *
-     * @return \Illuminate\View\View
+     * Create a new component instance.
      */
-    public function render()
+    public function __construct(public Collection $posts, public array $listedSubjects)
+    {
+        //
+    }
+    /**
+     * Get the view / contents that represents the component.
+     */
+    public function render(): View
     {
         return view('layouts.app');
     }
