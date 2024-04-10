@@ -2,9 +2,9 @@
     @foreach ($listedSubjects as $sub)
         <p>{{ $sub }}</p>
         @foreach ($posts as $post)
-            @if ($post->subject == $sub)
+            @if ($post->subject->name == $sub)
                 <a
-                    href="{{ url('/' . str_replace(' ', '-', $post->course) . '/' . str_replace(' ', '-', strtolower($post->subject)) . '/' . $post->id . '/' . str_replace(' ', '-', $post->post_topic)) }}">{{ $post->post_topic }}</a>
+                    href="{{ url('/' . $post->subject->course->slug . '/' . $post->subject->slug . '/' . $post->id . '/' . str_replace(' ', '-', $post->topic)) }}">{{ $post->topic }}</a>
             @endif
         @endforeach
     @endforeach

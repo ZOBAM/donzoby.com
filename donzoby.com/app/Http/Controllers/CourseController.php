@@ -41,6 +41,7 @@ class CourseController extends Controller
             "description"=> ["required","string","min:13","max:255"],
         ]);
         $course = Course::create($validated);
+        $course->subjects = [];
         return response()->json([
             "status"=> "success",
             "message"=> "Course added successfully",

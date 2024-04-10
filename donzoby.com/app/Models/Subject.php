@@ -19,4 +19,11 @@ class Subject extends Model
     public function course(){
         return $this->belongsTo(Course::class);
     }
+
+    /**
+     * get posts
+     */
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
 }

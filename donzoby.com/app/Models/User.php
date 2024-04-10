@@ -23,6 +23,7 @@ class User extends Authenticatable
         'tel',
         'gender',
         'country',
+        'avatar',
     ];
 
     /**
@@ -46,5 +47,19 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * get post
+     */
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     * get comments
+     */
+    public function comments(){
+        return $this->hasMany(Comment::class);
     }
 }

@@ -4,20 +4,19 @@
         <div id="bread-comb">
             <i class="fas fa-location-arrow"></i>
             <a href="/">Home</a> <i class="fas fa-angle-double-right"></i>
-            <a href="/{{ str_replace(' ', '-', $topic->course) }}">{{ ucwords($topic->course) }}</a> <i
+            <a href="/{{ $topic->subject->course->slug }}">{{ ucwords($topic->subject->course->name) }}</a> <i
                 class="fa fa-angle-double-right"></i>
-            <a
-                href="/{{ str_replace(' ', '-', $topic->course) }}/{{ str_replace(' ', '-', strtolower($topic->subject)) }}">{{ $topic->subject }}</a>
+            <a href="/{{ $topic->subject->course->slug }}/{{ $topic->subject->slug }}">{{ $topic->subject->name }}</a>
             <i class="fa fa-angle-double-right"></i>
-            {{ $topic->post_topic }}
+            {{ $topic->topic }}
         </div>
-        <h1 id="topic">{{ $topic->post_topic }}</h1>
+        <h1 id="topic">{{ $topic->topic }}</h1>
         <div id="post-details">
             <span>Last Update: {{ date('M d, Y', strtotime($topic->updated_at)) }}</span><span class="float-right"><i
-                    class="fa fa-eye"></i> {{ $topic->post_hits }} times.</span>
+                    class="fa fa-eye"></i> {{ $topic->hits }} times.</span>
         </div>
         <div id="post-content">
-            {!! $topic->post_content !!}
+            {!! $topic->content !!}
         </div>
 
 
@@ -59,7 +58,7 @@
                             <img src="{{ $comment->author_image_link }}" style="max-width: 50px">
                         </div>
                         <div class="col-sm-10" style="margin: 5px 0px">
-                            {{ $comment->comment_content }}
+                            {{ $comment->content }}
                         </div>
                         <div class="col-sm-12" style="border-top: 4px solid #EFF1EF">
                             <a href=""><i class="col-sm-4 fa fa-thumbs-up"></i></a>

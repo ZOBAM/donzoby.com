@@ -18,12 +18,13 @@
                 </div>
             </div>
         </div>
-        <div class="tw-px-4">
+
+        <div class="tw-px-4 tw-min-w-52">
             <h2 class="tw-font-bold">Courses</h2>
             <ol class="tw-list-decimal">
                 <template x-for="(course, index) in courses">
-                    <li x-text="course.name" class="tw-cursor-pointer"
-                        :class="index == currentCourseIndex ? 'tw-bg-green-400' : ''"
+                    <li x-text="course.name" class="tw-cursor-pointer hover:tw-bg-gray-100 tw-p-2 tw-text-sm"
+                        :class="index == currentCourseIndex ? 'tw-bg-gray-100' : ''"
                         @click="switchShow('courseDetails', index)"></li>
                 </template>
             </ol>
@@ -58,9 +59,13 @@
             </div>
             {{-- for new subject --}}
             <div x-show="show.subjectForm" class="tw-">
-                <h2 class="text-center">
-                    <span x-text="isEditingTarget? 'Editing' : 'New'"></span> Subject in <span class="tw-font-bold"
-                        x-text="courses[currentCourseIndex].name"></span>
+                <h2 class="text-center tw-mb-4">
+                    <template x-if="show.subjectForm">
+                        <span>
+                            <span x-text="isEditingTarget? 'Editing' : 'New'"></span> Subject in <span
+                                class="tw-font-bold" x-text="courses[currentCourseIndex].name"></span>
+                        </span>
+                    </template>
                 </h2>
                 <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Subject Name:</label>
@@ -108,7 +113,8 @@
                             <ol class="tw-list-decimal tw-m-4">
                                 <template x-for="(subject, index) in targetObject.subjects">
                                     <li x-text="subject.name" @click="switchShow('subjectDetails', index)"
-                                        class="tw-cursor-pointer"></li>
+                                        class="tw-cursor-pointer hover:tw-text-black hover:tw-underline tw-underline-offset-4">
+                                    </li>
                                 </template>
                             </ol>
                             <template x-if="courses[currentCourseIndex].subjects.length == 0">
@@ -163,13 +169,13 @@
 
         // console.log(coursesJson);
         document.addEventListener('alpine:init', () => {
-            const toastTrigger = document.getElementById('liveToastBtn')
-            const toastLiveExample = document.getElementById('liveToast')
+            const toastTrigger = document.getElementById('liveToastBtn');
+            const toastLiveExample = document.getElementById('liveToast');
 
             if (toastTrigger) {
                 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
                 toastTrigger.addEventListener('click', () => {
-                    toastBootstrap.show()
+                    toastBootstrap.show();
                 })
             }
             Alpine.data('course', () => ({
@@ -228,17 +234,17 @@
                         } else if (componentName == 'courseDetails') {
                             this.currentCourseIndex = index;
                             this.targetObject = this.courses[index];
-                            console.log(':::::::::::::::::::::::::::::::');
+                            /* console.log(':::::::::::::::::::::::::::::::');
                             console.log('this is the current course: ', this.targetObject);
-                            console.log(':::::::::::::::::::::::::::::::');
+                            console.log(':::::::::::::::::::::::::::::::'); */
                         } else {
                             this.currentSubjectIndex = index;
-                            console.log(':::::::::::::::::::::::::::::::');
+                            /* console.log(':::::::::::::::::::::::::::::::');
                             console.log('this is the currentSubject Index: ', this.currentSubjectIndex);
-                            console.log('-------------------------------------');
+                            console.log('-------------------------------------'); */
                             this.targetObject = this.courses[this.currentCourseIndex].subjects[index];
-                            console.log('this is the targetObject: ', this.targetObject);
-                            console.log(':::::::::::::::::::::::::::::::');
+                            /* console.log('this is the targetObject: ', this.targetObject);
+                            console.log(':::::::::::::::::::::::::::::::'); */
                         }
                         // console.log(this.courses[index]);
                     }
@@ -322,11 +328,22 @@
                     }
                     this.isEditingTarget = true;
                 },
+                // remove item
                 async remove() {
                     const sure = confirm('Are you sure you want to delete this resources');
                     const isCourse = this.show.courseDetails;
                     let link = isCourse ? '/courses' : '/subjects';
                     link += '/' + this.targetObject.id;
+                    /* if (!isCourse) {
+                        console.log('about to delete subject');
+                        const subjects = this.courses[this.currentCourseIndex].subjects.filter(
+                            sub => sub.slug != this.targetObject.slug);
+                        this.courses[this.currentCourseIndex].subjects = subjects;
+                        console.log(subjects);
+                        console.log('-----------------');
+                        console.log(this.courses[this.currentCourseIndex].subjects);
+                    }
+                    return; */
                     if (sure) {
                         try {
                             const response = await axios.delete(link);
@@ -334,17 +351,26 @@
 
                             this.toastMessage = response.data.message;
                             if (isCourse) {
-                                // show the course detial
-                                this.switchShow('courseDetails');
                                 const updatesCourseList = this.courses.filter((course) => course
                                     .id != this.targetObject.id);
                                 this.courses = updatesCourseList;
+                                if (updatesCourseList.length) {
+                                    // if deleted course is the last on the list, show the one just above it
+                                    if (this.currentCourseIndex >= updatesCourseList.length) {
+                                        this.currentCourseIndex--;
+                                        console.log('Course index', this.currentCourseIndex);
+                                    }
+                                    // show the course detial
+                                    this.switchShow('courseDetails', this.currentCourseIndex);
+                                } else {
+                                    this.switchShow('courseForm', 'new');
+                                }
                             } else {
+                                const updatesSubjectList = this.courses[this.currentCourseIndex]
+                                    .subjects.filter(sub => sub.slug != this.targetObject.slug);
+                                this.courses[this.currentCourseIndex].subjects = updatesSubjectList;
                                 // show the course detial
                                 this.switchShow('courseDetails', this.currentCourseIndex);
-                                const updatesSubjectList = this.courses[this.currentCourseIndex]
-                                    .subjects.filter((sub) => sub.id != this.targetObject.id);
-                                this.courses[this.currentCourseIndex].subjects = updatesSubjectList;
                             }
                             toastTrigger.click();
                         } catch (error) {

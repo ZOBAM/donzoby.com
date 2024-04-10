@@ -10,9 +10,9 @@
                             class="fas fa-angle-double-right"></i>
                         {{ ucwords(str_replace('-', ' ', $subject)) }}
                     </div>
-                    @foreach ($subject_data as $subject_topic)
+                    @foreach ($subject_data as $post)
                         <a
-                            href="{{ url('/' . $course . '/' . $subject . '/' . $subject_topic->id . '/' . $subject_topic->post_topic) }}">{{ $subject_topic->post_topic }}</a>
+                            href="{{ url('/' . $course . '/' . $subject . '/' . $post->id . '/' . $post->topic) }}">{{ $post->topic }}</a>
                         <hr>
                     @endforeach
                 @else

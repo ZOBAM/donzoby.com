@@ -1,4 +1,11 @@
 <x-user-layout>
+    {{-- Display Delete notification --}}
+    @if (session()->has('post_delete_success'))
+        <div class="alert alert-success" role="alert">
+            <h3> Post successfully deleted!</h3>
+        </div>
+    @endif
+
     <h1 class="text-center">All Posts</h1>
     @if (count($posts) > 0)
         <?php
@@ -28,17 +35,17 @@
                 @foreach ($posts as $post)
                     <tr>
                         <td>{{ $pageNo * 10 + $nos++ }}</td>
-                        <td>{{ $post->course }}</td>
-                        <td>{{ $post->subject }}
+                        <td>{{ $post->subject->course->name }}</td>
+                        <td>{{ $post->subject->name }}
                             <br><a href="{{ url('post/' . $post->id) }}"> Preview <i class="fa fa-expand"></i></a>
                         </td>
-                        <td>{{ $post->post_topic }}</td>
-                        <td>{!! $post->post_content !!} </td>
-                        <td>{!! Str::words($post->post_description, '25') !!}<br> <i>Written
+                        <td>{{ $post->topic }}</td>
+                        <td>{!! $post->content !!} </td>
+                        <td>{!! Str::words($post->description, '25') !!}<br> <i>Written
                                 on:{{ date('M d, Y', strtotime($post->created_at)) }}</i></td>
                         <td>
                             <a href="{{ url('post/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
-                            <form method="POST" action="{{ url('post/' . $post->id) }}">
+                            <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}
                                 {{ method_field('DELETE') }}
                                 <!-- <input type= "hidden" name="_method" value ="DELETE"> -->

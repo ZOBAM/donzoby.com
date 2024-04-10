@@ -18,11 +18,14 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // resource links
-Route::resources([
+
+Route::middleware(['auth'])->group(function(){
+    Route::resources([
     'posts'=> PostController::class,
     'courses'=> CourseController::class,
     'subjects'=> SubjectController::class,
 ]);
+});
 Route::post('/image-upload', [PostPictureController::class,'index'])->name('post-image');
 
 // auth

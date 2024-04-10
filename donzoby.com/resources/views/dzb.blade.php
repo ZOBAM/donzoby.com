@@ -29,7 +29,7 @@
             <span class="float-left">Latest Addition:</span>
             <span class="featured float-right">
                 <a
-                    href="/front-end/{{ $latest['front-end']->subject }}/{{ $latest['front-end']->id }}/{{ str_replace(' ', '-', $latest['front-end']->post_topic) }}">{{ $latest['front-end']->post_topic }}</a>
+                    href="/front-end/{{ $latest['front-end']->subject->slug }}/{{ $latest['front-end']->id }}/{{ str_replace(' ', '-', $latest['front-end']->topic) }}">{{ $latest['front-end']->topic }}</a>
             </span>
         </div>
     </div>
@@ -65,7 +65,7 @@
             </span>
             <span class="featured float-right">
                 <a
-                    href="/graphics/{{ $latest['graphics']->subject }}/{{ $latest['graphics']->id }}/{{ str_replace(' ', '-', $latest['graphics']->post_topic) }}">{{ $latest['graphics']->post_topic }}</a>
+                    href="/graphics/{{ $latest['graphics']->subject->slug }}/{{ $latest['graphics']->id }}/{{ str_replace(' ', '-', $latest['graphics']->topic) }}">{{ $latest['graphics']->topic }}</a>
             </span>
         </div>
     </div><!-------------------------------- ends card-deck --------------------------------->
@@ -96,7 +96,7 @@
             </span>
             <span class="featured float-right">
                 <a
-                    href="/back-end/{{ $latest['back-end']->subject }}/{{ $latest['back-end']->id }}/{{ str_replace(' ', '-', $latest['back-end']->post_topic) }}">{{ $latest['back-end']->post_topic }}</a>
+                    href="/back-end/{{ $latest['back-end']->subject->slug }}/{{ $latest['back-end']->id }}/{{ str_replace(' ', '-', $latest['back-end']->topic) }}">{{ $latest['back-end']->topic }}</a>
             </span>
         </div>
     </div><!-------------------------------- ends card-deck --------------------------------->

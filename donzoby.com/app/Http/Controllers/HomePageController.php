@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Course;
 use App\Models\Post;
 use App\Models\Post_image;
 use App\Models\Profile_picture;
+use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,18 +18,30 @@ class HomePageController extends Controller
     {
     	//$posts = Post::get()->take(12);
         $posts = Post::take(12)->get();
-        foreach($posts as $post){
-            $post->course = str_replace('web design','front end',$post->course);
-            $post->save();
-        }
+
     	$listed_subjects = [];
     	foreach ($posts as $value) {//get array of fetched post's subjects
-    		$listed_subjects[] = $value->subject;
+    		$listed_subjects[] = $value->subject->name;
     	}
     	$listed_subjects = array_unique($listed_subjects);//return unique subjects in the array
-        $latest['front-end'] = Post::where('course','front end')->orderBy('created_at','DESC')->first();
+        $latest['front-end'] = Post::whereHas('subject', function($query){
+			$query->whereHas('course', function($query){
+				$query->where('slug', 'front-end');
+			});
+		})->first();
+        $latest['graphics'] = Post::whereHas('subject', function($query){
+			$query->whereHas('course', function($query){
+				$query->where('slug', 'graphics');
+			});
+		})->first();
+        $latest['back-end'] = Post::whereHas('subject', function($query){
+			$query->whereHas('course', function($query){
+				$query->where('slug', 'back-end');
+			});
+		})->first();
+        /* $latest['front-end'] = Post::where('course','front end')->orderBy('created_at','DESC')->first();
         $latest['graphics'] = Post::where('course','graphics')->orderBy('created_at','DESC')->first();
-        $latest['back-end'] = Post::where('course','back end')->orderBy('created_at','DESC')->first();
+        $latest['back-end'] = Post::where('course','back end')->orderBy('created_at','DESC')->first(); */
     	$course = strtolower($course);
     	$subject = strtolower($subject);
 
@@ -151,7 +165,7 @@ class HomePageController extends Controller
 						$description = $topic->post_description;//meta description
 						$title = $topic->post_topic;//page title
 						//get comments
-						$comments = Comment::where('comment_post_id',$id)->get();
+						$comments = Comment::where('post_id',$id)->get();
 						if(count($comments)>0){
 							$i = 0;
 							foreach($comments as $comment){
@@ -171,7 +185,9 @@ class HomePageController extends Controller
                 else{//invalid id provided, just list topics under the specified subject
                     $description = $subjects_descriptions[$subject];//meta description
                     $title = $subjects_titles[$subject];//page title
-                    $subject_data = Post::where('subject','=',str_replace("-"," ",$subject))->get();
+                    $subject_data = Post::whereHas('subject',function($query) use($subject){
+						$query->where('slug',$subject);
+					})->get();
                     if(count($subject_data)<=0){
                         $subject_data = false;
                     }
