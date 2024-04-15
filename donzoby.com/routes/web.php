@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostPictureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /* Route::get('/', function () {
@@ -39,5 +40,15 @@ Route::get('/user-area', [UserController::class,'index'])->middleware('verified'
 
 require __DIR__.'/auth.php';
 
+// clear cache
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('optimize');
+    Artisan::call('route:cache');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    Artisan::call('config:cache');
+    return '<h1>Clear Config cleared</h1>';
+});
 
 Route::get('/{course?}/{subject?}/{id?}/{topic?}', [HomePageController::class,'index'])->name('courses');

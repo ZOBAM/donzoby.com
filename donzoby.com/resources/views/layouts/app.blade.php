@@ -15,6 +15,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/prism.css') }}" rel="stylesheet">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
 </head>
@@ -44,15 +45,15 @@
     <main class="tw-p-4">
         <div class="container-fluied">
             <div class="row">
-                <div class="left-nav col-12 col-md-2">
+                <div class="left-nav col-12 col-sm-3 col-md-2">
                     <x-left-nav :$posts :$listedSubjects />
                 </div>
-                <div class="col-12 col-md-7">
+                <div class="col-12 col-sm-9 col-md-7">
                     <!-- <h1>Welcome to DTech where we do tech with conscience!</h1> -->
                     {{ $slot }}
 
                 </div>
-                <div class="col-12 col-md-3">
+                <div class="col-12 d-sm-none d-md-block col-md-3">
                     <p class="tw-text-green-300 tw-font-bold">Let see how we can make this work</p>
                 </div>
             </div>
@@ -64,6 +65,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script src="https://kit.fontawesome.com/b379d389cf.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/prism.js') }}"></script>
 </body>
 
 </html>

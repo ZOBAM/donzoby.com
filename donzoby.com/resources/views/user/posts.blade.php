@@ -5,6 +5,11 @@
             <h3> Post successfully deleted!</h3>
         </div>
     @endif
+    @if (session()->has('post_delete_error'))
+        <div class="alert alert-danger" role="alert">
+            <h3> {{ session('post_delete_error') }}</h3>
+        </div>
+    @endif
 
     <h1 class="text-center">All Posts</h1>
     @if (count($posts) > 0)
@@ -15,6 +20,7 @@
         }
         $nos = 1;
         ?>
+        <div class="">{{ var_dump($posts->toArray()['links']) }}</div>
         <div class="table-responsive">
             <table class="table">
                 <?php ?> <!-- initiate no for numbering the list -->
@@ -39,12 +45,22 @@
                         <td>{{ $post->subject->name }}
                             <br><a href="{{ url('post/' . $post->id) }}"> Preview <i class="fa fa-expand"></i></a>
                         </td>
-                        <td>{{ $post->topic }}</td>
+                        <td>
+                            {{ $post->topic }}
+                            @if ($post->is_parent)
+                                <hr class="tw-mb-2">
+                                <span class="tw-px-2 tw-py-1 tw-bg-gray-200 tw-rounded-md">Parent</span>
+                            @endif
+                            @if ($post->is_child)
+                                <hr class="tw-mb-2">
+                                <span class="tw-px-2 tw-py-[0.5] tw-border-2 tw-border-200 tw-rounded-md">Child</span>
+                            @endif
+                        </td>
                         <td>{!! $post->content !!} </td>
                         <td>{!! Str::words($post->description, '25') !!}<br> <i>Written
                                 on:{{ date('M d, Y', strtotime($post->created_at)) }}</i></td>
                         <td>
-                            <a href="{{ url('post/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
+                            <a href="{{ url('posts/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}
                                 {{ method_field('DELETE') }}

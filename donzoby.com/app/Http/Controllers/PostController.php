@@ -8,6 +8,7 @@ use App\Models\Post_image;
 use App\Models\Subject;
 use App\Models\User;
 use App\Traits\GlobalTrait;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,18 +24,20 @@ class PostController extends Controller
     public function index(Request $request)
     {
         // return list of matching parent posts
-        if($request->has("parent")){
-            $post = Post::where("parent_id", null)->orderBy("created_at","desc")->get();
+        if ($request->has("subject_id")) {
+            $post = Post::where("subject_id", $request->subject_id)->orderBy("created_at", "desc")->get();
             return response()->json(
-                ["parents"=> $post]
+                ["parents" => $post]
             );
         }
 
         $posts = Post::paginate(5);
-        foreach( $posts as $post ){
+        foreach ($posts as $post) {
+            $post->is_parent = Post::where("parent_id", $post->id)->count();
+            $post->is_child = $post->parent_id;
             $post->content = Str::words(strip_tags($post->content), 35);
         }
-        return view('user.posts')->with(['posts'=> $posts]);
+        return view('user.posts')->with(['posts' => $posts]);
     }
 
     /**
@@ -52,11 +55,11 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type'     => 'sometimes|min:5|max:20',
+            'type'     => 'required|min:5|max:20',
             'parent_id'         => 'nullable|exists:posts,id',
             'subject_id'       => 'required|exists:subjects,id',
             'topic'         => 'required|string|min:7|max:200',
-            'content'  => 'required|string|min:200',
+            'content'  => 'required|string|min:200|max:3500',
             'status'   => 'required|string|min:9|max:11',
             'tags'     => 'required|string|min:4|max:200',
             'description'     => 'required|string|min:30|max:1500',
@@ -64,63 +67,32 @@ class PostController extends Controller
         ]);
         $validated['author_id'] = Auth::id();
 
-            /* $post = new Post;
-            $post->author_id        = Auth::id();
-            $post->course           = $request->course;
-            $post->post_type        = $request->post_type;
-            $post->subject          = $request->subject;
-            $post->post_topic       = $request->topic;
-            $post->post_content     = $request->post_content;
-            $post->post_status      = $request->post_status;
-            $post->post_tags        = $request->post_tags;
-            $post->post_description = $request->post_desc; */
+        $post = Subject::find($validated['subject_id'])->posts()->create($validated);
 
-            $post = Subject::find($validated['subject_id'])->posts()->create( $validated );
-
-            if ($post) {
-                //increment user post count
-                $user = User::find(Auth::id());
-                $user->post_count =  (($user->post_count+1));//increment sagged items
-                $user->save();
-                //fetch image link form post content and save in the database
-                $num_images = preg_match_all('/src="([^"]+.[^s])"/i', $request->content, $matches);
-                $link_matches = $matches[1];
-                if ($num_images>0) {
-                    foreach ($link_matches as $original_img_url) {
-                        $unique_name = "dzb_".str_pad($post->id,5,"0",STR_PAD_LEFT)."_";
-
-                        $post_image = new Post_image;
-                        $rel_img_url = str_replace("courses/temp", "courses/".$post->subject->slug, $original_img_url);
-                        $rel_img_url = str_replace("dzb_00000_", $unique_name, $rel_img_url);
-
-                        //absolute url will be in the post content
-                        $abs_img_url = URL(str_replace("../","",$rel_img_url));
-                        $post->content = str_replace($original_img_url, $abs_img_url, $post->content);
-                        $post->save();
-
-                        $rel_img_url_for_db = str_replace('../','',$rel_img_url);
-                        $post_image->link = $rel_img_url_for_db;
-                        $post_image->post_id = $post->id;
-                        $post_image->save();
-
-                        //specify images directory first for development and then for production
-                        if (!is_dir(URL($this->getImagesDir()."courses/".$post->subject->slug))) {
-                            mkdir(URL($this->getImagesDir()."courses/".$post->subject->slug));
-                        }
-                        // rename file if it exists
-                        $original_img_url = str_replace('../','',$original_img_url);
-                        if(file_exists($original_img_url)){
-                            rename($original_img_url, $rel_img_url_for_db);
-                        }
-                    }
+        if ($post) {
+            //increment user post count
+            $user = User::find(Auth::id());
+            $user->post_count =  (($user->post_count + 1)); //increment sagged items
+            $user->save();
+            //fetch image link form post content and save in the database
+            $num_images = preg_match_all('/src="([^"]+.[^s])"/i', $request->content, $matches);
+            $link_matches = $matches[1];
+            if ($num_images > 0) {
+                foreach ($link_matches as $original_img_url) {
+                    $rel_img_url_for_db = $this->assign_image_unique_name($post, $original_img_url);
+                    // save post image link to db
+                    $post->post_images()->create(['link' => $rel_img_url_for_db]);
+                    //move image from temp location to it's subject folder
+                    $this->move_post_image($post, $original_img_url, $rel_img_url_for_db);
                 }
             }
-            return response()->json([
-                'status'=>'success',
-                'message'=> 'New post created.',
-                'post'=> $post,
-            ]);
-            // return redirect('/post');
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'New post created.',
+            'post' => $post,
+        ]);
+        // return redirect('/post');
     }
 
     /**
@@ -136,7 +108,11 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return 'about to edit a post';
+        $course = Course::with('subjects')->get();
+        $post = Post::where('id', $post->id)->with('subject')->first();
+        // $post->content = str_replace('../../images/courses', '/images/courses', $post->content);
+        Log::info($post->content);
+        return view("user.create-post")->with(["courses" => $course, "post" => $post]);
     }
 
     /**
@@ -144,7 +120,106 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $validated = $request->validate([
+            "id" => "required|exists:posts,id",
+            'type'     => 'sometimes|min:5|max:20',
+            'parent_id'         => 'nullable|exists:posts,id',
+            'subject_id'       => 'required|exists:subjects,id',
+            'topic'         => 'required|string|min:7|max:200',
+            'content'  => 'required|string|min:200',
+            'status'   => 'required|string|min:9|max:11',
+            'tags'     => 'required|string|min:4|max:200',
+            'description'     => 'required|string|min:30|max:1500',
+            // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
+        ]);
+
+
+        $old_subject = $post->subject;
+        $new_subject = Subject::find($request->subject_id);
+        $subject_changed = $new_subject != $old_subject;
+
+        // update post in db
+        $post->update($validated);
+
+        //check if image links are available in the post content
+        $pattern = '/src="([^"]+.[^s])"/i';
+        $num_images = preg_match_all($pattern, $post->content, $matches);
+        $image_link_matches = $matches[1];
+        //images saved in db
+        $db_images = Post_image::where('post_id', $post->id)->get();
+
+        // filter image links into two categories
+        $new_image_links = array_filter($image_link_matches, function ($i_link) {
+            return str_contains($i_link, 'images/courses/temp/dzb_00000_');
+        });
+        $old_image_links = array_filter($image_link_matches, function ($i_link) {
+            return !str_contains($i_link, 'images/courses/temp/dzb_00000_');
+        });
+
+        Log::info('these are old image links');
+        Log::info(json_encode($old_image_links));
+        Log::info('these are new image links');
+        Log::info(json_encode($new_image_links));
+
+        if ($num_images > 0) { //there are matches for image link
+
+            // save new images
+            foreach ($new_image_links as $original_img_url) {
+                $rel_img_url_for_db = $this->assign_image_unique_name($post, $original_img_url);
+                // save post image link to db
+                $post->post_images()->create(['link' => $rel_img_url_for_db]);
+                //move image from temp location to it's subject folder
+                $this->move_post_image($post, $original_img_url, $rel_img_url_for_db);
+            }
+
+            // ----------------update old images url by replacing ../../ with absolute path ----------------//
+            // ----------------loop thru and change img url to absolute url----------------//
+            foreach ($old_image_links as $image_link) { //loop thru & replace ../image with www.domain/image
+                $pattern = '/[\.\.]+\//';
+                $abs_img_url = URL(preg_replace($pattern, "", $image_link));
+                if ($subject_changed) { //update post image url if subject was changed
+                    $abs_img_url = str_replace("/images/courses/$old_subject->slug/", "/images/courses/$new_subject->slug/", $abs_img_url);
+                }
+                $post->content = str_replace($image_link, $abs_img_url, $post->content);
+                $post->save();
+            } //end ----------------loop thru and change img url to absolute url----------------//
+
+            if (count($db_images) > 0) { //there are images in db for this post
+                foreach ($db_images as $db_image) {
+                    $db_image_link = $db_image->link;
+
+                    $edited_db_img_url = "../../" . $db_image_link;
+
+                    if (in_array($edited_db_img_url, $image_link_matches)) { //db image is in matched links
+                        if ($subject_changed) {
+                            $pattern = '/courses\/[a-z-]+\//i';
+                            $new_db_image = preg_replace($pattern, "courses/$new_subject->slug/", $db_image_link);
+                            // update image link in db
+                            Post_image::find($db_image->id)->update([
+                                "link" => $new_db_image
+                            ]);
+
+                            $this->move_post_image($post, $db_image_link, $new_db_image);
+                        }
+                    } else { //delete image if it's in db but no more in post content
+                        if (strpos($post->content, $db_image_link) == false) {
+                            $this->delete_images($db_images->only([$db_image->id]));
+                        }
+                    } //end else
+                }
+            } //end if db image was > 0
+
+        } //end if there are matches for images links
+        else { //there is no image links in the post content
+            if (count($db_images) > 0) { //check if there are orphaned image link in db and dir & clear
+                $this->delete_images($db_images);
+            }
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "post successfully updated",
+            "data" => $post,
+        ]);
     }
 
     /**
@@ -152,27 +227,77 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //specify imgages directory first for development and then for production
+        $post_children = Post::where("parent_id", $post->id)->get();
+        if (count($post_children) > 0) {
+            return back()->with("post_delete_error", "This post has children and therefore cannot be deleted");
+        }
+        //specify images directory first for development and then for production
         $user = User::find(Auth::id());
-        $post_img = Post_image::where('post_id', $post->id)->get();
-        //delete the post from db, clear img links from db, and then delete files files from server.
-        if(Post::destroy($post->id)){
+        $post_images = Post_image::where('post_id', $post->id)->get();
+        //delete the post from db, clear img links from db, and then delete files from server.
+        if (Post::destroy($post->id)) {
             //decrement user post_count
-           $user->post_count =  ($user->post_count-1);
-           $user->save();
+            $user->post_count =  ($user->post_count - 1);
+            $user->save();
 
-           if (count($post_img)>0) {
-               foreach ($post_img as $image) {
-                    if (file_exists($image->link)) {
-                        Log::info('found image file and about to delete:::'.$image->link);
+            $this->delete_images($post_images);
+
+            return back()->with('post_delete_success', true);
+        }
+    }
+
+    /**
+     * move_post_image
+     */
+    public function move_post_image(Post $post, $origin, $destination)
+    {
+        if (!is_dir(URL($this->getImagesDir() . "courses/" . $post->subject->slug))) {
+            mkdir(URL($this->getImagesDir() . "courses/" . $post->subject->slug));
+        }
+        // rename file if it exists
+        $original_img_url = str_replace('../', '', $origin);
+        if (file_exists($original_img_url)) {
+            rename($original_img_url, $destination);
+        }
+    }
+
+    /**
+     * replace_post_img_link
+     * @return string
+     */
+    public function assign_image_unique_name(Post $post, string $original_img_url)
+    {
+        $rel_img_url = str_replace("courses/temp", "courses/" . $post->subject->slug, $original_img_url);
+        // generate unique name for image
+        $unique_name = "dzb_" . str_pad($post->id, 5, "0", STR_PAD_LEFT) . "_";
+        $rel_img_url = str_replace("dzb_00000_", $unique_name, $rel_img_url);
+        //absolute url will be in the post content
+        $rel_img_url_for_db = str_replace('../', '', $rel_img_url);
+        // update the link in post content
+        $post->content = str_replace($original_img_url, URL($rel_img_url_for_db), $post->content);
+        $post->save();
+
+        return $rel_img_url_for_db;
+    }
+
+    /**
+     * delete_images
+     */
+    public function delete_images(Collection $post_images)
+    {
+        if (count($post_images) > 0) {
+            foreach ($post_images as $image) {
+                if (file_exists($image->link)) {
+                    Log::info('found image file and about to delete:::' . $image->link);
                     unlink($image->link);
-                    }else{
-                        Log::info('could not find image file and cannot delete:::'.$image->link);
-                    }
-              }
-           }
-
-        return back()->with('post_delete_success',true);
+                } else {
+                    Log::info('could not find image file and cannot delete:::' . $image->link);
+                }
+                // delete record in db if it is still existing
+                if (Post_image::find($image->id)) {
+                    Post_image::destroy($image->id);
+                }
+            }
         }
     }
 }
