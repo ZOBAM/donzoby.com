@@ -19,26 +19,39 @@ class Post extends Model
         "type",
         "subject_id",
         "author_id",
-    ] ;
+    ];
 
     /**
      * get subject
      */
-    public function subject(){
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
 
     /**
      * get post_images
      */
-    public function post_images(){
+    public function post_images()
+    {
         return $this->hasMany(Post_image::class);
     }
+
+    protected $appends = ['children'];
 
     /**
      * get user
      */
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * get children
+     */
+    public function getChildrenAttribute()
+    {
+        return $this->where("parent_id", $this->id)->get();
     }
 }

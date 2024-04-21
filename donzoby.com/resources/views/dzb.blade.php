@@ -1,4 +1,4 @@
-<x-app-layout :posts="$posts" :listed-subjects="$listed_subjects">
+<x-app-layout :$posts :listed-subjects="$listed_subjects" :description="$description" :title="$title" :page-image="$page_image">
     <div class="card text-center">
         <div class="card-header">
             <h4 class="card-title "><a href="{{ url('/front-end/') }}"> Learn Front-end Dev.</a>
@@ -6,14 +6,9 @@
         </div>
         <div class="card-body">
             <p class="card-text">
-            <div>
-                Copyright ©
-
-                <span x-text="new Date().getFullYear()"></span>
-            </div>
-            Our front-end course/tutorials are focused on those
-            programming/scripting languages (e.g html, css etc) mainly used on the client side
-            (browsers) to layout, format and animate the front end of web applications.</p>
+                Our front-end course/tutorials are focused on those
+                programming/scripting languages (e.g html, css etc) mainly used on the client side
+                (browsers) to layout, format and animate the front end of web applications.</p>
         </div>
         <div>
             <hr>
@@ -39,13 +34,6 @@
             <h4 class="card-title "><a href="{{ url('/graphics/') }}"> Learn Graphics</a></h4>
         </div>
         <div class="card-body">
-            <div x-data="{ open: false }">
-                <button @click="open = true">Expand</button>
-
-                <span x-show="open">
-                    <button @click="open = false">Content...</button>
-                </span>
-            </div>
             <p class="card-text">The ability to work with graphics/images to at least a minimal
                 extent is a good and needed skill for efficiency in computer usage. Currently we are
                 covering three Graphics applications which are broadly used for two types of

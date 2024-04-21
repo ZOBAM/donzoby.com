@@ -10,14 +10,14 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        "name","slug","description",
-    ] ;
+        "name", "slug", "description", "long_description",
+    ];
 
     /**
      * get subjects
      */
-    public function subjects(){
+    public function subjects()
+    {
         return $this->hasMany(Subject::class);
     }
-
 }

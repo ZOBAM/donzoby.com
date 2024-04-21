@@ -20,7 +20,6 @@
         }
         $nos = 1;
         ?>
-        <div class="">{{ var_dump($posts->toArray()['links']) }}</div>
         <div class="table-responsive">
             <table class="table">
                 <?php ?> <!-- initiate no for numbering the list -->

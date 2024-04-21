@@ -25,7 +25,7 @@ class PostController extends Controller
     {
         // return list of matching parent posts
         if ($request->has("subject_id")) {
-            $post = Post::where("subject_id", $request->subject_id)->orderBy("created_at", "desc")->get();
+            $post = Post::where("subject_id", $request->subject_id)->where('type', $request->type)->orderBy("created_at", "desc")->get();
             return response()->json(
                 ["parents" => $post]
             );

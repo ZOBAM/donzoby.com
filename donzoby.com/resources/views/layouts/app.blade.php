@@ -5,8 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta property="og:image" content="{{ str_replace('https', 'http', $pageImage) }}" />
+    <meta property="og:image:url" content="{{ str_replace('https', 'http', $pageImage) }}" />
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $title }}</title>
+    <meta name="description" content="{{ $description }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,23 +24,25 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class='col-sm-8'>
+    <div class='tw-py-2 tw-px-4 tw-flex tw-justify-between'>
         <h1 style="font-size: 0.9em" class="float-left">Tech Tutorials for The Elects</h1>
-        @guest
-            <a href="{{ url('register') }}" class="float-right align-middle">Register</a>
-            <a class="float-right" href="{{ url('login') }}">Login</a>
-        @else
-            <a href = "{{ url('user-area') }}" style="text-transform: uppercase;" class="float-right">
-                {{ Auth::user()->name }}</a>
-            <a class="float-right" href="{{ route('logout') }}"
-                onclick="event.preventDefault();
-                document.getElementById('logout-form').submit();">
-                {{ __('Logout') }}
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                {{ csrf_field() }}
-            </form>
-        @endguest
+        <div class="">
+            @guest
+                <a href="{{ url('register') }}" class="float-right align-middle">Register</a>
+                <a class="float-right" href="{{ url('login') }}">Login</a>
+            @else
+                <a href = "{{ url('user-area') }}" style="text-transform: uppercase;" class="float-right">
+                    {{ Auth::user()->name }}</a>
+                <a class="float-right" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
+            @endguest
+        </div>
     </div>
     @include('layouts.navigation')
 

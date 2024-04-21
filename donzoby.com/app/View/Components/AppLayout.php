@@ -11,9 +11,15 @@ class AppLayout extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(public Collection $posts, public array $listedSubjects)
-    {
-        //
+    public function __construct(
+        public Collection $posts,
+        public array $listedSubjects,
+        public string $title = '',
+        public string $description = '',
+        public string $pageImage = '',
+    ) {
+        $app_name = config('app.name', 'Laravel');
+        $this->title = $this->title ? "$this->title - $app_name" : $app_name;
     }
     /**
      * Get the view / contents that represents the component.

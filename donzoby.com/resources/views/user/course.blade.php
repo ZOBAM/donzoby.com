@@ -97,44 +97,47 @@
             </div>
             {{-- for details --}}
             <template x-if="show.courseDetails || show.subjectDetails">
-                <div class="tw-">
-                    <h2 class="text-center" x-text="targetObject.name"></h2>
-                    <p class="tw-pt-4" x-text="targetObject.description">
-                    </p>
-                    <p class="tw-mt-2">
-                        <strong>
-                            Slug:
-                        </strong> <span x-text="targetObject.slug">graphics</span>
-                    </p>
-                    <template x-if="show.courseDetails">
-                        <div class="">
-                            <h3 class="tw-mt-4 tw-font-bold">Subjects</h3>
-                            {{-- list subjects --}}
-                            <ol class="tw-list-decimal tw-m-4">
-                                <template x-for="(subject, index) in targetObject.subjects">
-                                    <li x-text="subject.name" @click="switchShow('subjectDetails', index)"
-                                        class="tw-cursor-pointer hover:tw-text-black hover:tw-underline tw-underline-offset-4">
-                                    </li>
-                                </template>
-                            </ol>
-                            <template x-if="courses[currentCourseIndex].subjects.length == 0">
-                                <p class="tw-pb-4">
-                                    The course '<span x-text="targetObject.name" class="tw-font-bold"></span>', does
-                                    not
-                                    have
-                                    any
-                                    subject yet.
-                                </p>
-                            </template>
-                        </div>
-                    </template>
-                    <template x-if="show.subjectDetails">
-                        <p class="tw-mt-2 tw-mb-4">
-                            <strong>
-                                Course ID:
-                            </strong> <span x-text="targetObject.course_id"></span>
+                <div class="tw-flex tw-flex-col tw-justify-between" style="min-height: 100%">
+                    <div class="">
+                        <h2 class="text-center tw-font-bold" x-text="targetObject.name"></h2>
+                        <p class="tw-pt-4" x-text="targetObject.description">
                         </p>
-                    </template>
+                        <p class="tw-mt-2">
+                            <strong>
+                                Slug:
+                            </strong> <span x-text="targetObject.slug">graphics</span>
+                        </p>
+                        <template x-if="show.courseDetails">
+                            <div class="">
+                                <h3 class="tw-mt-4 tw-font-bold">Subjects</h3>
+                                {{-- list subjects --}}
+                                <ol class="tw-list-decimal tw-m-4">
+                                    <template x-for="(subject, index) in targetObject.subjects">
+                                        <li x-text="subject.name" @click="switchShow('subjectDetails', index)"
+                                            class="tw-cursor-pointer hover:tw-text-black hover:tw-underline tw-underline-offset-4">
+                                        </li>
+                                    </template>
+                                </ol>
+                                <template x-if="courses[currentCourseIndex].subjects.length == 0">
+                                    <p class="tw-pb-4">
+                                        The course '<span x-text="targetObject.name" class="tw-font-bold"></span>',
+                                        does
+                                        not
+                                        have
+                                        any
+                                        subject yet.
+                                    </p>
+                                </template>
+                            </div>
+                        </template>
+                        <template x-if="show.subjectDetails">
+                            <p class="tw-mt-2 tw-mb-4">
+                                <strong>
+                                    Course ID:
+                                </strong> <span x-text="targetObject.course_id"></span>
+                            </p>
+                        </template>
+                    </div>
                     <div class="text-center">
                         {{-- only show add subject btn if on course details --}}
                         <template x-if="!show.subjectDetails">
@@ -229,7 +232,8 @@
                             this.resetObject(this[componentName]);
                             // set the course id for subject form
                             if (componentName.indexOf('subject') != -1) {
-                                this.subjectForm.course_id = this.courses[this.currentCourseIndex].id;
+                                this.subjectForm.course_id = this.courses[this.currentCourseIndex]
+                                    .id;
                             }
                         } else if (componentName == 'courseDetails') {
                             this.currentCourseIndex = index;
@@ -242,7 +246,8 @@
                             /* console.log(':::::::::::::::::::::::::::::::');
                             console.log('this is the currentSubject Index: ', this.currentSubjectIndex);
                             console.log('-------------------------------------'); */
-                            this.targetObject = this.courses[this.currentCourseIndex].subjects[index];
+                            this.targetObject = this.courses[this.currentCourseIndex].subjects[
+                                index];
                             /* console.log('this is the targetObject: ', this.targetObject);
                             console.log(':::::::::::::::::::::::::::::::'); */
                         }

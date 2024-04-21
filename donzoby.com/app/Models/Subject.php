@@ -10,20 +10,22 @@ class Subject extends Model
     use HasFactory;
 
     protected $fillable = [
-        "name","slug","description",
-    ] ;
+        "name", "slug", "description", "long_description",
+    ];
 
     /**
      * get course
      */
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo(Course::class);
     }
 
     /**
      * get posts
      */
-    public function posts(){
+    public function posts()
+    {
         return $this->hasMany(Post::class);
     }
 }

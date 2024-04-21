@@ -361,7 +361,9 @@
                     try {
                         const {
                             data
-                        } = await axios.get('/posts?subject_id=' + this.postForm.subject_id);
+                        } = await axios.get(
+                            `/posts?subject_id=${this.postForm.subject_id}&type=${this.postForm.type}`
+                            );
                         this.postParents = data.parents;
                         // disable is child if there is no possible parent
                         console.log('this is parents: ', this.postParents);
