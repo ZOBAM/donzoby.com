@@ -235,11 +235,15 @@
                         this.postForm.status = this.postForm.status == 'published' ? true : false;
                         this.postForm.course_id = this.post.subject.course_id;
                         this.isEditing = true;
-                        await this.getPostParents();
+                        this.postForm.isChild = this.postForm.parent_id != null ? true : false;
                         /* TODO:
                         Later make getPostParents accept the parent ID for editing post to fetch only the parent
                          */
-                        this.postForm.isChild = this.postForm.parent_id != null ? true : false;
+                        if (!this.postForm.isChild) {
+                            delete this.validationRules.parent_id;
+                        } else {
+                            await this.getPostParents();
+                        }
                     }
                 },
 
@@ -345,6 +349,12 @@
                 async getPostParents() {
                     // if parents has been loaded and empty, don't enable button
                     if (this.loadedParents && !this.postParents.length) {
+                        // add parent validation rule
+                        this.validationRules.parent_id = {
+                            min: 1,
+                            max: 1000000,
+                        };
+                        this.loadedParents = false;
                         return;
                     }
                     // only load parents when isChild
@@ -363,12 +373,18 @@
                             data
                         } = await axios.get(
                             `/posts?subject_id=${this.postForm.subject_id}&type=${this.postForm.type}`
-                            );
+                        );
                         this.postParents = data.parents;
                         // disable is child if there is no possible parent
                         console.log('this is parents: ', this.postParents);
                         if (!this.postParents.length) {
                             this.postForm.isChild = false;
+                        } else {
+                            // add parent validation rule
+                            this.validationRules.parent_id = {
+                                min: 1,
+                                max: 1000000,
+                            };
                         }
                         this.loadedParents = true;
                         console.log(data);
@@ -376,11 +392,6 @@
                         console.log('Error loading post parents: ', error);
                     } finally {
                         this.loading = false;
-                        // add parent validation rule
-                        this.validationRules.parent_id = {
-                            min: 1,
-                            max: 1000000,
-                        };
                     }
                 },
                 async submitPost() {

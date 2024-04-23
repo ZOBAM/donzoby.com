@@ -11,6 +11,7 @@ use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class HomePageController extends Controller
 {
@@ -89,20 +90,17 @@ class HomePageController extends Controller
 					return view('single', compact('topic', 'subject', 'posts', 'listed_subjects', 'comments', 'description', 'title', 'page_image'));
 				} //end id not 0 or data-plans
 				else { //invalid id provided, just list topics under the specified subject
-					$subject_model = Subject::where('slug', $subject)->first();
-					$description = $subject_model->description; //meta description
-					$title = $subject_model->name; //page title
-					$subject_data = Post::where('subject_id', $subject_model->id)->get();
-					if (count($subject_data) == 0) {
-						$subject_data = false;
-					}
-					return view('subject', compact('course', 'subject', 'subject_data', 'posts', 'listed_subjects', 'description', 'title', 'page_image'));
+					$subject = Subject::where('slug', $subject)->first();
+					$description = $subject->description; //meta description
+					$title = $subject->name; //page title
+
+					return view('subject', compact('course', 'subject', 'posts', 'listed_subjects', 'description', 'title', 'page_image'));
 				}
 			} else { //meaning the subject is not in array of subjects
 				$subject = '';
-				$course_model = Course::where('slug', $course)->first();
-				$description = $course_model->description;
-				$title = $course_model->name; //page title
+				$course = Course::where('slug', $course)->first();
+				$description = $course->description;
+				$title = $course->name; //page title
 				return view('course', compact('course', 'subject', 'posts', 'listed_subjects', 'description', 'title', 'page_image'));
 			}
 		} else { //meaning the course is not in array of courses, return to home page

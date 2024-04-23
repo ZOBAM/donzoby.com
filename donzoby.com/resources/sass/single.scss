@@ -1,0 +1,50 @@
+section#single {
+    @import url(https://fonts.googleapis.com/css2?family=Acme&family=Exo+2&family=Oxygen&display=swap);
+
+    line-height: 1.8;
+    margin-top: 1em;
+    font-size: 1.1em;
+
+    h1{
+        font-family: "Raleway";
+        text-align: center;
+        color: #00511B;
+        font-size: 5vh;
+    }
+
+    h2,
+    h3 {
+        font-family: "Acme";
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    li {
+        margin-left: 2.5em;
+        text-indent: 0em;
+    }
+        #bread-comb {
+            border-bottom: 1px solid #D1D6D1;
+            margin-bottom: 1em;
+            font-size: 0.8em;
+            background-color: #EFF1EF;
+            a {
+            color: #535397;
+        }
+        }
+    
+    #post-details {
+        border-top: 1px solid #E0E0EB;
+        border-bottom: 1px solid #E0E0EB;
+        font-size: 0.7em;
+    }
+    #post-content{
+        // padding-left: 1rem;
+        p{
+            margin-bottom: 0.75rem;
+        }
+    }
+}

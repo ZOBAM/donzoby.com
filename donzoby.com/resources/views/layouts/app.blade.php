@@ -19,8 +19,14 @@
     <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/prism.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/line-number.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
+    @if ($customStyle == 'single')
+        @vite(['resources/sass/single.scss'])
+    @endif
+
 </head>
 
 <body class="font-sans antialiased">
@@ -53,7 +59,7 @@
                 <div class="left-nav col-12 col-sm-3 col-md-2">
                     <x-left-nav :$posts :$listedSubjects />
                 </div>
-                <div class="col-12 col-sm-9 col-md-7">
+                <div class="col-12 col-sm-9 col-md-7 line-numbers" style="font-family: Figtree">
                     <!-- <h1>Welcome to DTech where we do tech with conscience!</h1> -->
                     {{ $slot }}
 

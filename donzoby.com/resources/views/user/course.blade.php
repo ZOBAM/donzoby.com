@@ -28,70 +28,82 @@
                         @click="switchShow('courseDetails', index)"></li>
                 </template>
             </ol>
-            <button @click="switchShow('courseForm', 'new')" class="btn btn-primary tw-mt-4">
+            <button @click="switchShow('postForm', 'newCourse')" class="btn btn-primary tw-mt-4">
                 <i class="fa fa-plus" aria-hidden="true"></i> Add Course
             </button>
         </div>
         <div class="tw-bg-white tw-p-4 tw-flex-grow">
             {{-- for new course --}}
-            <div x-show="show.courseForm" class="tw-">
-                <h2 class="text-center">New Course</h2>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Course Name:</label>
-                    <input type="email" class="form-control" x-model="courseForm.name"
-                        placeholder="unique course name">
+            {{-- <template x-if="show.courseForm">
+                <div class="tw-">
+                    <h2 class="text-center">New Course</h2>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Course Name:</label>
+                        <input type="email" class="form-control" x-model="courseForm.name"
+                            placeholder="unique course name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Course Slug:</label>
+                        <input type="email" class="form-control" x-model="courseForm.slug"
+                            placeholder="unique slug for course">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Course Description:</label>
+                        <textarea class="form-control" x-model="courseForm.description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Course Long-Description:</label>
+                        <textarea class="form-control long_description" x-model="courseForm.long_description" rows="3"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="addCourse()" :disabled="loading">
+                            <span x-show="loading" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            Save Course
+                        </button>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Course Slug:</label>
-                    <input type="email" class="form-control" x-model="courseForm.slug"
-                        placeholder="unique slug for course">
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Course Description:</label>
-                    <textarea class="form-control" x-model="courseForm.description" rows="3"></textarea>
-                </div>
-                <div class="text-center">
-                    <button class="btn btn-primary" @click="addCourse()" :disabled="loading">
-                        <span x-show="loading" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        Save Course
-                    </button>
-                </div>
-            </div>
+            </template> --}}
             {{-- for new subject --}}
-            <div x-show="show.subjectForm" class="tw-">
-                <h2 class="text-center tw-mb-4">
-                    <template x-if="show.subjectForm">
-                        <span>
-                            <span x-text="isEditingTarget? 'Editing' : 'New'"></span> Subject in <span
-                                class="tw-font-bold" x-text="courses[currentCourseIndex].name"></span>
-                        </span>
-                    </template>
+            <div x-show="show.postForm" class="tw-">
+                <h2 class="text-center tw-mb-4" x-html="formTitle">
                 </h2>
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Subject Name:</label>
-                    <input type="email" class="form-control" x-model="subjectForm.name"
-                        placeholder="unique subject name">
+                    <label for="exampleFormControlInput1" class="form-label">
+                        <span class="text-capitalize" x-text="currentType"></span> Name:
+                    </label>
+                    <input type="email" class="form-control" x-model="postForm.name"
+                        :placeholder="`unique ${currentType} name`">
                 </div>
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Subject Slug:</label>
-                    <input type="email" class="form-control" x-model="subjectForm.slug"
-                        placeholder="unique slug for subject">
+                    <label for="exampleFormControlInput1" class="form-label"><span class="text-capitalize"
+                            x-text="currentType"></span>
+                        Slug:</label>
+                    <input type="email" class="form-control" x-model="postForm.slug"
+                        :placeholder="`unique slug for ${currentType}`">
                 </div>
                 <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">Subject Description:</label>
-                    <textarea class="form-control" x-model="subjectForm.description" rows="3"></textarea>
+                    <label for="exampleFormControlTextarea1" class="form-label"><span class="text-capitalize"
+                            x-text="currentType"></span>
+                        Description:</label>
+                    <textarea class="form-control" x-model="postForm.description" rows="3"></textarea>
                 </div>
-                <select class="form-select mb-3" aria-label="Select course" :disabled='true'
-                    x-model="subjectForm.course_id">
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label"><span class="text-capitalize"
+                            x-text="currentType"></span>
+                        Long-Description:</label>
+                    <textarea class="form-control long_description" x-model="postForm.long_description" rows="3"></textarea>
+                </div>
+                <select x-show="currentType == 'subject'" class="form-select mb-3" aria-label="Select course"
+                    :disabled='true' x-model="postForm.course_id">
                     <option selected>Select a course</option>
                     <template x-for="course in courses">
                         <option :value="course.id" x-text="course.name"></option>
                     </template>
                 </select>
                 <div class="text-center">
-                    <button class="btn btn-primary" @click="addCourse('subject')" :disabled="loading">
+                    <button class="btn btn-primary" @click="submitForm()" :disabled="loading">
                         <span x-show="loading" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        Save Subject
+                        <span x-text="submitBtnText"></span>
                     </button>
                 </div>
             </div>
@@ -105,7 +117,7 @@
                         <p class="tw-mt-2">
                             <strong>
                                 Slug:
-                            </strong> <span x-text="targetObject.slug">graphics</span>
+                            </strong> <span x-text="targetObject.slug"></span>
                         </p>
                         <template x-if="show.courseDetails">
                             <div class="">
@@ -137,11 +149,16 @@
                                 </strong> <span x-text="targetObject.course_id"></span>
                             </p>
                         </template>
+                        <div class="">
+                            <span class="tw-font-bold">Long Description</span>
+                            <p class="tw-pb-4" x-html="targetObject.long_description">
+                            </p>
+                        </div>
                     </div>
                     <div class="text-center">
                         {{-- only show add subject btn if on course details --}}
                         <template x-if="!show.subjectDetails">
-                            <button class="btn btn-primary" @click="switchShow('subjectForm', 'new')">
+                            <button class="btn btn-primary" @click="switchShow('postForm', 'newSubject')">
                                 <span x-show="loading" class="spinner-border spinner-border-sm"
                                     aria-hidden="true"></span>
                                 Add Subject
@@ -162,7 +179,44 @@
             </template>
         </div>
     </section>
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=aebyz7zeke446ygrs6h75wf7p21s7cprkwa7fl5cmrfwj6ly">
+    </script>
     <script>
+        tinymce.init({
+            selector: '.long_description',
+            plugins: [
+                "advlist autolink code link image lists charmap print preview hr anchor pagebreak spellchecker codesample wordcount media"
+            ],
+            toolbar: 'undo redo | image media code link codesample | hr numlist bullist | aligncenter',
+
+            // without images_upload_url set, Upload tab won't show up
+            images_upload_url: '/image-upload',
+            images_upload_handler: function(blobInfo, success, failure) {
+                var xhr, formData;
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '/image-upload');
+                var token = '{{ csrf_token() }}';
+                xhr.setRequestHeader("X-CSRF-Token", token);
+                xhr.onload = function() {
+                    var json;
+                    if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                xhr.send(formData);
+            }
+        });
         const coursesJson = {{ Js::from($courses) }};
         window.onload = function() {
             /* setTimeout(() => {
@@ -187,31 +241,45 @@
                 toastTrigger: toastTrigger,
                 isEditingTarget: false,
                 show: {
-                    courseForm: true,
-                    subjectForm: false,
+                    postForm: false,
                     courseDetails: false,
                     subjectDetails: false,
                 },
                 currentCourseIndex: 0,
                 currentSubjectIndex: 0,
                 targetObject: null,
-                courseForm: {
-                    id: null,
-                    name: '',
-                    slug: '',
-                    description: ''
-                },
-                courseFormCopy: null,
-                subjectFormCopy: null,
-                subjectForm: {
+                postFormCopy: null,
+                postForm: {
                     id: null,
                     name: '',
                     slug: '',
                     description: '',
+                    long_description: '',
                     course_id: null,
                 },
                 toastMessage: 'Hail Christ',
+                currentType: 'Course',
 
+                async init() {
+                    this.switchShow('courseDetails', 0);
+                },
+
+                // GETTERS
+                get formTitle() {
+                    let title = this.isEditingTarget ? 'Editing ' : 'New ';
+                    title += this.currentType;
+                    title += this.currentType == 'subject' ? ` in <strong>${this.courses[this.currentCourseIndex]
+                        .name}</strong>` :
+                        '';
+                    return title;
+                },
+                get submitBtnText() {
+                    let text = this.isEditingTarget ? 'Update ' : 'Save ';
+                    text += this.currentType;
+                    return text;
+                },
+
+                // METHODS
                 switchShow(componentName, index = null) {
                     this.isEditingTarget = false;
                     // loop through show and hide all others except one
@@ -224,54 +292,54 @@
                     }
                     console.log(this.show);
                     if (index !== null) {
-                        if (index == 'new') {
-                            const type = componentName.split('F')[0];
-                            if (this[`${type}FormCopy`]) {
-                                this[componentName] = this[`${type}FormCopy`];
+                        if (index == 'newCourse' || index == 'newSubject') {
+                            // const type = componentName.split('F')[0];
+                            if (this[`${componentName}Copy`]) {
+                                this[componentName] = this[`${componentName}Copy`];
                             }
                             this.resetObject(this[componentName]);
+                            this.currentType = index == 'newCourse' ? 'course' : 'subject'
                             // set the course id for subject form
-                            if (componentName.indexOf('subject') != -1) {
-                                this.subjectForm.course_id = this.courses[this.currentCourseIndex]
+                            if (this.currentType == 'subject') {
+                                this.postForm.course_id = this.courses[this.currentCourseIndex]
                                     .id;
                             }
                         } else if (componentName == 'courseDetails') {
+                            this.currentType = 'course';
                             this.currentCourseIndex = index;
                             this.targetObject = this.courses[index];
-                            /* console.log(':::::::::::::::::::::::::::::::');
-                            console.log('this is the current course: ', this.targetObject);
-                            console.log(':::::::::::::::::::::::::::::::'); */
-                        } else {
+                        } else { // it is course details
+                            this.currentType = 'subject';
                             this.currentSubjectIndex = index;
-                            /* console.log(':::::::::::::::::::::::::::::::');
-                            console.log('this is the currentSubject Index: ', this.currentSubjectIndex);
-                            console.log('-------------------------------------'); */
                             this.targetObject = this.courses[this.currentCourseIndex].subjects[
                                 index];
-                            /* console.log('this is the targetObject: ', this.targetObject);
-                            console.log(':::::::::::::::::::::::::::::::'); */
                         }
-                        // console.log(this.courses[index]);
                     }
+                    console.log('the current type is: ', this.currentType);
                 },
                 resetObject(obj) {
                     for (const field in obj) {
                         obj[field] = null;
                     }
                 },
-                async addCourse(type = 'course') {
+                async submitForm() {
                     // this.loading = true;
-                    const isCourse = type == 'course';
-                    const payload = isCourse ? this.courseForm : this.subjectForm;
-                    const typeBaseName = `${type}s`;
+                    const isCourse = this.currentType == 'course';
+                    const payload = this.postForm;
+                    // set long_description
+                    payload.long_description = tinymce.activeEditor.getContent();
+
+                    const typeBaseName = `${this.currentType}s`;
                     let link = `/${typeBaseName}`;
                     const isEditing = payload.id;
                     if (isEditing) {
                         payload['_method'] = 'put';
                         link += `/${payload.id}`;
                     }
-                    console.log(payload);
-                    // return;
+                    delete payload.subjects;
+                    /* console.log(payload);
+                    console.log(link);
+                    return; */
                     try {
                         const response = await axios.post(link, payload);
                         console.log(response.data);
@@ -314,24 +382,33 @@
                 edit() {
                     if (this.show.courseDetails) {
                         // copy course form if not yet copied
-                        if (!this.courseFormCopy) {
-                            this.courseFormCopy = structuredClone(this.courseForm.target);
+                        if (!this.postFormCopy) {
+                            this.postFormCopy = structuredClone(this.postForm.target);
                         }
-                        this.courseForm = {
+                        this.postForm = {
                             ...this.targetObject
                         }
-                        this.switchShow('courseForm');
+                        // set postFormCopy to null since both course and subject are using it
+                        this.postFormCopy = null;
+                        this.switchShow('postForm');
                     } else {
                         // copy subject form if not yet copied
-                        if (!this.subjectFormCopy) {
-                            this.subjectFormCopy = structuredClone(this.subjectForm.target);
+                        if (!this.postFormCopy) {
+                            this.postFormCopy = structuredClone(this.postForm.target);
                         }
-                        this.subjectForm = {
+                        this.postForm = {
                             ...this.targetObject
                         }
-                        this.switchShow('subjectForm');
+                        // set postFormCopy to null since both course and subject are using it
+                        this.postFormCopy = null;
+                        this.switchShow('postForm');
                     }
                     this.isEditingTarget = true;
+                    // set tinymce editor content if long_description is not null
+                    const longDesc = this.targetObject.long_description ? this.targetObject
+                        .long_description : ''
+                    tinymce.activeEditor.setContent(longDesc);
+
                 },
                 // remove item
                 async remove() {

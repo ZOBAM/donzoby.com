@@ -17,6 +17,7 @@ class AppLayout extends Component
         public string $title = '',
         public string $description = '',
         public string $pageImage = '',
+        public string $customStyle = '',
     ) {
         $app_name = config('app.name', 'Laravel');
         $this->title = $this->title ? "$this->title - $app_name" : $app_name;
