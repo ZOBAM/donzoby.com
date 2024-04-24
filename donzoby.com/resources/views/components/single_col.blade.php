@@ -1,3 +1,4 @@
+@props(['title' => ''])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -5,11 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta property="og:image" content="{{ str_replace('https', 'http', $pageImage) }}" />
-    <meta property="og:image:url" content="{{ str_replace('https', 'http', $pageImage) }}" />
 
-    <title>{{ $title }}</title>
-    <meta name="description" content="{{ $description }}" />
+    <title>{{ $title }} - {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -18,15 +16,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/prism.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/line-number.css') }}" rel="stylesheet">
-    <link rel="shortcut icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
-    @if ($customStyle == 'single')
-        @vite(['resources/sass/single.scss'])
-    @endif
-
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss', 'resources/sass/user-area.scss'])
 </head>
 
 <body class="font-sans antialiased">
@@ -56,16 +47,10 @@
     <main class="">
         <div class="container-fluid">
             <div class="row">
-                <div class="left-nav col-12 col-sm-3 col-md-2">
-                    <x-left-nav :$posts :$listedSubjects />
-                </div>
-                <div class="col-12 col-sm-9 col-md-7 line-numbers" style="font-family: Figtree">
+                <div class="col-12" id="single-col">
                     <!-- <h1>Welcome to DTech where we do tech with conscience!</h1> -->
                     {{ $slot }}
 
-                </div>
-                <div class="col-12 d-sm-none d-md-block col-md-3">
-                    <p class="tw-text-green-300 tw-font-bold">Let see how we can make this work</p>
                 </div>
             </div>
         </div>
@@ -77,7 +62,6 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script src="https://kit.fontawesome.com/b379d389cf.js" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/prism.js') }}"></script>
 </body>
 
 </html>

@@ -18,16 +18,24 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// resource links
-
-Route::middleware(['auth'])->group(function(){
-    Route::resources([
-    'posts'=> PostController::class,
-    'courses'=> CourseController::class,
-    'subjects'=> SubjectController::class,
-]);
+Route::get('/about-donzoby', function () {
+    return view('about');
 });
-Route::post('/image-upload', [PostPictureController::class,'index'])->name('post-image');
+Route::get('/mission-&-vision', function () {
+    return view('mission-vision');
+});
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+});
+// resource links
+Route::middleware(['auth'])->group(function () {
+    Route::resources([
+        'posts' => PostController::class,
+        'courses' => CourseController::class,
+        'subjects' => SubjectController::class,
+    ]);
+});
+Route::post('/image-upload', [PostPictureController::class, 'index'])->name('post-image');
 
 // auth
 Route::middleware('auth')->group(function () {
@@ -36,9 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/user-area', [UserController::class,'index'])->middleware('verified')->name('user-area');
+Route::get('/user-area', [UserController::class, 'index'])->middleware('verified')->name('user-area');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // clear cache
 Route::get('/clear-cache', function () {
@@ -51,4 +59,4 @@ Route::get('/clear-cache', function () {
     return '<h1>Clear Config cleared</h1>';
 });
 
-Route::get('/{course?}/{subject?}/{id?}/{topic?}', [HomePageController::class,'index'])->name('courses');
+Route::get('/{course?}/{subject?}/{id?}/{topic?}', [HomePageController::class, 'index'])->name('courses');

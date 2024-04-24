@@ -11,9 +11,10 @@
                 <i class="fa fa-angle-double-right"></i>
                 {{ $topic->topic }}
             </div>
-            <h1 id="topic" class="pb-2">{{ $topic->topic }}</h1>
+            <h1 id="topic" class="pb-2 text-center ">{{ $topic->topic }}</h1>
             <div id="post-details" class="mb-4 tw-pl-2">
-                <span>Last Update: {{ date('M d, Y', strtotime($topic->updated_at)) }}</span>
+                <span><span class="tw-font-semibold">Last Update:</span>
+                    {{ date('M d, Y', strtotime($topic->updated_at)) }}</span>
                 <span class="tw-float-right">
                     <i class="fa fa-eye"></i> {{ $topic->hits }} times.
                 </span>

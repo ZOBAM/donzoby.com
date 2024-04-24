@@ -235,15 +235,21 @@
                         this.postForm.status = this.postForm.status == 'published' ? true : false;
                         this.postForm.course_id = this.post.subject.course_id;
                         this.isEditing = true;
-                        this.postForm.isChild = this.postForm.parent_id != null ? true : false;
+                        this.postForm.isChild = this.post.parent_id != null ? true : false;
                         /* TODO:
                         Later make getPostParents accept the parent ID for editing post to fetch only the parent
                          */
                         if (!this.postForm.isChild) {
                             delete this.validationRules.parent_id;
                         } else {
-                            await this.getPostParents();
+                            setTimeout(async () => {
+                                await this.getPostParents();
+                            }, 1000);
                         }
+                        // revalidate form
+                        setTimeout(() => {
+                            this.validateForm();
+                        }, 2000);
                     }
                 },
 
@@ -358,7 +364,7 @@
                         return;
                     }
                     // only load parents when isChild
-                    if (this.postForm.isChild) {
+                    if (this.postForm.isChild && !this.isEditing) {
                         // remove parent validation
                         delete this.validationRules.parent_id;
                         // make is parent null

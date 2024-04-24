@@ -5,17 +5,20 @@ section#single {
     margin-top: 1em;
     font-size: 1.1em;
 
-    h1{
-        font-family: "Raleway";
-        text-align: center;
-        color: #00511B;
-        font-size: 5vh;
+
+    h1 {
+        font-size: 2rem;
+        &#topic {
+            font-family: "Raleway";
+            color: #00511B;
+        }
     }
+
 
     h2,
     h3 {
         font-family: "Acme";
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
 
     h3 {
@@ -26,24 +29,28 @@ section#single {
         margin-left: 2.5em;
         text-indent: 0em;
     }
-        #bread-comb {
-            border-bottom: 1px solid #D1D6D1;
-            margin-bottom: 1em;
-            font-size: 0.8em;
-            background-color: #EFF1EF;
-            a {
+
+    #bread-comb {
+        border-bottom: 1px solid #D1D6D1;
+        margin-bottom: 1em;
+        font-size: 0.8em;
+        background-color: #EFF1EF;
+
+        a {
             color: #535397;
         }
-        }
-    
+    }
+
     #post-details {
         border-top: 1px solid #E0E0EB;
         border-bottom: 1px solid #E0E0EB;
         font-size: 0.7em;
     }
-    #post-content{
+
+    #post-content {
+
         // padding-left: 1rem;
-        p{
+        p {
             margin-bottom: 0.75rem;
         }
     }
