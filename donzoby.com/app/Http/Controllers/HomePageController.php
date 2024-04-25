@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class HomePageController extends Controller
 {
-	public function index($course = 1, $subject = 2, $id = 0, $topic = "2") //{course}/{subject?}/{id?}/{topic?}
+	public function index($course = 1, $subject = 2, $id = 0, $post = "2") //{course}/{subject?}/{id?}/{topic?}
 	{
 		//get only parent posts
 		$posts = Post::where('parent_id', null)->orderBy('created_at', 'desc')->take(22)->get();
@@ -56,24 +56,24 @@ class HomePageController extends Controller
 
 			if (Subject::where('slug', $subject)->first()) {
 				if ($id != 0 && is_numeric($id)) { // an id is provided
-					$topic = Post::findOrFail($id);
-					$topic->timestamps = false; //prevent updating of time stamps
+					$post = Post::findOrFail($id);
+					$post->timestamps = false; //prevent updating of time stamps
 					//check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
 					//adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
 					$developer_email = (isset(Auth::user()->email)) ? Auth::user()->email : false;
 					if ($_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com") {
-						$topic->hits = ++$topic->hits;
-						$topic->save();
+						$post->hits = ++$post->hits;
+						$post->save();
 					}
 					if (Post_image::where('post_id', $id)->first()) {
 						$page_image = Post_image::where('post_id', $id)->first(); //get image for FB share
 						$page_image = URL($page_image->link);
 					}
-					$description = $topic->description; //meta description
-					$title = $topic->topic; //page title
+					$description = $post->description; //meta description
+					$title = $post->topic; //page title
 					//get comments
-					$comments = Comment::where('post_id', $id)->get();
-					if (count($comments) > 0) {
+					$comments = Comment::where('post_id', $id)->with('user')->get();
+					/* if (count($comments) > 0) {
 						$i = 0;
 						foreach ($comments as $comment) {
 							$comment_authors = User::where('id', $comment->user_id)->first();
@@ -86,8 +86,8 @@ class HomePageController extends Controller
 							}
 							$i++;
 						} //endforeach
-					} //endif
-					return view('single', compact('topic', 'subject', 'posts', 'listed_subjects', 'comments', 'description', 'title', 'page_image'));
+					} //endif */
+					return view('single', compact('post', 'subject', 'comments', 'posts', 'listed_subjects', 'description', 'title', 'page_image'));
 				} //end id not 0 or data-plans
 				else { //invalid id provided, just list topics under the specified subject
 					$subject = Subject::where('slug', $subject)->first();

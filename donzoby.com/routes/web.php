@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\HomePageController;
@@ -33,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         'posts' => PostController::class,
         'courses' => CourseController::class,
         'subjects' => SubjectController::class,
+        'comments' => CommentController::class,
     ]);
 });
 Route::post('/image-upload', [PostPictureController::class, 'index'])->name('post-image');

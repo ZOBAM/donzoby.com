@@ -20,6 +20,7 @@ class Post extends Model
         "subject_id",
         "author_id",
     ];
+    protected $appends = ['children'];
 
     /**
      * get subject
@@ -37,7 +38,13 @@ class Post extends Model
         return $this->hasMany(Post_image::class);
     }
 
-    protected $appends = ['children'];
+    /**
+     * get comments
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     /**
      * get user
