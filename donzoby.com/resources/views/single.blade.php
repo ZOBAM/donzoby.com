@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
                                     <template x-if="comment.id != commentForm.id">
-                                        <div class="col-sm-12" style="margin: 5px 0px" x-text="comment.content">
+                                        <div class="col-sm-12 tw-text-sm" style="margin: 5px 0px" x-text="comment.content">
                                         </div>
                                     </template>
                                     {{-- display form for editing comment --}}
