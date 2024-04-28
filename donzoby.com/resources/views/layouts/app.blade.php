@@ -25,6 +25,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
     @if ($customStyle == 'single')
         @vite(['resources/sass/single.scss'])
+    @elseif($customStyle == 'home')
+        @vite(['resources/sass/home.scss'])
     @endif
 
 </head>
@@ -56,15 +58,52 @@
     <main class="">
         <div class="container-fluid">
             <div class="row">
-                <div class="left-nav col-12 col-sm-3 col-md-2">
-                    <x-left-nav :$posts :$listedSubjects />
+                <div x-data="showNav" class="left-nav col-12 col-sm-3 col-md-2">
+                    <span @click="toggleShowNav" class="sm:tw-hidden">
+                        <i x-show="!showLatest" class="fa fa-bars" aria-hidden="true"></i>
+                        <i x-show="showLatest" class="fa fa-times" aria-hidden="true"></i> All
+                        Latest</span>
+                    <section x-ref="navLinks" class=" " :class="showLatest ? 'tw-block' : 'tw-hidden'">
+                        <x-left-nav :$posts :$listedSubjects />
+                    </section>
+                    <script>
+                        document.addEventListener('alpine:init', () => {
+                            Alpine.data('showNav', () => ({
+                                showLatest: false,
+
+                                async init() {
+                                    window.addEventListener('resize', function() {
+                                        // Call the function to check window size
+                                        callMe(window.innerWidth);
+                                    });
+
+                                    callMe = (width) => {
+                                        console.log('window resized: ' + width);
+                                        if (width > 640) {
+                                            this.$refs.navLinks.classList.remove("tw-hidden");
+                                        } else {
+                                            this.$refs.navLinks.classList.add("tw-hidden");
+                                        }
+                                        // this.toggleShowNav();
+                                    }
+                                },
+
+                                // GETTERS
+
+                                // METHODS
+                                toggleShowNav() {
+                                    this.showLatest = !this.showLatest;
+                                },
+                            }));
+                        });
+                    </script>
                 </div>
-                <div class="col-12 col-sm-9 col-md-7 line-numbers" style="font-family: Figtree">
+                <div class="col-12 col-sm-9 col-md-10 col-lg-7 line-numbers" style="font-family: Figtree">
                     <!-- <h1>Welcome to DTech where we do tech with conscience!</h1> -->
                     {{ $slot }}
 
                 </div>
-                <div class="col-12 d-sm-none d-md-block col-md-3">
+                <div class="col-12 d-sm-none d-lg-block col-md-3">
                     <p class="tw-text-green-300 tw-font-bold">Let see how we can make this work</p>
                 </div>
             </div>

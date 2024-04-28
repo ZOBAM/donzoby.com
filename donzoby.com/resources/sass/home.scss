@@ -1,0 +1,65 @@
+#home {
+
+    .card {
+    border: 1px solid transparent;
+    transition: all 1s;
+    &:hover{
+        border: 1px solid rgb(228, 226, 222);
+        box-shadow: .5px .5px 0px .5px rgb(228, 226, 222);
+    }
+        border: none;
+
+        .card-header {
+            background-color: #fff;
+
+            h1 {
+                font-size: 1.95rem;
+                font-weight: bolder;
+            }
+        }
+
+        .card-body {
+            font-size: 1.05rem;
+
+            p {
+                line-height: 1.65rem;
+            }
+
+            .post-links:nth-child(even) {
+                // background: linear-gradient(to right, #f0f0f0, white, white, );
+
+                div.posts {
+                    background-color: #fff;
+                }
+            }
+
+            .posts,
+            .buttons {
+
+                a,
+                button {
+                    display: block;
+                    padding-block: .5rem;
+                    font-weight: 600;
+                }
+
+                a {
+                    color: #040404;
+                }
+
+                button {
+                    border: 2px solid #a7a9ac;
+                    border-radius: .5rem;
+                    padding-inline: 1.25rem;
+                    margin-bottom: 1rem;
+                    color: rgb(60, 55, 112);
+
+                    &:hover {
+                        background-color: darken($color: #699BF7, $amount: 10);
+                        color: wheat;
+                    }
+                }
+            }
+        }
+    }
+}

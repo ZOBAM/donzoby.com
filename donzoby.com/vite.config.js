@@ -10,6 +10,7 @@ export default defineConfig({
                 "resources/sass/main.scss",
                 "resources/sass/user-area.scss",
                 "resources/sass/single.scss",
+                "resources/sass/home.scss",
             ],
             refresh: true,
         }),

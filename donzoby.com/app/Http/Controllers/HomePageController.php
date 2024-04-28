@@ -27,22 +27,24 @@ class HomePageController extends Controller
 		$listed_subjects = array_unique($listed_subjects); //return unique subjects in the array
 
 		// fetch latest post for each of the courses of interest
-		$latest['front-end'] = Post::whereHas('subject', function ($query) {
+		$latest = $this->get_latest(['front-end', 'back-end', 'graphics']);
+		$latest_modified = $this->get_latest(['front-end', 'graphics', 'back-end'], true);
+		/* $latest['front-end'] = Post::whereHas('subject', function ($query) {
 			$query->whereHas('course', function ($query) {
 				$query->where('slug', 'front-end');
 			});
-		})->first();
+		})->orderBy('created_at')->take(5)->get();
 		$latest['graphics'] = Post::whereHas('subject', function ($query) {
 			$query->whereHas('course', function ($query) {
 				$query->where('slug', 'graphics');
 			});
-		})->first();
-		$latest['back-end'] = Post::whereHas('subject', function ($query) {
+		})->orderBy('created_at')->take(5)->get();
+		$latest[''] = Post::whereHas('subject', function ($query) {
 			$query->whereHas('course', function ($query) {
 				$query->where('slug', 'back-end');
 			});
-		})->first();
-
+		})->orderBy('created_at')->take(5)->get();
+ */
 		$course = strtolower($course);
 		$subject = strtolower($subject);
 		$page_image = URL('images/donzoby-logo-wtbg.png');
@@ -106,7 +108,28 @@ class HomePageController extends Controller
 		} else { //meaning the course is not in array of courses, return to home page
 			$description = "Donzoby offers well written and easy to follow tutorials on computer and web technologies for the Elects. We also offer ICT and computer literacy training services. We do tech with conscience.";
 			$title = "Tech Tutorials for The Elects";
-			return view('dzb', compact('posts', 'listed_subjects', 'latest', 'description', 'title', 'page_image'));
+			// dd($latest['front-end']->subject->course->subjects);
+			return view('dzb', compact('posts', 'listed_subjects', 'latest', 'latest_modified', 'description', 'title', 'page_image'));
 		}
 	} //end index
+	private function get_latest(array $courses_slugs, $modified = false)
+	{
+		$latest = [];
+		foreach ($courses_slugs as $course_slug) {
+			if ($modified) {
+				$latest[$course_slug] = Post::whereHas('subject', function ($query) use ($course_slug) {
+					$query->whereHas('course', function ($query) use ($course_slug) {
+						$query->where('slug', $course_slug);
+					});
+				})->orderBy('updated_at', 'desc')->first();
+			} else {
+				$latest[$course_slug] = Post::whereHas('subject', function ($query) use ($course_slug) {
+					$query->whereHas('course', function ($query) use ($course_slug) {
+						$query->where('slug', $course_slug);
+					});
+				})->orderBy('created_at', 'desc')->take(5)->get();
+			}
+		}
+		return $latest;
+	}
 }

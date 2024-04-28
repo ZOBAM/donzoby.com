@@ -145,10 +145,12 @@
                 <!-- -------------------------- display form for logged in user to write new comment ---------------------- -->
                 <!-- -------------------------- display form for logged in user to write new comment ---------------------- -->
                 <template x-if="!isLoggedIn">
-                    <i class="fas fa-pencil-square"></i><a href="{{ url('register') }}"
-                        class="align-middle">Register</a>
-                    or
-                    <a class="" href="{{ url('login') }}">Login</a> to write comments.
+                    <p class="">
+                        <i class="fas fa-pencil-square"></i><a href="{{ url('register') }}"
+                            class="align-middle">Register</a>
+                        or
+                        <a class="" href="{{ url('login') }}">Login</a> to write comments.
+                    </p>
                 </template>
                 <template x-if="isLoggedIn">
                     <div class="card tw-mt-4">
