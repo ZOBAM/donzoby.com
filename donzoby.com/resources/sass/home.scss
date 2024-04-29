@@ -45,6 +45,7 @@
 
                 a {
                     color: #040404;
+                    
                 }
 
                 button {
@@ -58,6 +59,19 @@
                         background-color: darken($color: #699BF7, $amount: 10);
                         color: wheat;
                     }
+                }
+            }
+            .posts{
+                a{
+                    color: #4767a3;
+                    &:hover {
+                            text-decoration: underline;
+                            text-decoration-style: dotted;
+                            text-underline-offset: 4px;
+                            color: #040404;
+                            // padding-left: .5rem;
+                            // box-shadow: -1px 0px 0.5px gray;
+                        }
                 }
             }
         }

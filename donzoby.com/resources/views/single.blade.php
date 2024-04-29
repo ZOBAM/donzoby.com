@@ -15,7 +15,7 @@
             <div id="post-details" class="mb-4 tw-pl-2">
                 <span><span class="tw-font-semibold">Last Update:</span>
                     {{ date('M d, Y', strtotime($post->updated_at)) }}</span>
-                <span class="tw-float-right">
+                <span class="tw-float-right tw-cursor-pointer" data-bs-toggle="tooltip" data-bs-title="Views">
                     <i class="fa fa-eye"></i> {{ $post->hits }} times.
                 </span>
             </div>
@@ -197,6 +197,10 @@
                     toastBootstrap.show();
                 })
             }
+            // bootstrap tooltips
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(
+                tooltipTriggerEl))
 
             Alpine.data('comments', () => ({
                 loading: {

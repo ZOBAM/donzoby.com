@@ -16,30 +16,24 @@
                         {!! $course->long_description !!}
                     @else
                         <p class="card-text">
-                            Our front-end course/tutorials are focused on those
-                            programming/scripting languages (e.g html, css etc) mainly used on the client side
-                            (browsers)
-                            to layout, format and animate the front end of web applications.</p>
+                            {!! $course->description !!}
+                        </p>
                     @endif
                     <div
                         class="post-links tw-flex tw-flex-col md:tw-flex-row tw-justify-around tw-items-center tw-p-4 tw-mt-8">
                         <div class="posts tw-px-6 tw-py-8 tw-rounded-2xl tw-shadow-xl">
                             @foreach ($data as $post)
-                                <a href="" class="">{{ $post->topic }}</a>
+                                <a href="{{ url('/' . $post->subject->course->slug . '/' . $post->subject->slug . '/' . $post->id . '/' . str_replace(' ', '-', $post->topic)) }}"
+                                    class="">{{ $post->topic }}</a>
                             @endforeach
-                            {{-- <a href="" class="">Say Hello in JavaScript</a>
-                            <a href="" class="">Introduction to JavaScript</a>
-                            <a href="" class="">Say Hello in JavaScript</a>
-                            <a href="" class="">Introduction to JavaScript</a>
-                            <a href="" class="">Say Hello in JavaScript</a> --}}
                         </div>
                         <div class="buttons tw-px-6 tw-py-8">
                             @foreach ($subjects as $subject)
-                                <button class="">Learn {{ $subject->name }}</button>
+                                <a href="{{ url('/' . $subject->course->slug . '/' . $subject->slug) }}" class=""
+                                    style="padding: 0px">
+                                    <button class="">Learn {{ $subject->name }}</button>
+                                </a>
                             @endforeach
-                            {{-- <button class="">Learn CSS</button>
-                            <button class="">Learn JAVASCRIPT</button>
-                            <button class="">Learn CSS</button> --}}
                         </div>
                     </div>
                 </div>
@@ -48,7 +42,7 @@
                     <div class="card-links tw-flex tw-justify-between tw-text-sm">
                         <span class="tw-text-gray-500">Latest: </span>
                         <span class=""><a
-                                href="{{ url('/front-end/jQuery') }}">{{ $latest_modified[$course_slug]->topic }}</a>
+                                href="{{ url('/' . $latest_modified[$course_slug]->subject->course->slug . '/' . $latest_modified[$course_slug]->subject->slug . '/' . $latest_modified[$course_slug]->id . '/' . str_replace(' ', '-', $latest_modified[$course_slug]->topic)) }}">{{ $latest_modified[$course_slug]->topic }}</a>
                             <span class="tw-text-xs">
                                 &#9001;updated
                                 {{ date('M d, Y', strtotime($latest_modified[$course_slug]->updated_at)) }}&#x3009;
