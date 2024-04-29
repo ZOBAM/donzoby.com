@@ -59,17 +59,19 @@
         <div class="container-fluid">
             <div class="row">
                 <div x-data="showNav" class="left-nav col-12 col-sm-3 col-md-2">
-                    <span @click="toggleShowNav" class="sm:tw-hidden">
+                    <span x-show="isSmallScreen || showLatest" @click="toggleShowNav" class="sm:tw-hidden">
                         <i x-show="!showLatest" class="fa fa-bars" aria-hidden="true"></i>
                         <i x-show="showLatest" class="fa fa-times" aria-hidden="true"></i> All
                         Latest</span>
-                    <section x-ref="navLinks" class=" " :class="showLatest ? 'tw-block' : 'tw-hidden'">
+                    <section x-show="!isSmallScreen || showLatest" class=" ">
                         <x-left-nav :$posts :$listedSubjects />
                     </section>
                     <script>
                         document.addEventListener('alpine:init', () => {
                             Alpine.data('showNav', () => ({
                                 showLatest: false,
+                                hasCheckedWidth: false,
+                                isSmallScreen: false,
 
                                 async init() {
                                     window.addEventListener('resize', function() {
@@ -80,11 +82,17 @@
                                     callMe = (width) => {
                                         console.log('window resized: ' + width);
                                         if (width > 640) {
-                                            this.$refs.navLinks.classList.remove("tw-hidden");
+                                            this.showLatest = true;
+                                            this.isSmallScreen = false;
                                         } else {
-                                            this.$refs.navLinks.classList.add("tw-hidden");
+                                            this.showLatest = false;
+                                            this.isSmallScreen = true;
                                         }
                                         // this.toggleShowNav();
+                                    }
+                                    if (!this.hasCheckedWidth) {
+                                        callMe(window.innerWidth);
+                                        this.hasCheckedWidth = true;
                                     }
                                 },
 
@@ -93,6 +101,7 @@
                                 // METHODS
                                 toggleShowNav() {
                                     this.showLatest = !this.showLatest;
+                                    console.log('current value of showLatest: ', this.showLatest);
                                 },
                             }));
                         });
