@@ -75,7 +75,7 @@
                                             <div class="tw-max-h-10 tw-overflow-hidden tw-rounded-s-full"><img
                                                     :src="'/' + comment.user.avatar" style="max-width: 40px"></div>
                                             <div class="tw-pl-2 tw-text-sm">
-                                                <span class="tw-font-bold" x-text="comment.user.name"></span> On
+                                                <span class="tw-font-bold" x-text="comment.user.first_name"></span> On
                                                 <span class="" x-text="comment.created_at.split('T')[0]"></span>
                                             </div>
                                         </div>
@@ -154,7 +154,8 @@
                 </template>
                 <template x-if="isLoggedIn">
                     <div class="card tw-mt-4">
-                        <div class="card-header"><i class="fa fa-comment"></i> <strong x-text="user.name"></strong>,
+                        <div class="card-header"><i class="fa fa-comment"></i> <strong
+                                x-text="user.first_name"></strong>,
                             <span class="float-right">add a comment</span>
                         </div>
                         <div class="card-body" x-show="!isEditing">
@@ -223,14 +224,6 @@
                     isChild: false,
                 },
                 validationRules: {
-                    /* parent_id: {
-                        min: 1,
-                        max: 1000000,
-                    },
-                    comment_id: {
-                        min: 1,
-                        max: 1000000,
-                    }, */
                     content: {
                         minLength: 3,
                         maxLength: 1600,

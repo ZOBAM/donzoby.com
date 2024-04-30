@@ -76,11 +76,10 @@
                                 async init() {
                                     window.addEventListener('resize', function() {
                                         // Call the function to check window size
-                                        callMe(window.innerWidth);
+                                        checkWindowSize(window.innerWidth);
                                     });
 
-                                    callMe = (width) => {
-                                        console.log('window resized: ' + width);
+                                    checkWindowSize = (width) => {
                                         if (width > 640) {
                                             this.showLatest = true;
                                             this.isSmallScreen = false;
@@ -88,10 +87,9 @@
                                             this.showLatest = false;
                                             this.isSmallScreen = true;
                                         }
-                                        // this.toggleShowNav();
                                     }
                                     if (!this.hasCheckedWidth) {
-                                        callMe(window.innerWidth);
+                                        checkWindowSize(window.innerWidth);
                                         this.hasCheckedWidth = true;
                                     }
                                 },
@@ -101,7 +99,6 @@
                                 // METHODS
                                 toggleShowNav() {
                                     this.showLatest = !this.showLatest;
-                                    console.log('current value of showLatest: ', this.showLatest);
                                 },
                             }));
                         });

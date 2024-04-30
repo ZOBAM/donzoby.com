@@ -46,8 +46,8 @@
             <div class="row">
                 <div class="left-nav col-12 col-md-2">
                     <div class="thumbnail user-dp-container tw-flex tw-flex-col tw-justify-center tw-items-center">
-                        <img src="{{ asset('images/profile/zobam_gig.png') }}" alt="" class="">
-                        <span class="tw-mt-1 tw-font-medium">John Doe</span>
+                        <img src="{{ asset($user->avatar) }}" alt="" class="">
+                        <span class="tw-mt-1 tw-font-medium">{{ $user->first_name . ' ' . $user->last_name }}</span>
                     </div>
                     <div class="left-links tw-mt-7">
                         <a href="/user-area"><i class="fa fa-home"></i> Home</a>

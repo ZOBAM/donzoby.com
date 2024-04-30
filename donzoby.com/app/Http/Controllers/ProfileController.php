@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Traits\GlobalTrait;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    use GlobalTrait;
     /**
      * Display the user's profile form.
      */
@@ -24,7 +28,7 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request)
     {
         $request->user()->fill($request->validated());
 
@@ -32,9 +36,28 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        if ($request->hasFile('avatar')) {
+            try {
+                $image = $request->file('avatar');
+                $user_name = explode('@', $request->user()->email)[0];
+                $imageName = "{$user_name}.{$image->getClientOriginalExtension()}";
+                $avatar_link = $this->getImagesDir() . 'profile/' . $imageName;
+                $image->move($this->getImagesDir() . 'profile/', $imageName);
+                $request->user()->avatar = $avatar_link;
+            } catch (Exception $e) {
+                Log::error('Error saving avatar:' . $e->getMessage());
+            }
+        }
+
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'profile updated',
+            'data' => $request->user(),
+        ]);
+
+        // return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
