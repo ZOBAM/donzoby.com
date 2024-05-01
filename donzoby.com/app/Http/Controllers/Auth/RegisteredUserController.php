@@ -54,7 +54,7 @@ class RegisteredUserController extends Controller
 
         // handle generation of avatar for new user
         try {
-            $image_name = explode('@', $user->email)[0] . '.png';
+            $image_name = explode('@', $user->email)[0] . '_' . $user->id . '.png';
             $avatar_uri = 'images/profile/' . $image_name;
             Avatar::create($user->first_name . ' ' . $user->last_name)->save($avatar_uri, 100);
             $user->avatar = $avatar_uri;
