@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Laravolt\Avatar\Facade as Avatar;
 
 class RegisteredUserController extends Controller
 {
@@ -49,6 +52,16 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // handle generation of avatar for new user
+        try {
+            $image_name = explode('@', $user->email)[0] . '.png';
+            $avatar_uri = 'images/profile/' . $image_name;
+            Avatar::create($user->first_name . ' ' . $user->last_name)->save($avatar_uri, 100);
+            $user->avatar = $avatar_uri;
+            $user->save();
+        } catch (Exception $e) {
+            Log::error('User avatar generation error.::' . $e->getMessage());
+        }
         return redirect(route('user-area', absolute: false));
     }
 }
