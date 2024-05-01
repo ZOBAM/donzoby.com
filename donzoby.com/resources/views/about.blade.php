@@ -21,7 +21,8 @@
                         to
                         remove
                         every huddles on the path of timely knowledge transfer in this sector.</p>
-                    <p>Added to what we do online is our Computer Literacy Outreach Program tagged: Light Up Your World.
+                    <p>Added to what we do online is our Computer Literacy Outreach Program tagged: <strong>Light Up
+                            Your World</strong>.
                         Within
                         this scheme, we visit communities, villages, and just any organized set of individuals that want
                         to

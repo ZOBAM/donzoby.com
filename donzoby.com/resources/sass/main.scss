@@ -21,7 +21,7 @@ main {
             color: #000;
             font-size: 0.9em;
             transition: all .5s;
-                border: 1px solid transparent;
+            border: 1px solid transparent;
 
             &:hover {
                 text-decoration: underline;
@@ -47,7 +47,8 @@ main {
             font-size: 1em;
             font-weight: 500;
         }
-        div{
+
+        div {
             padding-bottom: .5rem;
             // background-color: #fff;
         }
@@ -58,28 +59,56 @@ main {
     }
 }
 
-#single-col{
-    .card{
+#single-col {
+    .card {
         margin-top: 2rem;
-        h1,h4{
+
+        h1,
+        h4 {
             text-align: center;
             font-weight: bold;
         }
-        h1{
+
+        h1 {
             font-size: 1.75rem;
             margin-bottom: 1rem;
         }
-        h2,h3{
+
+        h2,
+        h3 {
             font-weight: bold;
         }
-        h3{
+
+        h3 {
             font-size: 1.2rem;
         }
-        p{
+
+        p {
             padding-bottom: 1rem;
         }
-        ul{
+
+        ul {
             margin: 0rem 0rem 1rem 2rem;
+        }
+    }
+
+    div#login,div#register  {
+        max-width: min(100%, 650px);
+        margin-inline: auto;
+        border: 1px solid rgb(222, 219, 219);
+
+        input {
+            border: 1px solid rgb(163, 160, 156);
+            width: 98%;
+            border-radius: .5rem;
+            padding-inline: .5rem;
+            padding-block: .25rem;
+
+            &:focus {
+                outline: none;
+                box-shadow: 1px 1px 2px 2px rgb(176, 176, 199);
+                border: 1px solid rgb(19, 19, 19);
+            }
         }
     }
 }
@@ -100,7 +129,8 @@ footer {
         text-decoration: none;
         color: rgba(0, 0, 0, 0.603);
         font-size: 0.89em;
-        &:hover{
+
+        &:hover {
             color: black;
         }
     }

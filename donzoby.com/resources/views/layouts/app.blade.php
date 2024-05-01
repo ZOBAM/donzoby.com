@@ -40,7 +40,7 @@
                 <a class="float-right" href="{{ url('login') }}">Login</a>
             @else
                 <a href = "{{ url('user-area') }}" style="text-transform: uppercase;" class="float-right">
-                    {{ Auth::user()->name }}</a>
+                    {{ Auth::user()->first_name }}</a>
                 <a class="float-right" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">

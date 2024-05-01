@@ -47,7 +47,7 @@
                                     :class="hasError.tel.hasError ? 'is-invalid' : 'is-valid'" id="validationServer01"
                                     x-model="userForm.tel" required>
                                 <div class="invalid-feedback">
-                                    Looks good!
+                                    <span x-text="hasError.tel.message"></span>
                                 </div>
                             </div>
                         </td>
