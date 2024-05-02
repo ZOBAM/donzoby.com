@@ -1,7 +1,7 @@
 <x-user-layout>
     <section x-data='user' class="">
         <div class="user-dp-container tw-flex tw-flex-col tw-justify-center tw-items-center">
-            <img @click="selectImage" class="tw-cursor-pointer" :src="avatar"
+            <img @click="selectImage" :class="isEditing && 'tw-cursor-pointer'" :src="avatar"
                 alt="{{ $user->first_name }} avatar">
             <span>{{ date('M d, Y', strtotime($user->created_at)) }}</span>
             <input type="file" x-ref="avatar" hidden>
@@ -14,7 +14,7 @@
                         <td><span>First Name:</span></td>
                         <td>
                             <template x-if="!isEditing"><span x-text="user.first_name"></span></template>
-                            <div x-show="isEditing" class="">
+                            <div x-show="isEditing" class="tw-max-w-80">
                                 <input type="text" class="form-control"
                                     :class="hasError.first_name.hasError ? 'is-invalid' : 'is-valid'"
                                     id="validationServer01" x-model="userForm.first_name" required>
@@ -28,7 +28,7 @@
                         <td><span>Last Name:</span></td>
                         <td>
                             <template x-if="!isEditing"><span x-text="user.last_name"></span></template>
-                            <div x-show="isEditing" class="">
+                            <div x-show="isEditing" class="tw-max-w-80">
                                 <input type="text" class="form-control"
                                     :class="hasError.last_name.hasError ? 'is-invalid' : 'is-valid'"
                                     id="validationServer01" x-model="userForm.last_name" required>
@@ -42,7 +42,7 @@
                         <td><span>Phone No:</span></td>
                         <td>
                             <template x-if="!isEditing"><span x-text="user.tel"></span></template>
-                            <div x-show="isEditing" class="">
+                            <div x-show="isEditing" class="tw-max-w-80">
                                 <input type="text" class="form-control"
                                     :class="hasError.tel.hasError ? 'is-invalid' : 'is-valid'" id="validationServer01"
                                     x-model="userForm.tel" required>
@@ -56,7 +56,7 @@
                         <td><span>Email:</span></td>
                         <td>
                             <template x-if="!isEditing"><span>{{ $user->email }}</span></template>
-                            <div x-show="isEditing" class="">
+                            <div x-show="isEditing" class="tw-max-w-80">
                                 <input type="text" class="form-control" id="validationServer01"
                                     :value="user.email" disabled>
                             </div>
@@ -66,7 +66,7 @@
                         <td><span>Country:</span></td>
                         <td>
                             <template x-if="!isEditing"><span x-text="user.country"></span></template>
-                            <div x-show="isEditing" class="">
+                            <div x-show="isEditing" class="tw-max-w-80">
                                 <input type="text" class="form-control"
                                     :class="hasError.country.hasError ? 'is-invalid' : 'is-valid'"
                                     id="validationServer01" x-model="userForm.country" required>

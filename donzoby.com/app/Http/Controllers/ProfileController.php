@@ -48,10 +48,7 @@ class ProfileController extends Controller
                 $image->move($this->getImagesDir() . 'profile/', $imageName);
                 // delete previous avatar in situations where the new one has different file extension
                 if (file_exists($user->avatar)) {
-                    Log::info('found image file and about to delete:::' . $user->avatar);
                     unlink($user->avatar);
-                } else {
-                    Log::info('could not find image file and cannot delete:::' . $user->avatar);
                 }
                 $user->avatar = $avatar_link;
             } catch (Exception $e) {
