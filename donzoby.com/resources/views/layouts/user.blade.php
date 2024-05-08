@@ -49,14 +49,20 @@
                         <img src="{{ asset($user->avatar) }}" alt="" class="">
                         <span class="tw-mt-1 tw-font-medium">{{ $user->first_name . ' ' . $user->last_name }}</span>
                     </div>
-                    <div class="left-links tw-mt-7">
+                    <div x-data="{ showAdminLinks: false }" class="left-links tw-mt-7">
                         <a href="/user-area"><i class="fa fa-home"></i> Home</a>
                         <a href=""><i class="fa fa-cog"></i> Profile Edit</a>
                         <a href=""><i class="fa fa-comments-o"></i> Comments</a>
-                        <a href=""><i class="fa fa-users"></i> Users</a>
-                        <a href="/courses"><i class="fa fa-users"></i> Courses</a>
-                        <a href="/posts/create"><i class="fa fa-file-text"></i> New Post</a>
-                        <a href="/posts"><i class="fa fa-eye"></i> View Posts</a>
+                        <span @click="showAdminLinks = !showAdminLinks" class="tw-cursor-pointer tw-ml-2">Admin
+                            Area</span>
+                        <div x-show="showAdminLinks" x-transition.duration.500ms class="">
+                            <a href=""><i class="fa fa-users"></i> Users</a>
+                            <a href="/courses"><i class="fa fa-users"></i> Courses</a>
+                            <a href="/posts/create"><i class="fa fa-file-text"></i> New Post</a>
+                            <a href="/posts"><i class="fa fa-eye"></i> View Posts</a>
+                            <a href="/permissions"><i class="fa fa-unlock-alt"></i> Permissions</a>
+                            <a href="/roles"><i class="fa fa-compass"></i> Roles</a>
+                        </div>
                         <a href=""><i class="fa fa-sign-out"></i> Logout</a>
                     </div>
                 </div>

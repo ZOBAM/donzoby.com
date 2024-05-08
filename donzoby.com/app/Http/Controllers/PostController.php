@@ -37,7 +37,7 @@ class PostController extends Controller
             $post->is_child = $post->parent_id;
             $post->content = Str::words(strip_tags($post->content), 35);
         }
-        return view('user.posts')->with(['posts' => $posts]);
+        return view('admin.posts')->with(['posts' => $posts]);
     }
 
     /**
@@ -112,7 +112,7 @@ class PostController extends Controller
         $post = Post::where('id', $post->id)->with('subject')->first();
         // $post->content = str_replace('../../images/courses', '/images/courses', $post->content);
         Log::info($post->content);
-        return view("user.create-post")->with(["courses" => $course, "post" => $post]);
+        return view("admin.create-post")->with(["courses" => $course, "post" => $post]);
     }
 
     /**

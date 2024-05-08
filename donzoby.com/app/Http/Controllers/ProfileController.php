@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class ProfileController extends Controller
 {
@@ -86,5 +87,33 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * assign_role
+     */
+    public function assign_role(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => ['required', 'numeric', 'exists:users,id'],
+            'role_id' => ['required', 'numeric', 'exists:roles,id'],
+        ]);
+
+        $user = User::find($validated['user_id']);
+        $role = Role::find($validated['role_id']);
+
+        // only assign role if user has no role
+        if (count($user->getRoleNames()) != 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Admin already has a role',
+            ], 422);
+        }
+        $user->assignRole($role->name);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Role assigned to user',
+            'data' => User::where('id', $validated['user_id'])->with('roles')->first(),
+        ]);
     }
 }

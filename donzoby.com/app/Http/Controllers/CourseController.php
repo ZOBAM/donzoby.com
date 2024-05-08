@@ -15,7 +15,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::where('name', '!=', null)->with('subjects')->get();
-        return view("user.course")->with(["courses" => $courses]);
+        return view("admin.course")->with(["courses" => $courses]);
         /* return [
             "status"=> 'success',
             "courses"=> Course::all()->with("subjects"),
