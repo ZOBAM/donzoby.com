@@ -56,7 +56,7 @@
                         <span @click="showAdminLinks = !showAdminLinks" class="tw-cursor-pointer tw-ml-2">Admin
                             Area</span>
                         <div x-show="showAdminLinks" x-transition.duration.500ms class="">
-                            <a href=""><i class="fa fa-users"></i> Users</a>
+                            <a href="/admin/users"><i class="fa fa-users"></i> Users</a>
                             <a href="/courses"><i class="fa fa-users"></i> Courses</a>
                             <a href="/posts/create"><i class="fa fa-file-text"></i> New Post</a>
                             <a href="/posts"><i class="fa fa-eye"></i> View Posts</a>

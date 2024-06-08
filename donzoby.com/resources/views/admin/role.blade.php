@@ -204,7 +204,7 @@
                     title += this.currentType;
                     /* title += this.currentType == 'permission' ? ` in <strong>${this.permissions[this.currentRoleIndex]
                 .name}</strong>` :
-                                                                                                                                                                                                                                                                                                                                                                                                                            ''; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                            ''; */
                     return title;
                 },
                 get submitBtnText() {
@@ -292,8 +292,10 @@
                         payload.permissions_ids = this.permissions_ids;
                     }
                     try {
+                        console.log('Payload***', payload);
                         const response = await axios.post(link, payload);
                         if (response.data) {
+                            console.log('Data from back end: ', response.data);
                             if (isRole) {
                                 if (isEditing) {
                                     this.roles[this.currentRoleIndex] = response.data.data;

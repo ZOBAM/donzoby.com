@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -91,8 +92,9 @@ class RoleController extends Controller
             ], 422);
         }
         // create role
+        Log::info('Role ID::' . $id);
         Role::find($id)->update($role_data);
-        $role = Role::find($id)->with('permissions')->first();
+        $role = Role::find($id);
         // get permissions
         $permissions = Permission::findMany($role_data['permissions_ids']);
         $role->syncPermissions($permissions);

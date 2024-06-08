@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\CourseController;
@@ -31,16 +32,19 @@ Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 });
 // resource links
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'can:create users'])->group(function () {
     Route::resources([
-        'posts' => PostController::class,
+        // 'posts' => PostController::class,
         'courses' => CourseController::class,
         'subjects' => SubjectController::class,
         'comments' => CommentController::class,
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
+        'admin/users' => AdminUserController::class,
     ]);
 });
+Route::resource('posts', PostController::class)->middleware(['can:create posts']);
+
 Route::post('/image-upload', [PostPictureController::class, 'index'])->name('post-image');
 
 // profile

@@ -46,7 +46,7 @@ class PostController extends Controller
     public function create()
     {
         $course = Course::with('subjects')->get();
-        return view("user.create-post")->with("courses", $course);
+        return view("admin.create-post")->with("courses", $course);
     }
 
     /**
@@ -227,12 +227,17 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $user = User::find(Auth::id());
+        // allow only those with applicable permission to delete post
+        if (!($user->hasPermissionTo('delete posts') || $user->hasRole('super admin'))) {
+            return back()->with('post_delete_error', 'you are not authorized to delete a post');
+        }
+
         $post_children = Post::where("parent_id", $post->id)->get();
         if (count($post_children) > 0) {
             return back()->with("post_delete_error", "This post has children and therefore cannot be deleted");
         }
         //specify images directory first for development and then for production
-        $user = User::find(Auth::id());
         $post_images = Post_image::where('post_id', $post->id)->get();
         //delete the post from db, clear img links from db, and then delete files from server.
         if (Post::destroy($post->id)) {
