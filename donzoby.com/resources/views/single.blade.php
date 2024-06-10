@@ -36,7 +36,7 @@
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
             </script>
-            <!-- Your share button code -->
+            <!-- share button code -->
             <div class="fb-share-button tw-ml-2" data-href="{{ url()->current() }}" data-layout="button_count"
                 data-size="large" data-mobile-iframe="true"><a target="_blank"
                     href="https://www.facebook.com/sharer/sharer.php?u={{ url()->current() }}&amp;src=sdkpreparse"

@@ -13,7 +13,7 @@
             @foreach ($subject->posts as $post)
                 <div class="tw-mt-4">
                     <a class=""
-                        href="{{ url('/' . $course . '/' . $subject->slug . '/' . $post->id . '/' . $post->topic) }}">{{ $post->topic }}</a>
+                        href="{{ url('/' . $course . '/' . $subject->slug . '/' . $post->slug) }}">{{ $post->topic }}</a>
                     <p class="tw-pb-2">{{ $post->description }}</p>
                     <hr style="opacity: 0.15">
                 </div>

@@ -70,4 +70,4 @@ Route::get('/clear-cache', function () {
     return '<h1>Clear Config cleared</h1>';
 });
 
-Route::get('/{course?}/{subject?}/{id?}/{topic?}', [HomePageController::class, 'index'])->name('courses');
+Route::get('/{course?}/{subject?}/{id?}/{slug?}', [HomePageController::class, 'index'])->name('courses');

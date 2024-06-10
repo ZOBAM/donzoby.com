@@ -23,6 +23,11 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        // loop through all post and populate the slug cols using the topic
+        /* foreach (Post::get() as $post) {
+            $post->slug = str_replace(' ', '_', strtolower($post->topic));
+            $post->save();
+        } */
         // return list of matching parent posts
         if ($request->has("subject_id")) {
             $post = Post::where("subject_id", $request->subject_id)->where('type', $request->type)->orderBy("created_at", "desc")->get();
@@ -66,6 +71,8 @@ class PostController extends Controller
             // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
         ]);
         $validated['author_id'] = Auth::id();
+        // add post slug using the post topic
+        $validated['slug'] = str_replace(' ', '_', strtolower($request->topic));
 
         $post = Subject::find($validated['subject_id'])->posts()->create($validated);
 

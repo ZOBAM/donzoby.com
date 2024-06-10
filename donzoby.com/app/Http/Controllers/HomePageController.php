@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class HomePageController extends Controller
 {
-	public function index($course = 1, $subject = 2, $id = 0, $post = "2") //{course}/{subject?}/{id?}/{topic?}
+	public function index($course = 1, $subject = 2, $id = 0, $slug = null) //{course}/{subject?}/{id?}/{topic?}
 	{
 		//get only parent posts
 		$posts = Post::where('parent_id', null)->orderBy('created_at', 'desc')->take(22)->get();
@@ -29,22 +29,7 @@ class HomePageController extends Controller
 		// fetch latest post for each of the courses of interest
 		$latest = $this->get_latest(['front-end', 'back-end', 'graphics']);
 		$latest_modified = $this->get_latest(['front-end', 'graphics', 'back-end'], true);
-		/* $latest['front-end'] = Post::whereHas('subject', function ($query) {
-			$query->whereHas('course', function ($query) {
-				$query->where('slug', 'front-end');
-			});
-		})->orderBy('created_at')->take(5)->get();
-		$latest['graphics'] = Post::whereHas('subject', function ($query) {
-			$query->whereHas('course', function ($query) {
-				$query->where('slug', 'graphics');
-			});
-		})->orderBy('created_at')->take(5)->get();
-		$latest[''] = Post::whereHas('subject', function ($query) {
-			$query->whereHas('course', function ($query) {
-				$query->where('slug', 'back-end');
-			});
-		})->orderBy('created_at')->take(5)->get();
- */
+
 		$course = strtolower($course);
 		$subject = strtolower($subject);
 		$page_image = URL('images/donzoby-logo-wtbg.png');
@@ -57,8 +42,12 @@ class HomePageController extends Controller
 			}
 
 			if (Subject::where('slug', $subject)->first()) {
-				if ($id != 0 && is_numeric($id)) { // an id is provided
-					$post = Post::findOrFail($id);
+				if ($id || $slug) { // an id is provided
+					// format slug for old links from outside
+					$slug = is_numeric($id) && $id != 0 ? $slug : $id;
+					$slug = str_replace(' ', '_', str_replace('-', '_', strtolower($slug)));
+
+					$post = Post::where('slug', $slug)->firstOrFail();
 					$post->timestamps = false; //prevent updating of time stamps
 					//check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
 					//adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
@@ -75,20 +64,7 @@ class HomePageController extends Controller
 					$title = $post->topic; //page title
 					//get comments
 					$comments = Comment::where('post_id', $id)->with('user')->get();
-					/* if (count($comments) > 0) {
-						$i = 0;
-						foreach ($comments as $comment) {
-							$comment_authors = User::where('id', $comment->user_id)->first();
-							$comments[$i]->author_name = $comment_authors->name;
-							$author_image = Profile_picture::where('user_id', $comment_authors->id)->first();
-							if ($author_image) {
-								$comments[$i]->author_image_link = URL($author_image->link);
-							} else {
-								$comments[$i]->author_image_link = URL('images/donzoby-logo-wtbg.png');
-							}
-							$i++;
-						} //endforeach
-					} //endif */
+
 					return view('single', compact('post', 'subject', 'comments', 'posts', 'listed_subjects', 'description', 'title', 'page_image'));
 				} //end id not 0 or data-plans
 				else { //invalid id provided, just list topics under the specified subject

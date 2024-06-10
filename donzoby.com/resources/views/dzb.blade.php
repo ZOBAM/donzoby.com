@@ -23,7 +23,7 @@
                         class="post-links tw-flex tw-flex-col md:tw-flex-row tw-justify-around tw-items-center tw-p-4 tw-mt-8">
                         <div class="posts tw-px-6 tw-py-8 tw-rounded-2xl tw-shadow-xl">
                             @foreach ($data as $post)
-                                <a href="{{ url('/' . $post->subject->course->slug . '/' . $post->subject->slug . '/' . $post->id . '/' . str_replace(' ', '-', $post->topic)) }}"
+                                <a href="{{ url('/' . $post->subject->course->slug . '/' . $post->subject->slug . '/' . $post->slug) }}"
                                     class="">{{ $post->topic }}</a>
                             @endforeach
                         </div>
@@ -42,7 +42,7 @@
                     <div class="card-links tw-flex tw-justify-between tw-text-sm">
                         <span class="tw-text-gray-500">Latest: </span>
                         <span class=""><a
-                                href="{{ url('/' . $latest_modified[$course_slug]->subject->course->slug . '/' . $latest_modified[$course_slug]->subject->slug . '/' . $latest_modified[$course_slug]->id . '/' . str_replace(' ', '-', $latest_modified[$course_slug]->topic)) }}">{{ $latest_modified[$course_slug]->topic }}</a>
+                                href="{{ url('/' . $latest_modified[$course_slug]->subject->course->slug . '/' . $latest_modified[$course_slug]->subject->slug . '/' . $latest_modified[$course_slug]->slug) }}">{{ $latest_modified[$course_slug]->topic }}</a>
                             <span class="tw-text-xs">
                                 &#9001;updated
                                 {{ date('M d, Y', strtotime($latest_modified[$course_slug]->updated_at)) }}&#x3009;
