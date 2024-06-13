@@ -11,12 +11,18 @@ use App\Http\Controllers\PostPictureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Old_user;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
-/* Route::get('/', function () {
-    return view('dzb');
-}); */
+Route::get('/repop', function () {
+    $verified_users = Old_user::where('email_verified_at', '!=', null)->get();
+    foreach ($verified_users as $user) {
+        User::create($user->toArray());
+    }
+    return User::get();
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

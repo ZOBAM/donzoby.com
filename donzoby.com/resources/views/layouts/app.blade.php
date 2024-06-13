@@ -25,8 +25,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
     @if ($customStyle == 'single')
         @vite(['resources/sass/single.scss'])
+        {{-- <link href="{{ asset('build/assets/single-O6A__Uph.css') }}" rel="stylesheet"> --}}
     @elseif($customStyle == 'home')
         @vite(['resources/sass/home.scss'])
+        {{-- <link href="{{ asset('build/assets/home-DVey3HtV.css') }}" rel="stylesheet"> --}}
     @endif
 
 </head>
@@ -109,8 +111,14 @@
                     {{ $slot }}
 
                 </div>
-                <div class="col-12 d-sm-none d-lg-block col-md-3">
-                    <p class="tw-text-green-300 tw-font-bold">Let see how we can make this work</p>
+                <div class="col-12 d-sm-none d-lg-block col-md-3 tw-pt-4">
+                    <img src="{{ asset('images/dzb-tut-ad.png') }}" alt="possible error message to users">
+                    <p class="tw-border tw-text-center tw-p-2 tw-border-dashed tw-border-stone-500">
+                        Please notify us of
+                        any error or
+                        mistake. While we are
+                        making efforts to be accurate and as concise as possible, we know that some errors can still
+                        slip through uncaught.</p>
                 </div>
             </div>
         </div>

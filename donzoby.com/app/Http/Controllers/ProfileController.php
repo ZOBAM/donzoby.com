@@ -38,9 +38,10 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        $user = User::findOrFail(Auth::user()->id);
+
         if ($request->hasFile('avatar')) {
             try {
-                $user = User::findOrFail(Auth::user()->id);
 
                 $image = $request->file('avatar');
                 $user_name = explode('@', $request->user()->email)[0] . '_' . $user->id;

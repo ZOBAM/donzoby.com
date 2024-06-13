@@ -17,6 +17,11 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss', 'resources/sass/user-area.scss'])
+    {{-- prod scripts & styles --}}
+    {{-- <link href="{{ asset('build/assets/app-DcSBx-Q1.css') }}" rel="stylesheet">
+    <link href="{{ asset('build/assets/main-C6BhV7rv.css') }}" rel="stylesheet">
+    <link href="{{ asset('build/assets/user-area-DZhi3_zE.css') }}" rel="stylesheet">
+    <script src="{{ asset('build/assets/app-mqEmiGqA.js') }}" defer></script> --}}
 </head>
 
 <body class="font-sans antialiased">

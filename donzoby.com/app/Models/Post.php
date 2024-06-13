@@ -19,6 +19,12 @@ class Post extends Model
         "type",
         "subject_id",
         "author_id",
+        'comment_status',
+        'comment_count',
+        'hits',
+        'slug',
+        'created_at',
+        'updated_at',
     ];
     protected $appends = ['children'];
 
