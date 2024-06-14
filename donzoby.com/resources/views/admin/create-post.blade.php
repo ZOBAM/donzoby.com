@@ -121,6 +121,8 @@
                 </button>
             </div>
         </form>
+        {{-- bs toast --}}
+        @include('bs-toast')
     </section>
     {{-- Add page specific JS --}}
     <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=aebyz7zeke446ygrs6h75wf7p21s7cprkwa7fl5cmrfwj6ly">
@@ -163,6 +165,15 @@
         });
         // alpine
         document.addEventListener('alpine:init', () => {
+            // bootstrap toast
+            const toastTrigger = document.getElementById('liveToastBtn');
+            const toastLiveExample = document.getElementById('liveToast');
+            if (toastTrigger) {
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+                toastTrigger.addEventListener('click', () => {
+                    toastBootstrap.show();
+                })
+            }
 
             Alpine.data('course', () => ({
                 loading: false,
@@ -418,10 +429,13 @@
                             data
                         } = await axios.post(link, payload);
                         console.log(data);
+                        this.toastMessage = data.message;
                     } catch (error) {
                         console.log('Error submitting post: ', error);
+                        this.toastMessage = "post update failed";
                     } finally {
                         this.loading = false;
+                        toastTrigger.click();
                     }
                 }
             }));
