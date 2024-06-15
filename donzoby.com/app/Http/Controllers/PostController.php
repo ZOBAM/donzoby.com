@@ -145,6 +145,11 @@ class PostController extends Controller
         $new_subject = Subject::find($request->subject_id);
         $subject_changed = $new_subject != $old_subject;
 
+        // if topic changed update slug
+        if ($post->topic != $request->topic) {
+            $validated['slug'] = str_replace(' ', '_', strtolower($request->topic));
+        }
+
         // update post in db
         $post->update($validated);
 
