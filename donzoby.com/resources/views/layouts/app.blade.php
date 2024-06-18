@@ -22,6 +22,8 @@
     <link href="{{ asset('css/line-number.css') }}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Scripts -->
+    {{-- <link href="{{ asset('build/assets/app-DcSBx-Q1.css') }}" rel="stylesheet"> --}}
+    {{-- <script src="{{ asset('build/assets/app-mqEmiGqA.js') }}" defer></script> --}}
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
     @if ($customStyle == 'single')
         @vite(['resources/sass/single.scss'])

@@ -72,7 +72,7 @@ class PostController extends Controller
         ]);
         $validated['author_id'] = Auth::id();
         // add post slug using the post topic
-        $validated['slug'] = str_replace(' ', '_', strtolower($request->topic));
+        $validated['slug'] = $this->get_post_slug($request->topic);
 
         $post = Subject::find($validated['subject_id'])->posts()->create($validated);
 
@@ -118,7 +118,7 @@ class PostController extends Controller
         $course = Course::with('subjects')->get();
         $post = Post::where('id', $post->id)->with('subject')->first();
         // $post->content = str_replace('../../images/courses', '/images/courses', $post->content);
-        Log::info($post->content);
+        // Log::info($post->content);
         return view("admin.create-post")->with(["courses" => $course, "post" => $post]);
     }
 
@@ -147,7 +147,7 @@ class PostController extends Controller
 
         // if topic changed update slug
         if ($post->topic != $request->topic) {
-            $validated['slug'] = str_replace(' ', '_', strtolower($request->topic));
+            $validated['slug'] = $this->get_post_slug($request->topic);
         }
 
         // update post in db
@@ -168,10 +168,10 @@ class PostController extends Controller
             return !str_contains($i_link, 'images/courses/temp/dzb_00000_');
         });
 
-        Log::info('these are old image links');
+        /* Log::info('these are old image links');
         Log::info(json_encode($old_image_links));
         Log::info('these are new image links');
-        Log::info(json_encode($new_image_links));
+        Log::info(json_encode($new_image_links)); */
 
         if ($num_images > 0) { //there are matches for image link
 
@@ -316,5 +316,14 @@ class PostController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * get_post_slug
+     * @return string
+     */
+    public function get_post_slug(string $topic)
+    {
+        return str_replace('?', '', str_replace(' ', '_', strtolower($topic));)
     }
 }

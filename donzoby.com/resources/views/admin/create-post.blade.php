@@ -64,16 +64,16 @@
             <div class="row tw-mt-3">
                 <div @click="getPostParents()" class="col col-md-3 tw-flex tw-items-end">
                     <div class="mb-3 form-check form-switch tw-flex tw-justify-center tw-items-center tw-pb-3">
-                        <input class="form-check-input" x-model="postForm.isChild" name="is_child" type="checkbox"
+                        <input class="form-check-input" x-model="postForm.is_child" name="is_child" type="checkbox"
                             role="switch" id="flexSwitchCheckDefault" :disabled="!postForm.subject_id">
                         <label class="form-check-label tw-ml-1" for="flexSwitchCheckDefault">Is Child</label>
                     </div>
                 </div>
-                <div x-show="postForm.isChild" x-transition.duration.750ms class="col col-md-6">
+                <div x-show="postForm.is_child" x-transition.duration.750ms class="col col-md-6">
                     <div class="mb-3">
                         {{-- <label for="exampleFormControlInput1" class="form-label">Select Parent Post</label> --}}
                         <select class="form-select"
-                            :class="postForm.isChild && hasError.parent_id?.hasError ? 'is-invalid' : 'is-valid'"
+                            :class="postForm.is_child && hasError.parent_id?.hasError ? 'is-invalid' : 'is-valid'"
                             x-model="postForm.parent_id" name="parent" aria-label="Default select example"
                             :disabled="loading">
                             <option selected>Select Parent Post</option>
@@ -198,7 +198,7 @@
                     tags: '',
                     description: '',
                     parent_id: null,
-                    isChild: false,
+                    is_child: false,
                 },
                 validationRules: {
                     type: {
@@ -246,11 +246,11 @@
                         this.postForm.status = this.postForm.status == 'published' ? true : false;
                         this.postForm.course_id = this.post.subject.course_id;
                         this.isEditing = true;
-                        this.postForm.isChild = this.post.parent_id != null ? true : false;
+                        this.postForm.is_child = this.post.parent_id != null ? true : false;
                         /* TODO:
                         Later make getPostParents accept the parent ID for editing post to fetch only the parent
                          */
-                        if (!this.postForm.isChild) {
+                        if (!this.postForm.is_child) {
                             delete this.validationRules.parent_id;
                         } else {
                             setTimeout(async () => {
@@ -374,8 +374,8 @@
                         this.loadedParents = false;
                         return;
                     }
-                    // only load parents when isChild
-                    if (this.postForm.isChild && !this.isEditing) {
+                    // only load parents when is_child
+                    if (this.postForm.is_child && !this.isEditing) {
                         // remove parent validation
                         delete this.validationRules.parent_id;
                         // make is parent null
@@ -383,7 +383,7 @@
                         return;
                     }
 
-                    console.log('isChild>>>>', this.postForm.isChild);
+                    console.log('is_child>>>>', this.postForm.is_child);
                     this.loading = true;
                     try {
                         const {
@@ -395,7 +395,7 @@
                         // disable is child if there is no possible parent
                         console.log('this is parents: ', this.postParents);
                         if (!this.postParents.length) {
-                            this.postForm.isChild = false;
+                            this.postForm.is_child = false;
                         } else {
                             // add parent validation rule
                             this.validationRules.parent_id = {
@@ -422,6 +422,9 @@
                         payload['_method'] = 'put';
                         link += `/${this.post.id}`;
                         console.log('About to post edit: ', link);
+                        if (!this.postForm.is_child) {
+                            payload.parent_id = null;
+                        }
                         console.log(payload);
                     }
                     try {
