@@ -34,14 +34,19 @@
             <div class="mt-4">
                 <label for="password_confirmation">Confirm Password</label>
                 <input id="password_confirmation" class="tw-block tw-mt-1 tw-w-full" type="password"
-                    name="password_confirmation" required autocomplete="new-password" />
+                    name="password_confirmation" required autocomplete="password_confirmation" />
                 <x-input-error :messages="$errors->get('password_confirmation')" class="tw-mt-2" />
             </div>
-            <!-- Last Name -->
+            <!-- Country -->
             <div class="tw-mt-4">
                 <label for="country">Country</label>
-                <input id="country" class="tw-block tw-mt-1 tw-w-full" type="text" name="country"
+                <input list="country" class="tw-block tw-mt-1 tw-w-full" type="text" name="country"
                     value="{{ old('country') }}" required autofocus autocomplete="country" />
+                <datalist id="country">
+                    <template x-for="country in allCountries">
+                        <option :value="country.name">
+                    </template>
+                </datalist>
                 <x-input-error :messages="$errors->get('country')" class="tw-mt-2" />
             </div>
             <!-- recaptcha -->
@@ -58,7 +63,7 @@
                     href="{{ route('login') }}">
                     {{ __('Already registered?') }}
                 </a>
-                <button class="btn btn-primary tw-px-5">Register</button>
+                <button id="register-btn" class="btn btn-primary tw-px-5" disabled="false">Register</button>
             </div>
         </form>
     </div>
@@ -66,11 +71,26 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
+
             Alpine.data('register', () => ({
                 passedRecaptcha: false,
                 checkedRecaptcha: false,
+                allCountries: null,
 
                 async init() {
+                    // remove the disabled attribute from the submit btn
+                    document.getElementById('register-btn').removeAttribute("disabled");
+
+                    // fetch countries from beezlinq
+                    try {
+                        const {
+                            data
+                        } = await axios.get("https://api.beezlinq.com/api/v1/get/countries");
+                        this.allCountries = data.data;
+                    } catch (error) {
+                        console.log('error fetching countries', error);
+                    }
+
                     document.querySelector(".form").addEventListener("submit", (event) => {
                         console.log('checking validity of recaptcha');
                         const response = grecaptcha.getResponse();
@@ -79,6 +99,8 @@
                             this.passedRecaptcha = false;
                         } else {
                             this.passedRecaptcha = true;
+                            document.getElementById('register-btn').setAttribute("disabled",
+                                true);
                         }
                         this.checkedRecaptcha = true;
                         setTimeout(() => {

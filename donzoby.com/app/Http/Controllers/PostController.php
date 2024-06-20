@@ -324,6 +324,6 @@ class PostController extends Controller
      */
     public function get_post_slug(string $topic)
     {
-        return str_replace('?', '', str_replace(' ', '_', strtolower($topic));)
+        return str_replace('?', '', str_replace(' ', '_', strtolower($topic)));
     }
 }
