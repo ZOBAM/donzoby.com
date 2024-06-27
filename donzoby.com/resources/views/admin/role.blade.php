@@ -36,7 +36,7 @@
                     </template>
                 </ol>
                 <button @click="switchShow('postForm', isRole? 'newRole': 'newPermission')"
-                    class="btn btn-primary tw-mt-4" :disabled="!permissions.length">
+                    class="btn btn-primary tw-mt-4" :disabled="isRole && !permissions.length">
                     <i class="fa fa-plus" aria-hidden="true"></i> <span class="text-capitalize"
                         x-text="'Add ' + currentType"></span>
                 </button>
@@ -204,7 +204,7 @@
                     title += this.currentType;
                     /* title += this.currentType == 'permission' ? ` in <strong>${this.permissions[this.currentRoleIndex]
                 .name}</strong>` :
-                                                                                                                                                                                                                                                                                                                                                                                                                                            ''; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                ''; */
                     return title;
                 },
                 get submitBtnText() {
