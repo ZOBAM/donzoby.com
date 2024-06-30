@@ -11,12 +11,14 @@
         <p class="tw-mt-4">{{ $subject->description }}</p>
         @if (count($subject->posts))
             @foreach ($subject->posts as $post)
-                <div class="tw-mt-4">
-                    <a class=""
-                        href="{{ url('/' . $course . '/' . $subject->slug . '/' . $post->slug) }}">{{ $post->topic }}</a>
-                    <p class="tw-pb-2">{{ $post->description }}</p>
-                    <hr style="opacity: 0.15">
-                </div>
+                @if ($post->status == 'published')
+                    <div class="tw-mt-4">
+                        <a class=""
+                            href="{{ url('/' . $course . '/' . $subject->slug . '/' . $post->slug) }}">{{ $post->topic }}</a>
+                        <p class="tw-pb-2">{{ $post->description }}</p>
+                        <hr style="opacity: 0.15">
+                    </div>
+                @endif
             @endforeach
         @else
             <h3>Tutorials on {{ $subject->name }} is coming soon. <br> Please check back.</h3>

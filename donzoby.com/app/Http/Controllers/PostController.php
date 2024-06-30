@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -60,14 +61,15 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type'     => 'required|min:5|max:20',
-            'parent_id'         => 'nullable|exists:posts,id',
-            'subject_id'       => 'required|exists:subjects,id',
-            'topic'         => 'required|string|min:7|max:200',
-            'content'  => 'required|string|min:200|max:3500',
-            'status'   => 'required|string|min:9|max:11',
-            'tags'     => 'required|string|min:4|max:200',
-            'description'     => 'required|string|min:30|max:1500',
+            'type'     => ['required', 'min:5', 'max:20',],
+            'parent_id'         => ['nullable', 'exists:posts,id',],
+            'subject_id'       => ['required', 'exists:subjects,id',],
+            'topic'         => ['required', 'string', 'min:7', 'max:200',],
+            'content'  => ['required', 'string', 'min:200', 'max:3500',],
+            'status'   => ['required', 'string', Rule::in(['published', 'unpublished']),],
+            'tags'     => ['required', 'string', 'min:4', 'max:200',],
+            'description'     => ['required', 'string', 'min:30', 'max:1500',],
+            'comment_status'     => ['required', 'string', Rule::in(['open', 'closed'])],
             // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
         ]);
         $validated['author_id'] = Auth::id();
@@ -128,15 +130,16 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $validated = $request->validate([
-            "id" => "required|exists:posts,id",
-            'type'     => 'sometimes|min:5|max:20',
-            'parent_id'         => 'nullable|exists:posts,id',
-            'subject_id'       => 'required|exists:subjects,id',
-            'topic'         => 'required|string|min:7|max:200',
-            'content'  => 'required|string|min:200',
-            'status'   => 'required|string|min:9|max:11',
-            'tags'     => 'required|string|min:4|max:200',
-            'description'     => 'required|string|min:30|max:1500',
+            "id" => ['required', 'exists:posts,id'],
+            'type'     => ['sometimes', 'min:5', 'max:20'],
+            'parent_id'         => ['nullable', 'exists:posts,id'],
+            'subject_id'       => ['required', 'exists:subjects,id'],
+            'topic'         => ['required', 'string', 'min:7', 'max:200'],
+            'content'  => ['required', 'string', 'min:200'],
+            'status'   => ['required', 'string', Rule::in(['published', 'unpublished']),],
+            'tags'     => ['required', 'string', 'min:4', 'max:200'],
+            'description'     => ['required', 'string', 'min:30', 'max:1500'],
+            'comment_status'     => ['required', 'string', Rule::in(['open', 'closed'])],
             // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
         ]);
 

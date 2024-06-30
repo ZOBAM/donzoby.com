@@ -65,6 +65,6 @@ class Post extends Model
      */
     public function getChildrenAttribute()
     {
-        return $this->where("parent_id", $this->id)->get();
+        return $this->where('status', 'published')->where("parent_id", $this->id)->get();
     }
 }

@@ -18,7 +18,7 @@ class HomePageController extends Controller
 	public function index($course = 1, $subject = 2, $id = 0, $slug = null) //{course}/{subject?}/{id?}/{topic?}
 	{
 		//get only parent posts
-		$posts = Post::where('parent_id', null)->orderBy('created_at', 'desc')->take(22)->get();
+		$posts = Post::where('parent_id', null)->where('status', 'published')->orderBy('created_at', 'desc')->take(22)->get();
 
 		$listed_subjects = [];
 		foreach ($posts as $value) { //get array of fetched post's subjects
@@ -47,7 +47,7 @@ class HomePageController extends Controller
 					$slug = is_numeric($id) && $id != 0 ? $slug : $id;
 					$slug = str_replace(' ', '_', str_replace('-', '_', strtolower($slug)));
 
-					$post = Post::where('slug', $slug)->firstOrFail();
+					$post = Post::where('slug', $slug)->where('status', 'published')->firstOrFail();
 					$post->timestamps = false; //prevent updating of time stamps
 					//check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
 					//adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
@@ -93,13 +93,13 @@ class HomePageController extends Controller
 		$latest = [];
 		foreach ($courses_slugs as $course_slug) {
 			if ($modified) {
-				$latest[$course_slug] = Post::whereHas('subject', function ($query) use ($course_slug) {
+				$latest[$course_slug] = Post::where('status', 'published')->whereHas('subject', function ($query) use ($course_slug) {
 					$query->whereHas('course', function ($query) use ($course_slug) {
 						$query->where('slug', $course_slug);
 					});
 				})->orderBy('updated_at', 'desc')->first();
 			} else {
-				$latest[$course_slug] = Post::whereHas('subject', function ($query) use ($course_slug) {
+				$latest[$course_slug] = Post::where('status', 'published')->whereHas('subject', function ($query) use ($course_slug) {
 					$query->whereHas('course', function ($query) use ($course_slug) {
 						$query->where('slug', $course_slug);
 					});

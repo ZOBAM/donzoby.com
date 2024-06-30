@@ -62,14 +62,14 @@
                 </div>
             </div>
             <div class="row tw-mt-3">
-                <div @click="getPostParents()" class="col col-md-3 tw-flex tw-items-end">
+                <div @click="getPostParents()" class="col-6 col-md-2 tw-flex tw-items-end">
                     <div class="mb-3 form-check form-switch tw-flex tw-justify-center tw-items-center tw-pb-3">
                         <input class="form-check-input" x-model="postForm.is_child" name="is_child" type="checkbox"
                             role="switch" id="flexSwitchCheckDefault" :disabled="!postForm.subject_id">
                         <label class="form-check-label tw-ml-1" for="flexSwitchCheckDefault">Is Child</label>
                     </div>
                 </div>
-                <div x-show="postForm.is_child" x-transition.duration.750ms class="col col-md-6">
+                <div x-show="postForm.is_child" x-transition.duration.750ms class="col col-md-5">
                     <div class="mb-3">
                         {{-- <label for="exampleFormControlInput1" class="form-label">Select Parent Post</label> --}}
                         <select class="form-select"
@@ -84,11 +84,18 @@
                         </select>
                     </div>
                 </div>
-                <div class="col col-md-3 tw-flex tw-items-end">
+                <div class="col-6 col-md-3 tw-flex tw-items-end">
                     <div class="mb-3 form-check form-switch tw-flex tw-justify-center tw-items-center tw-pb-3">
                         <input class="form-check-input" x-model="postForm.status" name="published" type="checkbox"
                             role="switch" id="flexSwitchCheckDefault2">
                         <label class="form-check-label tw-ml-1" for="flexSwitchCheckDefault2">Publish Now</label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2 tw-flex tw-items-end">
+                    <div class="mb-3 form-check form-switch tw-flex tw-justify-center tw-items-center tw-pb-3">
+                        <input class="form-check-input" x-model="postForm.comment_status" name="comment_status"
+                            type="checkbox" role="switch" id="flexSwitchCheckDefault2">
+                        <label class="form-check-label tw-ml-1" for="flexSwitchCheckDefault2">Comments</label>
                     </div>
                 </div>
             </div>
@@ -197,6 +204,7 @@
                     status: '',
                     tags: '',
                     description: '',
+                    comment_status: null,
                     parent_id: null,
                     is_child: false,
                 },
@@ -247,6 +255,8 @@
                         this.postForm.course_id = this.post.subject.course_id;
                         this.isEditing = true;
                         this.postForm.is_child = this.post.parent_id != null ? true : false;
+                        this.postForm.comment_status = this.post.comment_status == 'open' ? true :
+                            false;
                         /* TODO:
                         Later make getPostParents accept the parent ID for editing post to fetch only the parent
                          */
@@ -416,6 +426,7 @@
                     // set post content
                     this.postForm.content = tinymce.activeEditor.getContent();
                     this.postForm.status = this.postForm.status ? 'published' : 'unpublished';
+                    this.postForm.comment_status = this.postForm.comment_status ? 'open' : 'closed';
                     const payload = this.postForm;
                     let link = '/posts';
                     if (this.isEditing) {

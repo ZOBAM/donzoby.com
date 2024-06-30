@@ -144,45 +144,50 @@
                 </div>
                 <!-- -------------------------- display form for logged in user to write new comment ---------------------- -->
                 <!-- -------------------------- display form for logged in user to write new comment ---------------------- -->
-                <template x-if="!isLoggedIn">
-                    <p class="">
-                        <i class="fas fa-pencil-square"></i><a href="{{ url('register') }}"
-                            class="align-middle">Register</a>
-                        or
-                        <a class="" href="{{ url('login') }}">Login</a> to write comments.
-                    </p>
-                </template>
-                <template x-if="isLoggedIn">
-                    <div class="card tw-mt-4">
-                        <div class="card-header"><i class="fa fa-comment"></i> <strong
-                                x-text="user.first_name"></strong>,
-                            <span class="float-right">add a comment</span>
-                        </div>
-                        <div class="card-body" x-show="!isEditing">
-                            <form @submit.prevent="submitComment" id="comment">
-                                {{ csrf_field() }}
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        <textarea rows="5" x-model="commentForm.content" placeholder="Write comment here." class="form-control"
-                                            :class="!commentForm.content?.length ? '' : commentForm.content?.length && hasError
-                                                .content.hasError ? 'is-invalid' :
-                                                'is-valid'"></textarea>
-                                        <span class="invalid-feedback" role="alert">
-                                            Comment should be 3-1600 characters
-                                        </span>
+                @if ($post->comment_status == 'open')
+                    <template x-if="!isLoggedIn">
+                        <p class="">
+                            <i class="fas fa-pencil-square"></i><a href="{{ url('register') }}"
+                                class="align-middle">Register</a>
+                            or
+                            <a class="" href="{{ url('login') }}">Login</a> to write comments.
+                        </p>
+                    </template>
+                    <template x-if="isLoggedIn">
+                        <div class="card tw-mt-4">
+                            <div class="card-header"><i class="fa fa-comment"></i> <strong
+                                    x-text="user.first_name"></strong>,
+                                <span class="float-right">add a comment</span>
+                            </div>
+                            <div class="card-body" x-show="!isEditing">
+                                <form @submit.prevent="submitComment" id="comment">
+                                    {{ csrf_field() }}
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <textarea rows="5" x-model="commentForm.content" placeholder="Write comment here." class="form-control"
+                                                :class="!commentForm.content?.length ? '' : commentForm.content?.length &&
+                                                    hasError
+                                                    .content.hasError ? 'is-invalid' :
+                                                    'is-valid'"></textarea>
+                                            <span class="invalid-feedback" role="alert">
+                                                Comment should be 3-1600 characters
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row mb-0 tw-flex tw-justify-center">
-                                    <button type="submit" class="btn btn-primary tw-mt-4 tw-max-w-52"
-                                        :disabled="loading.create || formHasError">
-                                        <i x-show="loading.create" class="fa fa-spinner tw-animate-spin"
-                                            aria-hidden="true"></i> Submit Comment
-                                    </button>
-                                </div>
-                            </form>
+                                    <div class="form-group row mb-0 tw-flex tw-justify-center">
+                                        <button type="submit" class="btn btn-primary tw-mt-4 tw-max-w-52"
+                                            :disabled="loading.create || formHasError">
+                                            <i x-show="loading.create" class="fa fa-spinner tw-animate-spin"
+                                                aria-hidden="true"></i> Submit Comment
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                </template>
+                    </template>
+                @else
+                    <p class="tw-text-center tw-text-xs tw-p-4">Comment for this post is closed.</p>
+                @endif
             </div>
         @endisset
     </section>
