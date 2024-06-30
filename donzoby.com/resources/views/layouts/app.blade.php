@@ -22,17 +22,22 @@
     <link href="{{ asset('css/line-number.css') }}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Scripts -->
-    {{-- <link href="{{ asset('build/assets/app-DcSBx-Q1.css') }}" rel="stylesheet"> --}}
-    {{-- <script src="{{ asset('build/assets/app-mqEmiGqA.js') }}" defer></script> --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
-    @if ($customStyle == 'single')
-        @vite(['resources/sass/single.scss'])
-        {{-- <link href="{{ asset('build/assets/single-O6A__Uph.css') }}" rel="stylesheet"> --}}
-    @elseif($customStyle == 'home')
-        @vite(['resources/sass/home.scss'])
-        {{-- <link href="{{ asset('build/assets/home-DVey3HtV.css') }}" rel="stylesheet"> --}}
+    @if (App::environment('local'))
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/sass/main.scss'])
+        @if ($customStyle == 'single')
+            @vite(['resources/sass/single.scss'])
+        @elseif($customStyle == 'home')
+            @vite(['resources/sass/home.scss'])
+        @endif
+    @else
+        <link href="{{ asset('build/assets/app-DcSBx-Q1.css') }}" rel="stylesheet">
+        <script src="{{ asset('build/assets/app-mqEmiGqA.js') }}" defer></script>
+        @if ($customStyle == 'single')
+            <link href="{{ asset('build/assets/single-O6A__Uph.css') }}" rel="stylesheet">
+        @elseif($customStyle == 'home')
+            <link href="{{ asset('build/assets/home-DVey3HtV.css') }}" rel="stylesheet">
+        @endif
     @endif
-
 </head>
 
 <body class="font-sans antialiased">
