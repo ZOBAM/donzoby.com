@@ -43,12 +43,17 @@ Route::middleware(['auth', 'can:create users'])->group(function () {
         // 'posts' => PostController::class,
         'courses' => CourseController::class,
         'subjects' => SubjectController::class,
-        'comments' => CommentController::class,
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
         'admin/users' => AdminUserController::class,
     ]);
 });
+Route::middleware(['auth'])->group(function () {
+    Route::resources([
+        'comments' => CommentController::class,
+    ]);
+});
+
 Route::resource('posts', PostController::class)->middleware(['can:create posts']);
 
 Route::post('/image-upload', [PostPictureController::class, 'index'])->name('post-image');

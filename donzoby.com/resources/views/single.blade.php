@@ -185,6 +185,8 @@
                             </div>
                         </div>
                     </template>
+                    {{-- bs toast --}}
+                    @include('bs-toast')
                 @else
                     <p class="tw-text-center tw-text-xs tw-p-4">Comment for this post is closed.</p>
                 @endif
@@ -387,7 +389,7 @@
                         this.toastMessage = data.message;
                     } catch (error) {
                         console.log('Error submitting comment: ', error);
-                        this.toastMessage = "Error submitting";
+                        this.toastMessage = "Error submitting comment";
                     } finally {
                         this.loading.update = false;
                         this.loading.create = false;

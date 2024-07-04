@@ -36,6 +36,13 @@ class CommentController extends Controller
         ]);
 
         $post = Post::find($validated['post_id']);
+        // only proceed if post's comment status is open
+        if ($post->comment_status == 'closed') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'This post does not accept comments at the moment.',
+            ], 422);
+        }
         $validated['user_id'] = Auth::id();
         $comment = $post->comments()->create($validated);
         $comment->user;
