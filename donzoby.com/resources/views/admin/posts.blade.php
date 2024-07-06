@@ -83,12 +83,12 @@
                 @endforeach
             </table>
             {{ $posts->links() }}
+            {{-- bs toast --}}
+            @include('bs-toast')
         </div>
     @else
         Your post will be listed here soon when you write posts.
     @endif
-    {{-- bs toast --}}
-    @include('bs-toast')
     <script>
         // alpine
         document.addEventListener('alpine:init', () => {
@@ -132,7 +132,11 @@
                             data
                         } = await axios.post(link, payload);
                         console.log(data);
+                        console.log('message::', data.message);
                         this.toastMessage = data.message;
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
                         this.toastMessage = "post update failed";
