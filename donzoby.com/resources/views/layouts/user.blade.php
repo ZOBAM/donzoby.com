@@ -68,7 +68,7 @@
                             <a href="/courses"><i class="fa fa-users"></i> Courses</a>
                             <a href="/posts/create"><i class="fa fa-file-text"></i> New Post</a>
                             <a href="/posts"><i class="fa fa-eye"></i> View Posts</a>
-                            <a href="/permissions"><i class="fa fa-unlock-alt"></i> Permissions</a>
+                            <a href="/comments"><i class="fa fa-unlock-alt"></i> Comments</a>
                             <a href="/roles"><i class="fa fa-compass"></i> Roles</a>
                         </div>
                         <a href=""><i class="fa fa-sign-out"></i> Logout</a>

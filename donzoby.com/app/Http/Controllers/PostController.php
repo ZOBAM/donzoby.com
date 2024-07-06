@@ -26,7 +26,7 @@ class PostController extends Controller
     {
         // loop through all post and populate the slug cols using the topic
         /* foreach (Post::get() as $post) {
-            $post->slug = str_replace(' ', '_', strtolower($post->topic));
+            $post->sort_value = $post->id;
             $post->save();
         } */
         // return list of matching parent posts
@@ -37,7 +37,7 @@ class PostController extends Controller
             );
         }
 
-        $posts = Post::paginate(5);
+        $posts = Post::paginate(10);
         foreach ($posts as $post) {
             $post->is_parent = Post::where("parent_id", $post->id)->count();
             $post->is_child = $post->parent_id;
@@ -129,6 +129,33 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        // if sort_value is set, update it
+        // AT THE MOMENT, SORTING IS ONLY DONE FOR POSTS WITHIN A SPECIFIC SUBJECT
+        if ($request->has('sort_direction')) {
+            $response = [];
+            if ($request->sort_direction == 'down') {
+                $target_same_subject_post = Post::where('subject_id', $post->subject_id)->where('sort_value', '>', $post->sort_value)->first();
+            } else {
+                $target_same_subject_post = Post::where('subject_id', $post->subject_id)->where('sort_value', '<', $post->sort_value)->latest()->first();
+            }
+            if (!$target_same_subject_post) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'no ' . $request->sort_direction . 'ward position exists for ' . $post->subject->name,
+                ], 404);
+            }
+            // switch
+            $temp_sort_value = $post->sort_value;
+            $post->sort_value = $target_same_subject_post->sort_value;
+            $target_same_subject_post->sort_value = $temp_sort_value;
+            $post->save();
+            $target_same_subject_post->save();
+
+            $response['message'] = 'post sort_value changed.::' . $target_same_subject_post->topic;
+            $response['data'] = $post;
+            return response()->json($response);
+        }
+        // else proceed with the normal post update
         $validated = $request->validate([
             "id" => ['required', 'exists:posts,id'],
             'type'     => ['sometimes', 'min:5', 'max:20'],

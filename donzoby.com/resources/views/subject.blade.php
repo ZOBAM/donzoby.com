@@ -10,7 +10,7 @@
         <h1 class="text-center tw-bg-gray-100 tw-p-2 tw-mt-2 tw-font-bold">{{ $subject->name }}</h1>
         <p class="tw-mt-4">{{ $subject->description }}</p>
         @if (count($subject->posts))
-            @foreach ($subject->posts as $post)
+            @foreach ($subject->posts()->orderBy('sort_value', 'asc')->get() as $post)
                 @if ($post->status == 'published')
                     <div class="tw-mt-4">
                         <a class=""

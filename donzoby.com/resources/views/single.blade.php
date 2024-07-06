@@ -45,22 +45,6 @@
             <!-- -------------------------- display  comment ---------------------- -->
             <div x-data="comments" class="comments">
 
-                {{-- bootstrap toast --}}
-                <button type="button" class="btn btn-primary tw-hidden" id="liveToastBtn">Show live toast</button>
-                <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header">
-                            <img src="{{ asset('images/donzoby-logo-wtbg.png') }}" width="35" class="rounded me-2"
-                                alt="...">
-                            <strong class="me-auto">Donzoby</strong>
-                            <small>Action Success</small>
-                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body" x-text="toastMessage">
-                        </div>
-                    </div>
-                </div>
-
                 {{-- for comment --}}
                 <div class="card mt-5">
                     <div class="card-header"><i class="fa fa-comments"></i> {{ $post->topic }} <span
@@ -102,7 +86,17 @@
                                         </div>
                                     </div>
                                     <template x-if="comment.id != commentForm.id">
-                                        <div class="col-sm-12 tw-text-sm" style="margin: 5px 0px" x-text="comment.content">
+                                        <div class="">
+                                            <div class="col-sm-12 tw-text-sm" style="margin: 5px 0px;"
+                                                x-text="comment.content">
+                                            </div>
+                                            <template x-if="comment.status == 'unapproved' && comment.user.id == user.id">
+                                                <span
+                                                    class="tw-float-right tw-text-xs tw-p-2 tw-bg-gray-200 tw-rounded">This
+                                                    comment
+                                                    is yet to be approved.
+                                                    Only you can see this.</span>
+                                            </template>
                                         </div>
                                     </template>
                                     {{-- display form for editing comment --}}

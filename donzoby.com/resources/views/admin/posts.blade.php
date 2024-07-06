@@ -20,7 +20,7 @@
         }
         $nos = 1;
         ?>
-        <div class="table-responsive">
+        <div x-data="post" class="table-responsive">
             <table class="table">
                 <?php ?> <!-- initiate no for numbering the list -->
                 <tr>
@@ -45,7 +45,18 @@
                             <br><a href="{{ url('post/' . $post->id) }}"> Preview <i class="fa fa-expand"></i></a>
                         </td>
                         <td>
-                            {{ $post->topic }}
+                            {{ $post->topic }} <br>
+                            <div class="tw-border tw-p-1 tw-bg-gray-100">
+                                <span class="tw-text-xs">Change sort value</span> <br>
+                                <div class="tw-text-2xl tw-flex tw-justify-between tw-items-center">
+                                    <i class="fa fa-caret-down tw-cursor-pointer hover:tw-text-blue-600"
+                                        @click="updateSortValue({{ $post->id }}, 'down')"></i>
+                                    <i class="fa fa-caret-up tw-ml-3 tw-cursor-pointer hover:tw-text-blue-600"
+                                        @click="updateSortValue({{ $post->id }}, 'up')"></i>
+                                    <span
+                                        class="tw-p-1 tw-text-white tw-bg-gray-500 tw-text-xs tw-rounded">{{ $post->sort_value }}</span>
+                                </div>
+                            </div>
                             @if ($post->is_parent)
                                 <hr class="tw-mb-2">
                                 <span class="tw-px-2 tw-py-1 tw-bg-gray-200 tw-rounded-md">Parent</span>
@@ -76,4 +87,61 @@
     @else
         Your post will be listed here soon when you write posts.
     @endif
+    {{-- bs toast --}}
+    @include('bs-toast')
+    <script>
+        // alpine
+        document.addEventListener('alpine:init', () => {
+            // bootstrap toast
+            const toastTrigger = document.getElementById('liveToastBtn');
+            const toastLiveExample = document.getElementById('liveToast');
+            if (toastTrigger) {
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+                toastTrigger.addEventListener('click', () => {
+                    toastBootstrap.show();
+                })
+            }
+
+            Alpine.data('post', () => ({
+                loading: false,
+                postForm: {
+                    post_id: null,
+                    sort_direction: null,
+                },
+                toastMessage: 'Hail Christ',
+                isEditing: false,
+
+                async init() {
+                    // console.log('post alpine initiated');
+                },
+
+                // Getters
+                get subjects() {},
+                async updateSortValue(postID, direction) {
+                    this.postForm.sort_direction = direction;
+                    this.postForm.post_id = postID;
+                    console.log(this.postForm);
+                    // return;
+                    this.loading = true;
+                    const payload = this.postForm;
+                    let link = '/posts/' + postID;
+                    payload['_method'] = 'put';
+                    console.log(payload);
+                    try {
+                        const {
+                            data
+                        } = await axios.post(link, payload);
+                        console.log(data);
+                        this.toastMessage = data.message;
+                    } catch (error) {
+                        console.log('Error submitting post: ', error);
+                        this.toastMessage = "post update failed";
+                    } finally {
+                        this.loading = false;
+                        toastTrigger.click();
+                    }
+                }
+            }));
+        });
+    </script>
 </x-user-layout>

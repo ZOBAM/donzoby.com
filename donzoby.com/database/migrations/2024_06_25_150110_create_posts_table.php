@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->foreignId('author_id')->constrained(table: 'users', indexName: 'user_id')->cascadeOnDelete();
             $table->foreignId('subject_id')->constrained()->cascadeOnDelete();
             $table->string('version')->nullable();
-            $table->unsignedInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->enum('type', ['course-series', 'special-series', 'how-tos']);
             $table->string('topic');
             $table->text('content');
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('tags');
             $table->string('slug');
             $table->text('description');
+            $table->unsignedInteger('sort_value')->default(0);
             $table->timestamps();
         });
     }

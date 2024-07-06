@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_images', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+            $table->bigIncrements('id');
             $table->foreignId('post_id')->constrained()->cascadeOnDelete();
             $table->string('link');
             $table->json('dimension')->nullable(); // this can be used in the future to reserve space for images while it loads

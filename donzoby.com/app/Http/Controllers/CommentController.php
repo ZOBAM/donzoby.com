@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CommentController extends Controller
 {
@@ -14,7 +15,8 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $comments = Comment::with('post')->paginate(10);
+        return view('admin.comment')->with('comments', $comments);
     }
 
     /**
@@ -77,7 +79,15 @@ class CommentController extends Controller
     {
         $validated = $request->validate([
             'content' => ['required', 'string', 'min:3', 'max:1600'],
+            'status' => ['nullable', Rule::in(['approved', 'unapproved'])],
         ]);
+
+        if ($request->status && !$request->user()->hasPermissionTo('edit comments')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'unauthorized action'
+            ], 403);
+        }
 
         $comment = Comment::findOrFail($id);
         $comment->update($validated);
