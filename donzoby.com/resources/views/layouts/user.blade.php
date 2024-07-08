@@ -28,24 +28,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class='col-sm-8'>
-        <h1 style="font-size: 0.9em" class="float-left">Tech Tutorials for The Elects</h1>
-        @guest
-            <a href="{{ url('register') }}" class="float-right align-middle">Register</a>
-            <a class="float-right" href="{{ url('login') }}">Login</a>
-        @else
-            <a href = "{{ url('member') }}" style="text-transform: uppercase;" class="float-right">
-                {{ Auth::user()->name }}</a>
-            <a class="float-right" href="{{ route('logout') }}"
-                onclick="event.preventDefault();
-                document.getElementById('logout-form').submit();">
-                {{ __('Logout') }}
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                {{ csrf_field() }}
-            </form>
-        @endguest
-    </div>
+    @include('layouts.top-bar')
     @include('layouts.navigation')
 
     <!-- Page Content -->

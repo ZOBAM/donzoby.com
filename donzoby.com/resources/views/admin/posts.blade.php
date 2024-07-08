@@ -20,12 +20,12 @@
         }
         $nos = 1;
         ?>
-        <div x-data="post" class="table-responsive">
+        <div x-data="post" class="table-responsive tw-text-sm">
             <table class="table">
                 <?php ?> <!-- initiate no for numbering the list -->
                 <tr>
                     <th colspan="7" class="text-center"><i class="fa fa-home" style="color: green"></i> List of your
-                        written Posts<sup>({{ count($posts) }})</sup></th>
+                        written Posts<sup>({{ $posts->total() }})</sup></th>
                 </tr>
 
                 <tr>
@@ -67,8 +67,12 @@
                             @endif
                         </td>
                         <td>{!! $post->content !!} </td>
-                        <td>{!! Str::words($post->description, '25') !!}<br> <i>Written
-                                on:{{ date('M d, Y', strtotime($post->created_at)) }}</i></td>
+                        <td>{!! Str::words($post->description, '25') !!}
+                            <p class="tw-mt-1 tw-bg-gray-300 tw-p-1">
+                                <i>Written
+                                    on: {{ date('M d, Y', strtotime($post->created_at)) }}</i>
+                            </p>
+                        </td>
                         <td>
                             <a href="{{ url('posts/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
