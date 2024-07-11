@@ -25,7 +25,7 @@ Route::get('/repop', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('/user-area');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/about-donzoby', function () {
@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
     ]);
 });
 
-Route::resource('posts', PostController::class)->middleware(['can:create posts']);
+Route::resource('posts', PostController::class)->middleware(['auth', 'can:create posts']);
 
 Route::post('/image-upload', [PostPictureController::class, 'index'])->name('post-image');
 

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('tags');
             $table->string('slug');
             $table->text('description');
-            $table->unsignedInteger('sort_value')->default(0);
+            $table->unsignedBigInteger('sort_value')->default(0);
             $table->timestamps();
         });
     }

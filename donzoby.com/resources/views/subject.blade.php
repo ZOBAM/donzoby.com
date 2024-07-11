@@ -13,8 +13,10 @@
             @foreach ($subject->posts()->orderBy('sort_value', 'asc')->get() as $post)
                 @if ($post->status == 'published')
                     <div class="tw-mt-4">
-                        <a class=""
-                            href="{{ url('/' . $course . '/' . $subject->slug . '/' . $post->slug) }}">{{ $post->topic }}</a>
+                        <h3>
+                            <a class=""
+                                href="{{ url('/' . $course . '/' . $subject->slug . '/' . $post->slug) }}">{{ $post->topic }}</a>
+                        </h3>
                         <p class="tw-pb-2">{{ $post->description }}</p>
                         <hr style="opacity: 0.15">
                     </div>

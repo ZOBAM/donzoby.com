@@ -51,8 +51,12 @@ class HomePageController extends Controller
 					$post->timestamps = false; //prevent updating of time stamps
 					//check ip address of my computer & email of logged in user and only add counts if visit is not from the developer
 					//adding this email aspect will make it possible for me to login from any other device and hits won't be incremented
-					$developer_email = (isset(Auth::user()->email)) ? Auth::user()->email : false;
-					if ($_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com") {
+					$developer_email = Auth::user()->email ?? null;
+					$developer_emails = ['upc4u@gmail.com', 'upc4you@gmail.com', 'realdonzoby@gmail.com'];
+					$developer_ip_address = $_SERVER['REMOTE_ADDR'];
+					$developer_ip_addresses = ['127.0.0.1', '98.97.79.61', '197.210.53.131'];
+					// $_SERVER['REMOTE_ADDR'] != "197.211.61.117" && $_SERVER['REMOTE_ADDR'] != "102.89.1.21" && $_SERVER['REMOTE_ADDR'] != "197.211.61.133" && $_SERVER['REMOTE_ADDR'] != "141.0.13.181" && $developer_email != "upc4you@gmail.com"
+					if (!in_array($developer_email, $developer_emails) && !in_array($developer_ip_address, $developer_ip_addresses)) {
 						$post->hits = ++$post->hits;
 						$post->save();
 					}
