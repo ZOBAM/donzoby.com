@@ -14,7 +14,9 @@ use App\Http\Controllers\UserController;
 use App\Models\Old_user;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Ixudra\Curl\Facades\Curl;
 
 Route::get('/repop', function () {
     $verified_users = Old_user::where('email_verified_at', '!=', null)->get();
@@ -79,6 +81,24 @@ Route::get('/clear-cache', function () {
     Artisan::call('view:clear');
     Artisan::call('config:cache');
     return '<h1>Clear Config cleared</h1>';
+});
+
+
+Route::get('/curl', function () {
+    try {
+        $response = Curl::to('https://api.beezlinq.com/api/v1/get/countries')
+            ->asJsonResponse()->returnResponseObject();
+        $response = $response->get();
+        return $response;
+    } catch (Exception $e) {
+        Log::error($e);
+        $response = [
+            'status' => 'error',
+            'message' => 'endpoint call failed'
+        ];
+    } finally {
+        Log::info('back from endpoint');
+    }
 });
 
 Route::get('/{course?}/{subject?}/{id?}/{slug?}', [HomePageController::class, 'index'])->name('courses');

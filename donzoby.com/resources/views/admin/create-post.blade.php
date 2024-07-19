@@ -439,6 +439,12 @@
                         console.log(payload);
                     }
                     try {
+                        // having an issue with cpanel(shared hosting)
+                        // it return 403 forbidden error if there is an inline css style in content
+                        // after several painstaking efforts to solve it which included even making a post on stackoverflow
+                        // I narrowed it down to replacing the 'style' attribute with 'xstyle'
+                        // then change it back to 'style' on the backend
+                        payload.content = payload.content.replaceAll('style=', 'xstyle=');
                         const {
                             data
                         } = await axios.post(link, payload);

@@ -20,10 +20,10 @@ return new class extends Migration
             $table->enum('type', ['course-series', 'special-series', 'how-tos']);
             $table->string('topic');
             $table->text('content');
-            $table->unsignedInteger('hits')->default(0);
+            $table->unsignedBigInteger('hits')->default(0);
             $table->enum('status', ['published', 'unpublished'])->default('unpublished');
             $table->enum('comment_status', ['open', 'closed'])->default('closed');
-            $table->unsignedInteger('comment_count')->default(0);
+            $table->unsignedBigInteger('comment_count')->default(0);
             $table->string('tags');
             $table->string('slug');
             $table->text('description');

@@ -32,7 +32,7 @@
                         <img src="{{ asset($user->avatar) }}" alt="" class="">
                         <span class="tw-mt-1 tw-font-medium">{{ $user->first_name . ' ' . $user->last_name }}</span>
                     </div>
-                    <div x-data="{ showAdminLinks: false }" class="left-links tw-mt-7">
+                    <div x-data="{ showAdminLinks: true }" class="left-links tw-mt-7">
                         <a href="/user-area"><i class="fa fa-home"></i> Home</a>
                         <a href=""><i class="fa fa-cog"></i> Profile Edit</a>
                         <a href=""><i class="fa fa-comments-o"></i> Comments</a>

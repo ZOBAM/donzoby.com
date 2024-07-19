@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -66,5 +67,16 @@ class Post extends Model
     public function getChildrenAttribute()
     {
         return $this->where('status', 'published')->where("parent_id", $this->id)->get();
+    }
+
+    /**
+     * set content (a temporary solution for cpanel's failure to accept inline style in post)
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function content(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => str_replace('xstyle=', 'style=', $value),
+        );
     }
 }

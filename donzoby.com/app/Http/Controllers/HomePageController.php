@@ -67,7 +67,10 @@ class HomePageController extends Controller
 					$description = $post->description; //meta description
 					$title = $post->topic; //page title
 					//get comments
-					$comments = $post->comments()->where('status', 'approved')->orWhere('user_id', Auth::id())->with('user')->get();
+					// $comments = $post->comments()->where('status', 'approved')->orWhere('user_id', Auth::id())->with('user')->get();
+					$comments = $post->comments()->where('status', 'approved')->orWhere(function ($query) use ($post) {
+						$query->where('user_id', Auth::id())->where('post_id', $post->id);
+					})->with('user')->get();
 
 					return view('single', compact('post', 'subject', 'comments', 'posts', 'listed_subjects', 'description', 'title', 'page_image'));
 				} //end id not 0 or data-plans

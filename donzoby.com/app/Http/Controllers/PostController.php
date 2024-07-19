@@ -8,6 +8,7 @@ use App\Models\Post_image;
 use App\Models\Subject;
 use App\Models\User;
 use App\Traits\GlobalTrait;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -129,139 +130,144 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        // if sort_value is set, update it
-        // AT THE MOMENT, SORTING IS ONLY DONE FOR POSTS WITHIN A SPECIFIC SUBJECT
-        if ($request->has('sort_direction')) {
-            $response = [];
-            if ($request->sort_direction == 'down') {
-                $target_same_subject_post = Post::where('subject_id', $post->subject_id)->where('sort_value', '>', $post->sort_value)->first();
-            } else {
-                $target_same_subject_post = Post::where('subject_id', $post->subject_id)->where('sort_value', '<', $post->sort_value)->latest()->first();
+        try {
+            // if sort_value is set, update it
+            // AT THE MOMENT, SORTING IS ONLY DONE FOR POSTS WITHIN A SPECIFIC SUBJECT
+            if ($request->has('sort_direction')) {
+                $response = [];
+                if ($request->sort_direction == 'down') {
+                    $target_same_subject_post = Post::where('subject_id', $post->subject_id)->where('sort_value', '>', $post->sort_value)->first();
+                } else {
+                    $target_same_subject_post = Post::where('subject_id', $post->subject_id)->where('sort_value', '<', $post->sort_value)->latest()->first();
+                }
+                if (!$target_same_subject_post) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'no ' . $request->sort_direction . 'ward position exists for ' . $post->subject->name,
+                    ], 404);
+                }
+                // switch
+                $temp_sort_value = $post->sort_value;
+                $post->sort_value = $target_same_subject_post->sort_value;
+                $target_same_subject_post->sort_value = $temp_sort_value;
+                $post->save();
+                $target_same_subject_post->save();
+
+                $response['message'] = 'post sort_value changed.::' . $target_same_subject_post->topic;
+                $response['data'] = $post;
+                return response()->json($response);
             }
-            if (!$target_same_subject_post) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'no ' . $request->sort_direction . 'ward position exists for ' . $post->subject->name,
-                ], 404);
+            // else proceed with the normal post update
+            $validated = $request->validate([
+                "id" => ['required', 'exists:posts,id'],
+                'type'     => ['sometimes', 'min:5', 'max:20'],
+                'parent_id'         => ['nullable', 'exists:posts,id'],
+                'subject_id'       => ['required', 'exists:subjects,id'],
+                'topic'         => ['required', 'string', 'min:7', 'max:200'],
+                'content'  => ['required', 'string', 'min:200'],
+                'status'   => ['required', 'string', Rule::in(['published', 'unpublished']),],
+                'tags'     => ['required', 'string', 'min:4', 'max:200'],
+                'description'     => ['required', 'string', 'min:30', 'max:1500'],
+                'comment_status'     => ['required', 'string', Rule::in(['open', 'closed'])],
+                // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
+            ]);
+
+
+            $old_subject = $post->subject;
+            $new_subject = Subject::find($request->subject_id);
+            $subject_changed = $new_subject != $old_subject;
+
+            // if topic changed update slug
+            if ($post->topic != $request->topic) {
+                $validated['slug'] = $this->get_post_slug($request->topic);
             }
-            // switch
-            $temp_sort_value = $post->sort_value;
-            $post->sort_value = $target_same_subject_post->sort_value;
-            $target_same_subject_post->sort_value = $temp_sort_value;
-            $post->save();
-            $target_same_subject_post->save();
 
-            $response['message'] = 'post sort_value changed.::' . $target_same_subject_post->topic;
-            $response['data'] = $post;
-            return response()->json($response);
-        }
-        // else proceed with the normal post update
-        $validated = $request->validate([
-            "id" => ['required', 'exists:posts,id'],
-            'type'     => ['sometimes', 'min:5', 'max:20'],
-            'parent_id'         => ['nullable', 'exists:posts,id'],
-            'subject_id'       => ['required', 'exists:subjects,id'],
-            'topic'         => ['required', 'string', 'min:7', 'max:200'],
-            'content'  => ['required', 'string', 'min:200'],
-            'status'   => ['required', 'string', Rule::in(['published', 'unpublished']),],
-            'tags'     => ['required', 'string', 'min:4', 'max:200'],
-            'description'     => ['required', 'string', 'min:30', 'max:1500'],
-            'comment_status'     => ['required', 'string', Rule::in(['open', 'closed'])],
-            // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
-        ]);
+            // update post in db
+            $post->update($validated);
 
+            //check if image links are available in the post content
+            $pattern = '/src="([^"]+.[^s])"/i';
+            $num_images = preg_match_all($pattern, $post->content, $matches);
+            $image_link_matches = $matches[1];
+            //images saved in db
+            $db_images = Post_image::where('post_id', $post->id)->get();
 
-        $old_subject = $post->subject;
-        $new_subject = Subject::find($request->subject_id);
-        $subject_changed = $new_subject != $old_subject;
+            // filter image links into two categories
+            $new_image_links = array_filter($image_link_matches, function ($i_link) {
+                return str_contains($i_link, 'images/courses/temp/dzb_00000_');
+            });
+            $old_image_links = array_filter($image_link_matches, function ($i_link) {
+                return !str_contains($i_link, 'images/courses/temp/dzb_00000_');
+            });
 
-        // if topic changed update slug
-        if ($post->topic != $request->topic) {
-            $validated['slug'] = $this->get_post_slug($request->topic);
-        }
-
-        // update post in db
-        $post->update($validated);
-
-        //check if image links are available in the post content
-        $pattern = '/src="([^"]+.[^s])"/i';
-        $num_images = preg_match_all($pattern, $post->content, $matches);
-        $image_link_matches = $matches[1];
-        //images saved in db
-        $db_images = Post_image::where('post_id', $post->id)->get();
-
-        // filter image links into two categories
-        $new_image_links = array_filter($image_link_matches, function ($i_link) {
-            return str_contains($i_link, 'images/courses/temp/dzb_00000_');
-        });
-        $old_image_links = array_filter($image_link_matches, function ($i_link) {
-            return !str_contains($i_link, 'images/courses/temp/dzb_00000_');
-        });
-
-        /* Log::info('these are old image links');
+            /* Log::info('these are old image links');
         Log::info(json_encode($old_image_links));
         Log::info('these are new image links');
         Log::info(json_encode($new_image_links)); */
 
-        if ($num_images > 0) { //there are matches for image link
+            if ($num_images > 0) { //there are matches for image link
 
-            // save new images
-            foreach ($new_image_links as $original_img_url) {
-                $rel_img_url_for_db = $this->assign_image_unique_name($post, $original_img_url);
-                // save post image link to db
-                $post->post_images()->create(['link' => $rel_img_url_for_db]);
-                //move image from temp location to it's subject folder
-                $this->move_post_image($post, $original_img_url, $rel_img_url_for_db);
-            }
-
-            // ----------------update old images url by replacing ../../ with absolute path ----------------//
-            // ----------------loop thru and change img url to absolute url----------------//
-            foreach ($old_image_links as $image_link) { //loop thru & replace ../image with www.domain/image
-                $pattern = '/[\.\.]+\//';
-                $abs_img_url = URL(preg_replace($pattern, "", $image_link));
-                if ($subject_changed) { //update post image url if subject was changed
-                    $abs_img_url = str_replace("/images/courses/$old_subject->slug/", "/images/courses/$new_subject->slug/", $abs_img_url);
+                // save new images
+                foreach ($new_image_links as $original_img_url) {
+                    $rel_img_url_for_db = $this->assign_image_unique_name($post, $original_img_url);
+                    // save post image link to db
+                    $post->post_images()->create(['link' => $rel_img_url_for_db]);
+                    //move image from temp location to it's subject folder
+                    $this->move_post_image($post, $original_img_url, $rel_img_url_for_db);
                 }
-                $post->content = str_replace($image_link, $abs_img_url, $post->content);
-                $post->save();
-            } //end ----------------loop thru and change img url to absolute url----------------//
 
-            if (count($db_images) > 0) { //there are images in db for this post
-                foreach ($db_images as $db_image) {
-                    $db_image_link = $db_image->link;
+                // ----------------update old images url by replacing ../../ with absolute path ----------------//
+                // ----------------loop thru and change img url to absolute url----------------//
+                foreach ($old_image_links as $image_link) { //loop thru & replace ../image with www.domain/image
+                    $pattern = '/[\.\.]+\//';
+                    $abs_img_url = URL(preg_replace($pattern, "", $image_link));
+                    if ($subject_changed) { //update post image url if subject was changed
+                        $abs_img_url = str_replace("/images/courses/$old_subject->slug/", "/images/courses/$new_subject->slug/", $abs_img_url);
+                    }
+                    $post->content = str_replace($image_link, $abs_img_url, $post->content);
+                    $post->save();
+                } //end ----------------loop thru and change img url to absolute url----------------//
 
-                    $edited_db_img_url = "../../" . $db_image_link;
+                if (count($db_images) > 0) { //there are images in db for this post
+                    foreach ($db_images as $db_image) {
+                        $db_image_link = $db_image->link;
 
-                    if (in_array($edited_db_img_url, $image_link_matches)) { //db image is in matched links
-                        if ($subject_changed) {
-                            $pattern = '/courses\/[a-z-]+\//i';
-                            $new_db_image = preg_replace($pattern, "courses/$new_subject->slug/", $db_image_link);
-                            // update image link in db
-                            Post_image::find($db_image->id)->update([
-                                "link" => $new_db_image
-                            ]);
+                        $edited_db_img_url = "../../" . $db_image_link;
 
-                            $this->move_post_image($post, $db_image_link, $new_db_image);
-                        }
-                    } else { //delete image if it's in db but no more in post content
-                        if (strpos($post->content, $db_image_link) == false) {
-                            $this->delete_images($db_images->only([$db_image->id]));
-                        }
-                    } //end else
+                        if (in_array($edited_db_img_url, $image_link_matches)) { //db image is in matched links
+                            if ($subject_changed) {
+                                $pattern = '/courses\/[a-z-]+\//i';
+                                $new_db_image = preg_replace($pattern, "courses/$new_subject->slug/", $db_image_link);
+                                // update image link in db
+                                Post_image::find($db_image->id)->update([
+                                    "link" => $new_db_image
+                                ]);
+
+                                $this->move_post_image($post, $db_image_link, $new_db_image);
+                            }
+                        } else { //delete image if it's in db but no more in post content
+                            if (strpos($post->content, $db_image_link) == false) {
+                                $this->delete_images($db_images->only([$db_image->id]));
+                            }
+                        } //end else
+                    }
+                } //end if db image was > 0
+
+            } //end if there are matches for images links
+            else { //there is no image links in the post content
+                if (count($db_images) > 0) { //check if there are orphaned image link in db and dir & clear
+                    $this->delete_images($db_images);
                 }
-            } //end if db image was > 0
-
-        } //end if there are matches for images links
-        else { //there is no image links in the post content
-            if (count($db_images) > 0) { //check if there are orphaned image link in db and dir & clear
-                $this->delete_images($db_images);
             }
+            return response()->json([
+                "status" => "success",
+                "message" => "post successfully updated",
+                "data" => $post,
+            ]);
+        } catch (Exception $e) {
+            Log::error('::::::POST UPDATE ERROR:::::::');
+            Log::error($e);
         }
-        return response()->json([
-            "status" => "success",
-            "message" => "post successfully updated",
-            "data" => $post,
-        ]);
     }
 
     /**

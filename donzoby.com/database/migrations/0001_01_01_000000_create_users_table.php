@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('gender');
             $table->string('avatar');
             $table->string('country');
-            $table->integer('post_count')->default(0);
+            $table->unsignedBigInteger('post_count')->default(0);
             $table->enum('status', ['active', 'suspended'])->default('active');
             $table->string('password');
             $table->rememberToken();

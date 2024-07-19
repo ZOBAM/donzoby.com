@@ -139,7 +139,7 @@
                         console.log('message::', data.message);
                         this.toastMessage = data.message;
                         setTimeout(() => {
-                            location.reload();
+                            // location.reload();
                         }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
