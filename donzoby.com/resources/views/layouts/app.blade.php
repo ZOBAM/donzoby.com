@@ -39,9 +39,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div x-data="showNav" class="left-nav col-12 col-sm-3 col-md-2">
-                    <span x-show="isSmallScreen || showLatest" @click="toggleShowNav" class="sm:tw-hidden">
-                        <i x-show="!showLatest" class="fa fa-bars" aria-hidden="true"></i>
-                        <i x-show="showLatest" class="fa fa-times" aria-hidden="true"></i> All
+                    <span x-show="isSmallScreen || showLatest" @click="toggleShowNav"
+                        class="tw-p-2 tw-border tw-border-gray-200 tw-inline-block tw-mb-2 sm:tw-hidden tw-text-xl">
+                        <i x-show="!showLatest" class="tw-text-2xl fa fa-bars" aria-hidden="true"></i>
+                        <i x-show="showLatest" class="tw-text-2xl fa fa-times" aria-hidden="true"></i> All
                         Latest</span>
                     <section x-show="!isSmallScreen || showLatest" class=" ">
                         <x-left-nav :$posts :$listedSubjects />

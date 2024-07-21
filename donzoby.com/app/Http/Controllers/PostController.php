@@ -304,8 +304,10 @@ class PostController extends Controller
      */
     public function move_post_image(Post $post, $origin, $destination)
     {
-        if (!is_dir(URL($this->getImagesDir() . "courses/" . $post->subject->slug))) {
-            mkdir(URL($this->getImagesDir() . "courses/" . $post->subject->slug));
+        // create subject image directory if it doesn't exist
+        $dir_string = $this->getImagesDir() . "courses/" . $post->subject->slug;
+        if (!is_dir($dir_string)) {
+            mkdir($dir_string);
         }
         // rename file if it exists
         $original_img_url = str_replace('../', '', $origin);

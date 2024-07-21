@@ -247,7 +247,6 @@
 
                 async init() {
                     if (this.post) {
-                        console.log('the returned post', this.post);
                         this.postForm = {
                             ...this.post
                         };
@@ -393,7 +392,6 @@
                         return;
                     }
 
-                    console.log('is_child>>>>', this.postForm.is_child);
                     this.loading = true;
                     try {
                         const {
@@ -414,7 +412,6 @@
                             };
                         }
                         this.loadedParents = true;
-                        console.log(data);
                     } catch (error) {
                         console.log('Error loading post parents: ', error);
                     } finally {
@@ -436,7 +433,6 @@
                         if (!this.postForm.is_child) {
                             payload.parent_id = null;
                         }
-                        console.log(payload);
                     }
                     try {
                         // having an issue with cpanel(shared hosting)

@@ -18,14 +18,14 @@ return new class extends Migration
             $table->string('version')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->enum('type', ['course-series', 'special-series', 'how-tos']);
-            $table->string('topic');
+            $table->string('topic')->unique();
             $table->text('content');
             $table->unsignedBigInteger('hits')->default(0);
             $table->enum('status', ['published', 'unpublished'])->default('unpublished');
             $table->enum('comment_status', ['open', 'closed'])->default('closed');
             $table->unsignedBigInteger('comment_count')->default(0);
             $table->string('tags');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('description');
             $table->unsignedBigInteger('sort_value')->default(0);
             $table->timestamps();
