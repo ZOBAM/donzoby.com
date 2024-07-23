@@ -328,6 +328,11 @@ class PostController extends Controller
         $rel_img_url = str_replace("dzb_00000_", $unique_name, $rel_img_url);
         //absolute url will be in the post content
         $rel_img_url_for_db = str_replace('../', '', $rel_img_url);
+        // change image file name if a file with same name already exists in destination folder
+        $image_name_arr = explode('/', $rel_img_url_for_db);
+        $image_name = $image_name_arr[count($image_name_arr) - 1]; // dzb_00019_blobid0.png
+        $new_image_name = $this->file_exists_get_new_name("images/courses/" . $post->subject->slug, $image_name);
+        $rel_img_url_for_db = str_replace($image_name, $new_image_name, $rel_img_url_for_db);
         // update the link in post content
         $post->content = str_replace($original_img_url, URL($rel_img_url_for_db), $post->content);
         $post->save();

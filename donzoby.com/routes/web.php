@@ -19,11 +19,50 @@ use Illuminate\Support\Facades\Route;
 use Ixudra\Curl\Facades\Curl;
 
 Route::get('/repop', function () {
-    $verified_users = Old_user::where('email_verified_at', '!=', null)->get();
+    $existing_images = [
+        'gimp_crop_image.jpg',
+        'gimp_crop_image3.jpg',
+        'gimp_crop_image2.jpg',
+    ];
+
+    $image_name = 'gimp_crop_image.jpg';
+    $iteration_count = 0;
+    while (in_array($image_name, $existing_images)) {
+        $name_array = explode('.', $image_name);
+        $name = $name_array[0];
+        $last_index = strlen($name) - 1;
+        $number_count = 0;
+        while (is_numeric($name[$last_index])) {
+            $number_count++;
+            $last_index--;
+        }
+        if (!$number_count) {
+            Log::info("------------No number found-------------");
+            $extracted_number = null;
+            $new_image_name = $name_array[0] . '1.' . $name_array[1];
+        } else {
+            $extracted_number = (int) substr($name, -$number_count);
+            $new_image_name = str_replace($extracted_number, $extracted_number + 1, $image_name);
+        }
+
+        $image_name = $new_image_name;
+        $iteration_count++;
+        Log::info("Count::$iteration_count::Image Name=>$image_name");
+    }
+
+
+    return [
+        'image_name' => $image_name,
+        'name' => $name,
+        'number_count' => $number_count,
+        'numbers' => $extracted_number,
+        'new_name' => $new_image_name,
+    ];
+    /* $verified_users = Old_user::where('email_verified_at', '!=', null)->get();
     foreach ($verified_users as $user) {
         User::create($user->toArray());
     }
-    return User::get();
+    return User::get(); */
 });
 
 Route::get('/dashboard', function () {

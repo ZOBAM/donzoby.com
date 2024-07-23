@@ -15,19 +15,47 @@ class PostPictureController extends Controller
     public function index(Request $request)
     {
 
-    	if ($request->hasFile('file')){
-     		$image = $request->file('file');
-   			$imageName = "dzb_00000_".str_replace(" ","-",$image->getClientOriginalName());
-    		$imagePath=URL($this->getTempImageDir() . $imageName);
+        if ($request->hasFile('file')) {
+            $image = $request->file('file');
+            $imageName = "dzb_00000_" . str_replace(" ", "-", $image->getClientOriginalName());
+            // allow author to post two images of same name
+            // this will also solve the blob multiple images issue
+            $image_location = $this->getTempImageDir() . $this->file_exists_get_new_name($this->getTempImageDir(), $imageName); // courses/temp/dzb_00000_gimp_crop_image.jpg
+            /* while (file_exists($image_location)) {
+                Log::info('there is an image in temp folder with same name::' . $image_location);
+                $location_array = explode('/', $image_location);
+                $image_name = $location_array[count($location_array) - 1]; // dzb_00000_gimp_crop_image.jpg
+                $name_array = explode('.', $image_name);
+                $name = $name_array[0]; // dzb_00000_gimp_crop_image
+                $last_index = strlen($name) - 1;
+                $number_count = 0;
+                while (is_numeric($name[$last_index])) {
+                    $number_count++;
+                    $last_index--;
+                }
+                if (!$number_count) {
+                    Log::info("------------No number found-------------");
+                    $extracted_number = null;
+                    $new_image_name = $name_array[0] . '1.' . $name_array[1];
+                } else {
+                    $extracted_number = (int) substr($name, -$number_count);
+                    $new_image_name = str_replace($extracted_number, $extracted_number + 1, $image_name);
+                }
 
-    		$image->move($this->getTempImageDir(), $imageName);
+                $imageName = $new_image_name;
+                $image_location = str_replace($image_name, $new_image_name, $image_location);
+                Log::info("::Image Name=>$image_location");
+            } */
+
+            $imagePath = URL($image_location);
+
+            $image->move($this->getTempImageDir(), $imageName);
 
             return json_encode(['location' => $imagePath]);
+        } else {
+            return json_encode(['location' => URL('images/dzb-graphics.png')]);
         }
-        else{
-            return json_encode(['location' => URL('images/dzb-graphics.png') ]);
-        }
-    }//end index
+    } //end index
 
 }
 /* if ($request->hasFile('file')){
