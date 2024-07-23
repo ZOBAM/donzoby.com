@@ -20,6 +20,7 @@ trait GlobalTrait
 
     /**
      * Summary of file_exists_get_new_name
+     * This function will check if file exists in specified folder, if it exists, add number to the end of the file name, if the next name still exists, keep incrementing until it doesn't exist
      * @param string $dir
      * @param string $file_name
      * @return string

@@ -125,7 +125,11 @@ Route::get('/clear-cache', function () {
 
 Route::get('/curl', function () {
     try {
-        $response = Curl::to('https://api.beezlinq.com/api/v1/get/countries')
+        $endpoints = [
+            'countries' => 'https://api.beezlinq.com/api/v1/get/countries',
+            'test' => 'http://www.donzoby.net/api/local-curl'
+        ];
+        $response = Curl::to($endpoints['test'])
             ->asJsonResponse()->returnResponseObject();
         $response = $response->get();
         return $response;
