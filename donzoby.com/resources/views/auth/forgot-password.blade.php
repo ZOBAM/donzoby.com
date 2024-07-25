@@ -1,36 +1,28 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
-
-        <div class="mb-4 text-sm text-gray-600">
+<x-single_col title="Login">
+    <div id="login" class="tw-my-10 tw-p-4 tw-rounded-md tw-shadow-lg">
+        <div class="tw-mb-4 tw-text-sm tw-text-gray-600 dark:text-gray-400">
             {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
         </div>
 
         <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+        <x-auth-session-status class="tw-mb-4" :status="session('status')" />
 
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
 
             <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+                <label for="email">Email</label>
+                <input id="email" class="tw-block tw-mt-1 tw-w-full" type="email" name="email"
+                    value="{{ old('email') }}" required autofocus />
+                <x-input-error :messages="$errors->get('email')" class="tw-mt-2" />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
+            <div class="tw-flex tw-items-center tw-justify-end tw-mt-4">
+                <button class="btn btn-primary">
                     {{ __('Email Password Reset Link') }}
-                </x-button>
+                </button>
             </div>
         </form>
-    </x-auth-card>
-</x-guest-layout>
+    </div>
+</x-single_col>
