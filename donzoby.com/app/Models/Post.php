@@ -70,6 +70,14 @@ class Post extends Model
     }
 
     /**
+     * get post_syncs
+     */
+    public function post_syncs()
+    {
+        return $this->hasMany(Post_sync::class);
+    }
+
+    /**
      * set content (a temporary solution for cpanel's failure to accept inline style in post)
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */

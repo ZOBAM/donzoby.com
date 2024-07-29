@@ -446,6 +446,9 @@
                         } = await axios.post(link, payload);
                         console.log(data);
                         this.toastMessage = data.message;
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1750);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
                         this.toastMessage = "post update failed";
