@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\PostClass;
 use App\Models\Course;
 use App\Models\Post;
 use App\Models\Post_image;
@@ -61,6 +62,8 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $added_images = [];
+
         $validated = $request->validate([
             'type'     => ['required', 'min:5', 'max:20',],
             'parent_id'         => ['nullable', 'exists:posts,id',],
@@ -90,6 +93,8 @@ class PostController extends Controller
             if ($num_images > 0) {
                 foreach ($link_matches as $original_img_url) {
                     $rel_img_url_for_db = $this->assign_image_unique_name($post, $original_img_url);
+                    // add to added_images array for syncing with server
+                    $added_images[] = $rel_img_url_for_db;
                     // save post image link to db
                     $post->post_images()->create(['link' => $rel_img_url_for_db]);
                     //move image from temp location to it's subject folder
@@ -97,6 +102,14 @@ class PostController extends Controller
                 }
             }
         }
+        // sync post
+        $post_class = new PostClass($post);
+        $post_class->what_changed = ['all']; // all because it is a new post
+        if (count($added_images)) {
+            $post_class->what_changed['added_images'] = $added_images;
+        }
+        $post_class->sync_post();
+
         return response()->json([
             'status' => 'success',
             'message' => 'New post created.',
@@ -130,6 +143,9 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        // post class
+        $post_class = new PostClass($post);
+
         try {
             // if sort_value is set, update it
             // AT THE MOMENT, SORTING IS ONLY DONE FOR POSTS WITHIN A SPECIFIC SUBJECT
@@ -155,6 +171,10 @@ class PostController extends Controller
 
                 $response['message'] = 'post sort_value changed.::' . $target_same_subject_post->topic;
                 $response['data'] = $post;
+                // sync post
+                $post_class->what_changed = ['sort_value']; // all because it is a new post
+                $post_class->sync_post();
+
                 return response()->json($response);
             }
             // else proceed with the normal post update
@@ -177,12 +197,19 @@ class PostController extends Controller
             $new_subject = Subject::find($request->subject_id);
             $subject_changed = $new_subject != $old_subject;
 
+            $post_image_was_deleted = false;
+            $removed_images = [];
+            $added_images = [];
+
             // if topic changed update slug
             if ($post->topic != $request->topic) {
                 $validated['slug'] = $this->get_post_slug($request->topic);
+                // record what changed
+                $post_class->what_changed[] = 'topic';
             }
 
-            // update post in db
+            // update post in db, keep original content for comparison
+            $original_post = $post->toArray();
             $post->update($validated);
 
             //check if image links are available in the post content
@@ -210,6 +237,8 @@ class PostController extends Controller
                 // save new images
                 foreach ($new_image_links as $original_img_url) {
                     $rel_img_url_for_db = $this->assign_image_unique_name($post, $original_img_url);
+                    // add to array
+                    $added_images[] = $rel_img_url_for_db;
                     // save post image link to db
                     $post->post_images()->create(['link' => $rel_img_url_for_db]);
                     //move image from temp location to it's subject folder
@@ -246,7 +275,12 @@ class PostController extends Controller
                                 $this->move_post_image($post, $db_image_link, $new_db_image);
                             }
                         } else { //delete image if it's in db but no more in post content
+
                             if (strpos($post->content, $db_image_link) == false) {
+                                $post_image_was_deleted = true;
+                                // add to removed images array
+                                $removed_images[] = $db_image_link;
+
                                 $this->delete_images($db_images->only([$db_image->id]));
                             }
                         } //end else
@@ -256,9 +290,37 @@ class PostController extends Controller
             } //end if there are matches for images links
             else { //there is no image links in the post content
                 if (count($db_images) > 0) { //check if there are orphaned image link in db and dir & clear
+                    Log::info('*******************deleting post images*****************');
+                    $post_image_was_deleted = true;
+                    // add to removed images array
+                    $removed_images += array_map(function ($link) {
+                        return $link['link'];
+                    }, $db_images->toArray());
+
                     $this->delete_images($db_images);
                 }
             }
+            // sync post
+            if ($original_post['content'] != str_replace('../../images', URL('/images'), str_replace('xstyle=', 'style=', $request->content))) {
+                $post_class->what_changed[] = 'content';
+            }
+            if ($subject_changed) {
+                $post_class->what_changed[] = 'subject';
+            }
+            if (count($new_image_links) || $post_image_was_deleted) {
+                $post_class->what_changed[] = 'images';
+                $post_class->what_changed[] = 'content';
+                $post_class->what_changed['removed_images'] = $removed_images;
+                $post_class->what_changed['added_images'] = $added_images;
+            }
+            if ($original_post['description'] != $request->description) {
+                $post_class->what_changed[] = 'description';
+            }
+            if ($original_post['tags'] != $request->tags) {
+                $post_class->what_changed[] = 'tags';
+            }
+            $post_class->sync_post();
+
             return response()->json([
                 "status" => "success",
                 "message" => "post successfully updated",

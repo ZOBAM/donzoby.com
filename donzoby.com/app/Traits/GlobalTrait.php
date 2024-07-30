@@ -35,6 +35,7 @@ trait GlobalTrait
             $image_name = $location_array[count($location_array) - 1]; // dzb_00000_gimp_crop_image.jpg
             $name_array = explode('.', $image_name);
             $name = $name_array[0]; // dzb_00000_gimp_crop_image
+            $extension = $name_array[count($name_array) - 1]; // jpg or png etc
             $last_index = strlen($name) - 1;
             $number_count = 0;
             while (is_numeric($name[$last_index])) {
@@ -43,11 +44,11 @@ trait GlobalTrait
             }
             if (!$number_count) {
                 Log::info("------------No number found-------------");
-                $extracted_number = null;
-                $new_image_name = $name_array[0] . '1.' . $name_array[1];
+                $new_image_name = $name_array[0] . '1.' . $extension;
             } else {
-                $extracted_number = (int) substr($name, -$number_count);
-                $new_image_name = str_replace($extracted_number, $extracted_number + 1, $image_name);
+                $extracted_number = (int) substr($name, -$number_count) + 1;
+                // change dzb_00000_image0.jpg to dzb_00000_image1.jpg
+                $new_image_name = substr($name, 0, -strlen($extracted_number)) . "$extracted_number.$extension";
             }
 
             $image_location = str_replace($image_name, $new_image_name, $image_location);
