@@ -14,13 +14,22 @@ class PostSyncController extends Controller
     {
         try {
             // Log::info('Received data::' . json_encode($request->all()));
-            $post = Test_post::where('id',$request->id)->first();
-            // if post with specified id does not exist yet, add dummy (unpublished) posts till $id
-            $id = $request->id;
-            while()
-            // update the post
-            // $post->update($request->toArray());
-
+            if ($request->has('is_new_post')) {
+                $last_post_id = Test_post::latest()->first()->id;
+                // if the posts are in sync, just add the new post
+                if ($request->id != $last_post_id + 1) {
+                    // if next post id won't be equal to receive id, add dummy (unpublished) posts till $id-1
+                    $id = $request->id;
+                    while (1) {
+                    }
+                }
+                $post = Test_post::create($request->toArray() + ['author_id' => 1]);
+            } else { // it is post edit
+                // update the post
+                $post = Test_post::where('id', $request->id)->first();
+                $post->update($request->toArray());
+            }
+            // if there are uploaded images for the post, process it
             if ($request->has('added_images')) {
                 var_dump($request->added_images);
                 Log::info('Added images::' . json_encode($request->added_images));
