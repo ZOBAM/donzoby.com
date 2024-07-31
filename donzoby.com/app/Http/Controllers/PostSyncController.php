@@ -16,17 +16,41 @@ class PostSyncController extends Controller
             // Log::info('Received data::' . json_encode($request->all()));
             if ($request->has('is_new_post')) {
                 $last_post_id = Test_post::latest()->first()->id;
-                // if the posts are in sync, just add the new post
-                if ($request->id != $last_post_id + 1) {
-                    // if next post id won't be equal to receive id, add dummy (unpublished) posts till $id-1
-                    $id = $request->id;
-                    while (1) {
-                    }
+
+                // add dummy (unpublished) posts till $id-1 while last post id + 1 < $request->id
+                while ($last_post_id + 1 < $request->id) {
+                    $dummy_post = Test_post::create([
+                        "topic" => "dummy",
+                        "content" => "dummy",
+                        "status" => "unpublished",
+                        "description" => "dummy",
+                        "tags" => "dummy",
+                        "type"  => "course-series",
+                        "subject_id" => $request->subject_id,
+                        "author_id" => 1,
+                        'comment_count' => 0,
+                        'slug' => 'dummy' . $last_post_id + 1,
+                    ]);
+                    $last_post_id = $dummy_post->id;
+                }
+                // if last post id + 1 is not equal to received id, the post is out of sync, return error
+                if ($last_post_id + 1 != $request->id) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Post out of sync. Next post id is ' . ($last_post_id + 1) . ' and received id is ' . $request->id . '.',
+                    ], 422);
                 }
                 $post = Test_post::create($request->toArray() + ['author_id' => 1]);
             } else { // it is post edit
                 // update the post
+                Log::info('::::::::::::::::::::::::RECEIVED POST ID:::::::::::::::::::::::::' . $request->id);
                 $post = Test_post::where('id', $request->id)->first();
+                if (!$post) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Post not found. First sync this post then you can edit it.',
+                    ], 422);
+                }
                 $post->update($request->toArray());
             }
             // if there are uploaded images for the post, process it
@@ -63,7 +87,7 @@ class PostSyncController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while syncing post.',
-            ]);
+            ], 500);
         }
     }
 }
