@@ -62,6 +62,8 @@ class PostClass
                 $changed_fields['removed_images'] = $this->what_changed['removed_images'] ?? null;
             } else { // it is a new post
                 $changed_fields = $this->post->toArray();
+                // indicate that it's a new post
+                $changed_fields['is_new_post'] = true;
             }
 
             $changed_fields['added_images'] = $this->what_changed['added_images'] ?? null;
