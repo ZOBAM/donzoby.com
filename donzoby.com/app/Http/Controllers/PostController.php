@@ -147,7 +147,15 @@ class PostController extends Controller
         $post_class = new PostClass($post);
 
         try {
-            // if sort_value is set, update it
+            // if just sync is set, sync post and return response
+            if ($request->has('just_sync_post')) {
+                $post_class->what_changed['all'];
+                $post_class->what_changed['added_images'] = array_map(function ($value) {
+                    return $value['link'];
+                }, $post->post_images()->toArray());
+                return $post_class->sync_post();
+            }
+            // if sort_value is set, update it and return response
             // AT THE MOMENT, SORTING IS ONLY DONE FOR POSTS WITHIN A SPECIFIC SUBJECT
             if ($request->has('sort_direction')) {
                 $response = [];

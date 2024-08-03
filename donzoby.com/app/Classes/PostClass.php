@@ -26,7 +26,7 @@ class PostClass
                 Log::info('::::Attempt to sync post::::');
                 Log::info(json_encode($this->what_changed));
                 // save sync to db
-                $this->save_sync();
+                return $this->save_sync();
             } catch (Exception $e) {
                 Log::error('**an error occurred while trying to sync post.');
                 Log::error($e);
@@ -89,9 +89,18 @@ class PostClass
             }
             Log::info('Back from server simulation');
             Log::info(json_encode($response));
+            return response()->json([
+                'status' => 'success',
+                'message' => 'post successfully synced',
+                'data' => $this->what_changed,
+            ]);
         } catch (Exception $e) {
             Log::error('An error occurred while syncing file to server');
             Log::error($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'syncing of post failed. Please try again',
+            ]);
         }
     }
 }
