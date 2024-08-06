@@ -4,6 +4,7 @@ import laravel from "laravel-vite-plugin";
 export default defineConfig({
     build: {
         outDir: "../public/build",
+        emptyOutDir: true,
     },
     plugins: [
         laravel({
@@ -15,6 +16,7 @@ export default defineConfig({
                 "resources/sass/single.scss",
                 "resources/sass/home.scss",
             ],
+            publicDirectory: "../public/build",
             refresh: true,
         }),
     ],
