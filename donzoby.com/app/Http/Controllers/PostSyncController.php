@@ -14,33 +14,40 @@ class PostSyncController extends Controller
     {
         try {
             // Log::info('Received data::' . json_encode($request->all()));
-            if ($request->has('is_new_post')) {
-                $last_post_id = Test_post::latest()->first()->id;
+            if ($request->has('is_new_post') || $request->has('just_syncing')) {
+                // if post already exist for just_syncing action, just update
+                $post_exists = Test_post::find($request->id);
+                if ($post_exists) {
+                    Log::info('^^^^^^^^^^^^^Just syncing and post exists^^^^^^^^^^');
+                    $post_exists->update($request->toArray());
+                } else {
+                    $last_post_id = Test_post::latest('id')->first()->id;
 
-                // add dummy (unpublished) posts till $id-1 while last post id + 1 < $request->id
-                while ($last_post_id + 1 < $request->id) {
-                    $dummy_post = Test_post::create([
-                        "topic" => "dummy",
-                        "content" => "dummy",
-                        "status" => "unpublished",
-                        "description" => "dummy",
-                        "tags" => "dummy",
-                        "type"  => "course-series",
-                        "subject_id" => $request->subject_id,
-                        "author_id" => 1,
-                        'comment_count' => 0,
-                        'slug' => 'dummy' . $last_post_id + 1,
-                    ]);
-                    $last_post_id = $dummy_post->id;
+                    // add dummy (unpublished) posts till $id-1 while last post id + 1 < $request->id
+                    while ($last_post_id + 1 < $request->id) {
+                        $dummy_post = Test_post::create([
+                            "topic" => "dummy",
+                            "content" => "dummy",
+                            "status" => "unpublished",
+                            "description" => "dummy",
+                            "tags" => "dummy",
+                            "type"  => "course-series",
+                            "subject_id" => $request->subject_id,
+                            "author_id" => 1,
+                            'comment_count' => 0,
+                            'slug' => 'dummy' . $last_post_id + 1,
+                        ]);
+                        $last_post_id = $dummy_post->id;
+                    }
+                    // if last post id + 1 is not equal to received id, the post is out of sync, return error
+                    if ($last_post_id + 1 != $request->id) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Post out of sync. Next post id is ' . ($last_post_id + 1) . ' and received id is ' . $request->id . '.',
+                        ], 422);
+                    }
+                    $post = Test_post::create($request->toArray() + ['author_id' => 1]);
                 }
-                // if last post id + 1 is not equal to received id, the post is out of sync, return error
-                if ($last_post_id + 1 != $request->id) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Post out of sync. Next post id is ' . ($last_post_id + 1) . ' and received id is ' . $request->id . '.',
-                    ], 422);
-                }
-                $post = Test_post::create($request->toArray() + ['author_id' => 1]);
             } else { // it is post edit
                 // update the post
                 Log::info('::::::::::::::::::::::::RECEIVED POST ID:::::::::::::::::::::::::' . $request->id);

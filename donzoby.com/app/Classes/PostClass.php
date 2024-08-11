@@ -65,8 +65,9 @@ class PostClass
             } else { // it is a new post
                 $changed_fields = $this->post->toArray();
                 // indicate that it's a new post
-                if (!$is_just_syncing) {
-                    $changed_fields['is_new_post'] = true;
+                $changed_fields['is_new_post'] = true;
+                if ($is_just_syncing) {
+                    $changed_fields['just_syncing'] = true;
                 }
             }
 

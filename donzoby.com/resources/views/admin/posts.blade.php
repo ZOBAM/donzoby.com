@@ -183,7 +183,7 @@
                         }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
-                        this.toastMessage = "post update failed";
+                        this.toastMessage = "post sync failed";
                     } finally {
                         this.loading = false;
                         toastTrigger.click();
