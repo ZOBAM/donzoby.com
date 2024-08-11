@@ -149,10 +149,23 @@ class PostController extends Controller
         try {
             // if just sync is set, sync post and return response
             if ($request->has('just_sync_post')) {
-                $post_class->what_changed['all'];
+                // only proceed if the specified post has never been synced or
+                // the last attempt to sync if failed
+                if ($post->is_up_to_date) {
+                    // means that the post is already up to date
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'this post is already up to date',
+                    ], 422);
+                }
+                /*  return response()->json([
+                    'status' => 'testing',
+                    'message' => 'reached just sync endpoint',
+                ]); */
+                $post_class->what_changed[] = 'just_syncing';
                 $post_class->what_changed['added_images'] = array_map(function ($value) {
                     return $value['link'];
-                }, $post->post_images()->toArray());
+                }, $post->post_images->toArray());
                 return $post_class->sync_post();
             }
             // if sort_value is set, update it and return response

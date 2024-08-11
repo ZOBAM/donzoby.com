@@ -70,12 +70,13 @@ class PostSyncController extends Controller
             // delete images if there are removed_images
             if ($request->has('removed_images')) {
                 var_dump($request->removed_images);
-                Log::info('Removed images::' . json_encode($request->removed_images));
-                /* foreach($request->removed_images as $image)
-                if (file_exists($image)) {
-                    Log::info('found image file and about to delete:::' . $image);
-                    unlink($image);
-                } */
+                foreach ($request->removed_images as $image) {
+                    Log::info('------Removed image::' . json_encode($request->removed_images));
+                    /* if (file_exists($image)) {
+                        Log::info('found image file and about to delete:::' . $image);
+                        unlink($image);
+                    } */
+                }
             }
             return [
                 'status' => 'success',

@@ -75,6 +75,14 @@
                         </td>
                         <td>
                             <a href="{{ url('posts/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
+                            @if ($post->is_up_to_date)
+                                <button
+                                    class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
+                                    style="cursor: not-allowed">syncPost</button>
+                            @else
+                                <button @click="syncPost({{ $post->id }})"
+                                    class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800">syncPost</button>
+                            @endif
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}
                                 {{ method_field('DELETE') }}
@@ -121,6 +129,8 @@
 
                 // Getters
                 get subjects() {},
+
+                // methods
                 async updateSortValue(postID, direction) {
                     this.postForm.sort_direction = direction;
                     this.postForm.post_id = postID;
@@ -131,6 +141,36 @@
                     let link = '/posts/' + postID;
                     payload['_method'] = 'put';
                     console.log(payload);
+                    try {
+                        const {
+                            data
+                        } = await axios.post(link, payload);
+                        console.log(data);
+                        console.log('message::', data.message);
+                        this.toastMessage = data.message;
+                        setTimeout(() => {
+                            // location.reload();
+                        }, 2500);
+                    } catch (error) {
+                        console.log('Error submitting post: ', error);
+                        this.toastMessage = "post update failed";
+                    } finally {
+                        this.loading = false;
+                        toastTrigger.click();
+                    }
+                },
+                async syncPost(postID) {
+                    this.postForm = {
+                        just_sync_post: true
+                    };
+                    console.log(this.postForm);
+                    // return;
+                    this.loading = true;
+                    const payload = this.postForm;
+                    let link = '/posts/' + postID;
+                    payload['_method'] = 'put';
+                    console.log(payload);
+                    // return;
                     try {
                         const {
                             data

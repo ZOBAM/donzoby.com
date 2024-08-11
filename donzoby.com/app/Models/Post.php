@@ -27,7 +27,10 @@ class Post extends Model
         'created_at',
         'updated_at',
     ];
-    protected $appends = ['children'];
+    protected $appends = [
+        'children',
+        'is_up_to_date',
+    ];
 
     /**
      * get subject
@@ -70,6 +73,15 @@ class Post extends Model
     }
 
     /**
+     * get is_up_to_date status
+     */
+    public function getIsUpToDateAttribute()
+    {
+        $last_post_sync = $this->post_syncs()->latest()->first(); // last sync attempt
+        return  $last_post_sync && $last_post_sync->synced;
+    }
+
+    /**
      * get post_syncs
      */
     public function post_syncs()
@@ -84,7 +96,17 @@ class Post extends Model
     protected function content(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => str_replace('xstyle=', 'style=', $value),
+            set: fn(string $value) => str_replace('xstyle=', 'style=', $value),
+        );
+    }
+
+    /**
+     * set sort value for new post
+     */
+    protected function sort_value(): Attribute
+    {
+        return Attribute::make(
+            set: fn() => $this->id,
         );
     }
 }

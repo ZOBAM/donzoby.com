@@ -41,6 +41,7 @@ class PostClass
      */
     private function save_sync()
     {
+        $message = 'syncing of post failed. Please try again';
         try {
             // reassign post because of the possible changes that took place
             $this->post = Post::find($this->post->id);
@@ -53,7 +54,8 @@ class PostClass
             Log::info(json_encode($post_sync));
             // get the field that changed
             $post_array = $this->post->toArray();
-            if (!in_array('all', $this->what_changed)) { // if it post edit
+            $is_just_syncing = in_array('just_syncing', $this->what_changed);
+            if (!in_array('all', $this->what_changed) && !$is_just_syncing) { // if it post edit
                 $changed_fields = array_filter($post_array, function ($key) {
                     return in_array($key, $this->what_changed);
                 }, ARRAY_FILTER_USE_KEY);
@@ -63,7 +65,9 @@ class PostClass
             } else { // it is a new post
                 $changed_fields = $this->post->toArray();
                 // indicate that it's a new post
-                $changed_fields['is_new_post'] = true;
+                if (!$is_just_syncing) {
+                    $changed_fields['is_new_post'] = true;
+                }
             }
 
             $changed_fields['added_images'] = $this->what_changed['added_images'] ?? null;
@@ -73,25 +77,30 @@ class PostClass
             if (isset($this->what_changed['added_images']) && count($this->what_changed['added_images'])) {
                 for ($i = 0; $i < count($this->what_changed['added_images']); $i++) {
                     $link = $this->what_changed['added_images'][$i];
+                    // only attach the image if it actually exists
+                    if (!file_exists($link)) {
+                        continue;
+                    }
                     // extract image extension
                     $image_extension = last(explode('.', $link));
-                    Log::info("++++++++++++++++This is the extension::=>$image_extension++++++++++++");
+                    // Log::info("++++++++++++++++This is the extension::=>$image_extension++++++++++++");
                     $mime = "image/$image_extension";
-                    Log::info("++++++++++++++++This is the mime::=>$mime++++++++++++");
+                    // Log::info("++++++++++++++++This is the mime::=>$mime++++++++++++");
                     $request->withFile("image$i", $link, $mime);
                 }
             }
             $response = $request->returnResponseObject()->post();
             // updated post sync if post was successfully synced
-            if ($response->status == 'success') {
+            if (str_contains($response->content, 'success')) {
                 $post_sync->synced = true;
                 $post_sync->save();
+                $message = 'post successfully synced';
             }
             Log::info('Back from server simulation');
             Log::info(json_encode($response));
             return response()->json([
-                'status' => 'success',
-                'message' => 'post successfully synced',
+                'status' => $response->status ?? 'error',
+                'message' => $message,
                 'data' => $this->what_changed,
             ]);
         } catch (Exception $e) {
@@ -99,8 +108,11 @@ class PostClass
             Log::error($e);
             return response()->json([
                 'status' => 'error',
-                'message' => 'syncing of post failed. Please try again',
+                'message' => $message,
             ]);
+        } finally {
+            $post_sync->sync_attempts += 1; // increment sync_attempts
+            $post_sync->save();
         }
     }
 }
