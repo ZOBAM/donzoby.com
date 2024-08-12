@@ -12,6 +12,7 @@ class PostClass
 {
     private Post $post;
     public array $what_changed = [];
+    public bool $is_local = false;
 
     public function __construct(Post $post)
     {
@@ -49,7 +50,11 @@ class PostClass
             // save sync to db
             $post_sync = $this->post->post_syncs()->create([
                 'what_changed' => $this->what_changed,
+                'change_origin' => $this->is_local ?  'local' : 'live',
             ]);
+            // for now, syncing is only for local (from local to server)
+            if (!$this->is_local) return;
+
             Log::info("@@@@@@@@@@@POST SYNC@@@@@@@@@@@");
             Log::info(json_encode($post_sync));
             // get the field that changed

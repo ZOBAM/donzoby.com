@@ -15,7 +15,8 @@ class Post_sync extends Model
         'post_id',
         'what_changed',
         'synced',
-        'sync_attempts'
+        'sync_attempts',
+        'change_origin'
     ];
 
     /**

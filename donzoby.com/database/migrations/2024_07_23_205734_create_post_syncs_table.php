@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('what_changed');
             $table->boolean('synced')->default(false);
             $table->unsignedInteger('sync_attempts')->default(0);
+            $table->enum('change_origin', ['local', 'live']);
             $table->timestamps();
         });
     }

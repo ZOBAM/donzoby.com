@@ -31,6 +31,7 @@ class PostController extends Controller
             $post->sort_value = $post->id;
             $post->save();
         } */
+
         // return list of matching parent posts
         if ($request->has("subject_id")) {
             $post = Post::where("subject_id", $request->subject_id)->where('type', $request->type)->orderBy("created_at", "desc")->get();
@@ -77,6 +78,7 @@ class PostController extends Controller
             // 'picture.*'     => 'image|mimes:jpeg,png,jpg|max:250',
         ]);
         $validated['author_id'] = Auth::id();
+        $validated['post_origin'] = $this->is_local($request) ? 'local' : 'live';
         // add post slug using the post topic
         $validated['slug'] = $this->get_post_slug($request->topic);
 
@@ -104,6 +106,8 @@ class PostController extends Controller
         }
         // sync post
         $post_class = new PostClass($post);
+        $post_class->is_local = $this->is_local($request);
+
         $post_class->what_changed = ['all']; // all because it is a new post
         if (count($added_images)) {
             $post_class->what_changed['added_images'] = $added_images;
@@ -145,6 +149,7 @@ class PostController extends Controller
     {
         // post class
         $post_class = new PostClass($post);
+        $post_class->is_local = $this->is_local($request);
 
         try {
             // if just sync is set, sync post and return response

@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description');
             $table->unsignedBigInteger('sort_value')->default(0);
+            $table->enum('post_origin', ['local', 'live']);
             $table->timestamps();
         });
     }

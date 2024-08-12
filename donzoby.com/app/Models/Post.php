@@ -24,6 +24,7 @@ class Post extends Model
         'comment_count',
         'hits',
         'slug',
+        'post_origin',
         'created_at',
         'updated_at',
     ];

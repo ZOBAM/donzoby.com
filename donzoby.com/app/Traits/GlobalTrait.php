@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 trait GlobalTrait
 {
@@ -55,5 +56,15 @@ trait GlobalTrait
             Log::info("::Image Name=>$image_location");
         }
         return $new_image_name;
+    }
+
+    /**
+     * is_local
+     * @return bool
+     * @param Request $request
+     */
+    public function is_local(Request $request): bool
+    {
+        return !str_contains($request->url(), '.com/');
     }
 }

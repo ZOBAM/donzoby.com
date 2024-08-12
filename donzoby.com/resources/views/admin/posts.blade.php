@@ -159,6 +159,7 @@
                         toastTrigger.click();
                     }
                 },
+                // sync post
                 async syncPost(postID) {
                     this.postForm = {
                         just_sync_post: true
@@ -179,7 +180,7 @@
                         console.log('message::', data.message);
                         this.toastMessage = data.message;
                         setTimeout(() => {
-                            // location.reload();
+                            location.reload();
                         }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
