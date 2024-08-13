@@ -79,7 +79,7 @@ class PostClass
             $changed_fields['added_images'] = $this->what_changed['added_images'] ?? null;
 
             // check if new images were added and upload files
-            $request = Curl::to('http://www.donzoby.net/api/local-curl')->withData($changed_fields);
+            $request = Curl::to('http://www.donzoby.com/api/sync-post')->withData($changed_fields);
             if (isset($this->what_changed['added_images']) && count($this->what_changed['added_images'])) {
                 for ($i = 0; $i < count($this->what_changed['added_images']); $i++) {
                     $link = $this->what_changed['added_images'][$i];

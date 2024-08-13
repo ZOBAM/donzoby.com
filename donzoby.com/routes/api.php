@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/local-curl', [PostSyncController::class, 'sync']);
+Route::post('/sync-post', [PostSyncController::class, 'sync']);
 Route::get('/test', function () {
     $id = 23;
     $highest_id = Test_post_image::latest()->first()->id;
