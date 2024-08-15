@@ -80,8 +80,9 @@
                                     class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
                                     style="cursor: not-allowed">syncPost</button>
                             @else
-                                <button @click="syncPost({{ $post->id }})"
-                                    class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800">syncPost</button>
+                                <button
+                                    class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800"
+                                    @click="syncPost({{ $post->id }})" disabled>syncPost</button>
                             @endif
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}

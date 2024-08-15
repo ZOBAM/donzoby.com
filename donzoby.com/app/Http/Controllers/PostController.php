@@ -27,10 +27,10 @@ class PostController extends Controller
     public function index(Request $request)
     {
         // loop through all post and populate the slug cols using the topic
-        /* foreach (Post::get() as $post) {
+        foreach (Post::get() as $post) {
             $post->sort_value = $post->id;
             $post->save();
-        } */
+        }
 
         // return list of matching parent posts
         if ($request->has("subject_id")) {
@@ -46,7 +46,7 @@ class PostController extends Controller
             $post->is_child = $post->parent_id;
             $post->content = Str::words(strip_tags($post->content), 35);
         }
-        return view('admin.posts')->with(['posts' => $posts]);
+        return view('admin.posts')->with(['posts' => $posts, 'is_local' => $this->is_local($request)]);
     }
 
     /**
