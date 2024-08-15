@@ -125,6 +125,7 @@
 
                 async init() {
                     // console.log('post alpine initiated');
+                    this.testAPI();
                 },
 
                 // Getters
@@ -180,7 +181,37 @@
                         console.log('message::', data.message);
                         this.toastMessage = data.message;
                         setTimeout(() => {
-                            location.reload();
+                            // location.reload();
+                        }, 2500);
+                    } catch (error) {
+                        console.log('Error submitting post: ', error);
+                        this.toastMessage = "post sync failed";
+                    } finally {
+                        this.loading = false;
+                        toastTrigger.click();
+                    }
+                },
+                async testAPI() {
+                    this.postForm = {
+                        just_sync_post: true
+                    };
+                    console.log(this.postForm);
+                    // return;
+                    this.loading = true;
+                    const payload = this.postForm;
+                    let link = 'https://www.donzoby.com/api/test-api';
+                    // payload['_method'] = 'put';
+                    console.log(payload);
+                    // return;
+                    try {
+                        const {
+                            data
+                        } = await axios.post(link, payload);
+                        console.log(data);
+                        console.log('message::', data.message);
+                        this.toastMessage = data.message;
+                        setTimeout(() => {
+                            // location.reload();
                         }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
