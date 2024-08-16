@@ -75,14 +75,16 @@
                         </td>
                         <td>
                             <a href="{{ url('posts/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
-                            @if ($post->is_up_to_date)
-                                <button
-                                    class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
-                                    style="cursor: not-allowed">syncPost</button>
-                            @else
-                                <button
-                                    class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800"
-                                    @click="syncPost({{ $post->id }})" disabled>syncPost</button>
+                            @if ($is_local)
+                                @if ($post->is_up_to_date)
+                                    <button
+                                        class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
+                                        style="cursor: not-allowed">syncPost</button>
+                                @else
+                                    <button
+                                        class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800"
+                                        @click="syncPost({{ $post->id }})" disabled>syncPost</button>
+                                @endif
                             @endif
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}
@@ -126,7 +128,6 @@
 
                 async init() {
                     // console.log('post alpine initiated');
-                    this.testAPI();
                 },
 
                 // Getters
@@ -192,36 +193,6 @@
                         toastTrigger.click();
                     }
                 },
-                async testAPI() {
-                    this.postForm = {
-                        just_sync_post: true
-                    };
-                    console.log(this.postForm);
-                    // return;
-                    this.loading = true;
-                    const payload = this.postForm;
-                    let link = 'https://www.donzoby.com/api/test-api';
-                    // payload['_method'] = 'put';
-                    console.log(payload);
-                    // return;
-                    try {
-                        const {
-                            data
-                        } = await axios.post(link, payload);
-                        console.log(data);
-                        console.log('message::', data.message);
-                        this.toastMessage = data.message;
-                        setTimeout(() => {
-                            // location.reload();
-                        }, 2500);
-                    } catch (error) {
-                        console.log('Error submitting post: ', error);
-                        this.toastMessage = "post sync failed";
-                    } finally {
-                        this.loading = false;
-                        toastTrigger.click();
-                    }
-                }
             }));
         });
     </script>
