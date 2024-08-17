@@ -1,8 +1,7 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostSyncController;
-use App\Models\Test_post;
-use App\Models\Test_post_image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +16,5 @@ Route::get('/test', function () {
         'message' => 'reached api test endpoint',
     ];
 });
+
+Route::put('/posts/{id}', [PostController::class, 'update']);
