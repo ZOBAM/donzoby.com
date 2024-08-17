@@ -116,15 +116,26 @@
 
             Alpine.data('post', () => ({
                 loading: false,
+                isLocal: {{ Js::from($is_local) }},
                 postForm: {
                     post_id: null,
                     sort_direction: null,
                 },
                 toastMessage: 'Hail Christ',
                 isEditing: false,
+                endPoints: [{
+                        link: 'http://www.donzoby.net/api/test',
+                        isOnline: false,
+                    },
+                    {
+                        link: 'https://www.donzoby.com/api/test',
+                        isOnline: false,
+                    }
+                ],
 
                 async init() {
-                    // console.log('post alpine initiated');
+                    console.log('post is local: ', this.isLocal);
+                    setTimeout(() => this.checkConnection(), 5000);
                 },
 
                 // Getters
@@ -189,6 +200,21 @@
                         this.loading = false;
                         toastTrigger.click();
                     }
+                },
+                async checkConnection() {
+                    // run through endPoints to check if it is online
+                    for (const endPoint of this.endPoints) {
+                        try {
+                            const response = await axios.get(endPoint.link);
+                            // console.log(response);
+                            if (response.statusText == 'OK') {
+                                endPoint.isOnline = true;
+                            }
+                        } catch (error) {
+                            console.log('error occurred while checking endPoint:', error);
+                        }
+                    }
+                    console.log(this.endPoints);
                 }
             }));
         });

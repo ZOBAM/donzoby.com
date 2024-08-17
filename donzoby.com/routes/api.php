@@ -12,12 +12,8 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/sync-post', [PostSyncController::class, 'sync']);
 Route::get('/test', function () {
-    $id = 23;
-    $highest_id = Test_post_image::latest()->first()->id;
-    $nums = [$highest_id];
-    while ($id > $highest_id) {
-        $highest_id++;
-        $nums[] = $highest_id;
-    }
-    return $nums;
+    return [
+        'status' => 'testing',
+        'message' => 'reached api test endpoint',
+    ];
 });
