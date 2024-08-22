@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileToExcelController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostSyncController;
 use Illuminate\Http\Request;
@@ -23,3 +24,6 @@ Route::post('/test-api', function (Request $request) {
 });
 
 Route::put('/posts/{id}', [PostController::class, 'update']);
+
+// testing parsing of file to excel
+Route::get('/parse-file', [FileToExcelController::class, 'parse']);
