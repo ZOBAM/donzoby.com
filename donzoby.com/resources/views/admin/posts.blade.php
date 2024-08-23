@@ -138,7 +138,7 @@
 
                 async init() {
                     console.log('post is local: ', this.isLocal);
-                    setTimeout(() => this.checkConnection(), 5000);
+                    this.checkConnection();
                 },
 
                 // Getters
@@ -213,8 +213,8 @@
                             if (response.statusText == 'OK') {
                                 endPoint.isOnline = true;
                             }
-                        } catch (error) {
-                            console.log('error occurred while checking endPoint:', error);
+                        } catch (e) {
+                            // console.log('error occurred while checking endPoint:');
                         }
                     }
                     console.log(this.endPoints);
