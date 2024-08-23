@@ -75,16 +75,21 @@
                         </td>
                         <td>
                             <a href="{{ url('posts/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
-                            @if ($is_local)
-                                @if ($post->is_up_to_date)
-                                    <button
-                                        class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
-                                        style="cursor: not-allowed">syncPost</button>
-                                @else
-                                    <button
-                                        class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800"
-                                        @click="syncPost({{ $post->id }})" disabled>syncPost</button>
-                                @endif
+
+                            @if ($post->is_up_to_date)
+                                <button
+                                    class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
+                                    style="cursor: not-allowed" disabled>up-to-date</button>
+                            @else
+                                <button
+                                    class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800 tw-whitespace-nowrap"
+                                    @click="syncPost({{ $post->id }})">syncPost
+                                    @if ($is_local)
+                                        <i class="fas fa-arrow-up"></i>
+                                    @else
+                                        <i class="fas fa-arrow-down"></i>
+                                    @endif
+                                </button>
                             @endif
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}
@@ -182,7 +187,22 @@
                     // return;
                     this.loading = true;
                     const payload = this.postForm;
-                    let link = '/posts/' + postID;
+                    // if it is live and local is offline, return
+                    if (!this.isLocal && !this.endPoints[0].isOnline) {
+                        this.loading = false;
+                        this.toastMessage = "local not online";
+                        toastTrigger.click();
+                        return;
+                    }
+                    // if it is local and live is offline, return
+                    if (this.isLocal && !this.endPoints[1].isOnline) {
+                        this.loading = false;
+                        this.toastMessage = "live not online";
+                        toastTrigger.click();
+                        return;
+                    }
+                    let link = this.isLocal ? '/posts/' + postID :
+                        'https://www.donzoby.com/api/posts/' + postID;
                     payload['_method'] = 'put';
                     console.log(payload);
                     // return;
