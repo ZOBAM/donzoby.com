@@ -456,8 +456,11 @@ class PostController extends Controller
             $post = Post::find($request->id);
             if ($post) { //post exists locally, just update it
                 $post->update($request->toArray());
+                $this->delete_removed_images($request->id, $request->post_images);
+                $this->sync_post_images($request->id, $request->post_images);
             } else { // post does not exist locally, create it
                 $post = $this->add_post_with_consistent_id($request);
+                $this->download_post_images($request->post_images);
             }
             return response()->json([
                 'status' => 'testing',

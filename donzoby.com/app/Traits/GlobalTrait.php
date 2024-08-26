@@ -104,26 +104,66 @@ trait GlobalTrait
         }
         $author_id = $request->has('author_id') ? $request->author_id : 1;
         $post = Post::create($request->toArray() + ['author_id' => $author_id]);
-        return [
-            'status' => 'success',
-            'message' => 'post successfully added',
-            'data' => $post,
-        ];
+        // if post has images, download them
+        if ($request->has('post_images') && count($request->post_images))
+            return [
+                'status' => 'success',
+                'message' => 'post successfully added',
+                'data' => $post,
+            ];
+    }
+
+    /**
+     * sync_post_images
+     */
+    public function sync_post_images(int $post_id, array $post_images)
+    {
+        $existing_post_images = Post_image::where('post_id', $post_id)->get();
+        $existing_post_image_links = array_map(function ($link) {
+            return $link['link'];
+        }, $existing_post_images->toArray());
+
+        $new_images = array_filter($post_images, function ($image) use ($existing_post_image_links) {
+            return !in_array($image, $existing_post_image_links);
+        });
+        $this->download_post_images($new_images);
     }
 
     /**
      * download_post_images
+     * @return bool
      */
-    public function download_post_images(array $post_images)
+    public function download_post_images(array $post_images): bool
     {
+        $error_downloading_images = false;
         foreach ($post_images as $post_image) {
             try {
                 $image_extension = last(explode('.', $post_image->link));
-                $response = Curl::to(config('app.live_url') . $post_image->link)->withContentType('image/' . $image_extension)->download(public_path() . $post_image->link);
+                $response = Curl::to(config('app.live_url') . $post_image->link)->withContentType('image/' . $image_extension)->download($post_image->link);
                 Post_image::create($post_image);
             } catch (Exception $e) {
+                $error_downloading_images = true;
                 Log::error('An error occurred while downloading post images::' . $e->getMessage());
                 Log::error($e);
+            }
+        }
+        return $error_downloading_images;
+    }
+
+    /**
+     * delete_removed_images
+     */
+    public function delete_removed_images(int $post_id, array $post_images)
+    {
+        // delete images that have been removed from post
+        $post_db_images = Post_image::where('post_id', $post_id)->get();
+        foreach ($post_db_images as $image) {
+            if (!in_array($image->link, $post_images)) {
+                $removed_link = $image->link;
+                $image->delete();
+                if (file_exists($removed_link)) {
+                    unlink($removed_link);
+                }
             }
         }
     }

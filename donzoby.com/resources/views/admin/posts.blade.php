@@ -211,7 +211,7 @@
                         'http://www.donzoby.net/api/posts/sync';
                     payload['_method'] = 'put';
                     console.log(link);
-                    // return;
+                    return;
                     try {
                         const {
                             data
