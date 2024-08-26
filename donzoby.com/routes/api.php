@@ -17,4 +17,5 @@ Route::get('/test', function () {
     ];
 });
 
+Route::put('/posts/sync', [PostController::class, 'sync_post']);
 Route::put('/posts/{id}', [PostController::class, 'update']);

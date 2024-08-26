@@ -40,7 +40,7 @@ class PostController extends Controller
             );
         }
 
-        $posts = Post::paginate(10);
+        $posts = Post::with('post_images')->paginate(10);
         foreach ($posts as $post) {
             $post->is_parent = Post::where("parent_id", $post->id)->count();
             $post->is_child = $post->parent_id;
@@ -152,27 +152,6 @@ class PostController extends Controller
         $post_class->is_local = $this->is_local($request);
 
         try {
-            // if just sync is set, sync post and return response
-            if ($request->has('just_sync_post')) {
-                // only proceed if the specified post has never been synced or
-                // the last attempt to sync if failed
-                if ($post->is_up_to_date) {
-                    // means that the post is already up to date
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'this post is already up to date',
-                    ], 422);
-                }
-                /*  return response()->json([
-                    'status' => 'testing',
-                    'message' => 'reached just sync endpoint',
-                ]); */
-                $post_class->what_changed[] = 'just_syncing';
-                $post_class->what_changed['added_images'] = array_map(function ($value) {
-                    return $value['link'];
-                }, $post->post_images->toArray());
-                return $post_class->sync_post();
-            }
             // if sort_value is set, update it and return response
             // AT THE MOMENT, SORTING IS ONLY DONE FOR POSTS WITHIN A SPECIFIC SUBJECT
             if ($request->has('sort_direction')) {
@@ -456,5 +435,50 @@ class PostController extends Controller
     public function get_post_slug(string $topic)
     {
         return str_replace('?', '', str_replace(' ', '_', strtolower($topic)));
+    }
+
+    /**
+     * sync_post
+     */
+    public function sync_post(Request $request)
+    {
+        if (!$this->is_local($request)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'this sync action can only happen from the local server',
+            ], 400);
+        }
+        $request->validate([
+            'source' => ['required', Rule::in(['live', 'local'])],
+        ]);
+        if ($request->source == 'live') {
+            // sync from live to local
+            $post = Post::find($request->id);
+            if ($post) { //post exists locally, just update it
+                $post->update($request->toArray());
+            } else { // post does not exist locally, create it
+                $post = $this->add_post_with_consistent_id($request);
+            }
+            return response()->json([
+                'status' => 'testing',
+                'message' => 'syncing from live to local',
+            ]);
+        } else { // means is syncing from local to live
+            $request->validate([
+                'id' => ['required', 'exists:posts,id'],
+            ]);
+            $post = Post::findOrFail($request->id);
+
+            // post class
+            $post_class = new PostClass($post);
+            $post_class->is_local = $this->is_local($request);
+
+            // if just sync is set, sync post and return response
+            $post_class->what_changed[] = 'just_syncing';
+            $post_class->what_changed['added_images'] = array_map(function ($value) {
+                return $value['link'];
+            }, $post->post_images->toArray());
+            return $post_class->sync_post();
+        }
     }
 }

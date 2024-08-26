@@ -124,7 +124,8 @@
 
             Alpine.data('post', () => ({
                 loading: false,
-                isLocal: {{ Js::from($is_local) }},
+                isLocal: !{{ Js::from($is_local) }},
+                posts: {{ Js::from($posts) }},
                 postForm: {
                     post_id: null,
                     sort_direction: null,
@@ -180,9 +181,14 @@
                 },
                 // sync post
                 async syncPost(postID) {
-                    this.postForm = {
-                        just_sync_post: true
-                    };
+                    if (!this.isLocal) {
+                        const targetPost = this.posts.data.find(post => post.id === postID);
+                        this.postForm = {
+                            source: this.isLocal ? 'local' : 'live',
+                            ...targetPost
+                        };
+                        console.log('this is the target post:: ', targetPost);
+                    }
                     console.log(this.postForm);
                     // return;
                     this.loading = true;
@@ -201,10 +207,10 @@
                         toastTrigger.click();
                         return;
                     }
-                    let link = this.isLocal ? '/posts/' + postID :
-                        'https://www.donzoby.com/api/posts/' + postID;
+                    let link = this.isLocal ? '/api/posts/sync' :
+                        'http://www.donzoby.net/api/posts/sync';
                     payload['_method'] = 'put';
-                    console.log(payload);
+                    console.log(link);
                     // return;
                     try {
                         const {
@@ -237,7 +243,6 @@
                             // console.log('error occurred while checking endPoint:');
                         }
                     }
-                    console.log(this.endPoints);
                 }
             }));
         });
