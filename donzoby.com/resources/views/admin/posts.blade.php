@@ -42,7 +42,9 @@
                         <td>{{ $pageNo * 10 + $nos++ }}</td>
                         <td>{{ $post->subject->course->name }}</td>
                         <td>{{ $post->subject->name }}
-                            <br><a href="{{ url('post/' . $post->id) }}"> Preview <i class="fa fa-expand"></i></a>
+                            <br><a
+                                href="{{ url('/' . $post->subject->course->slug . '/' . $post->subject->slug . '/' . $post->slug) }}">
+                                Preview <i class="fa fa-expand"></i></a>
                         </td>
                         <td>
                             {{ $post->topic }} <br>
@@ -124,7 +126,7 @@
 
             Alpine.data('post', () => ({
                 loading: false,
-                isLocal: !{{ Js::from($is_local) }},
+                isLocal: {{ Js::from($is_local) }},
                 posts: {{ Js::from($posts) }},
                 postForm: {
                     post_id: null,
@@ -133,7 +135,7 @@
                 toastMessage: 'Hail Christ',
                 isEditing: false,
                 endPoints: [{
-                        link: 'http://www.donzoby.net/api/test',
+                        link: 'https://www.donzoby.net/api/test',
                         isOnline: false,
                     },
                     {
@@ -181,11 +183,11 @@
                 },
                 // sync post
                 async syncPost(postID) {
+                    await this.checkConnection();
                     if (!this.isLocal) {
-                        const targetPost = this.posts.data.find(post => post.id === postID);
                         this.postForm = {
                             source: this.isLocal ? 'local' : 'live',
-                            ...targetPost
+                            id: postID,
                         };
                         console.log('this is the target post:: ', targetPost);
                     }
@@ -208,10 +210,9 @@
                         return;
                     }
                     let link = this.isLocal ? '/api/posts/sync' :
-                        'http://www.donzoby.net/api/posts/sync';
+                        'https://www.donzoby.net/api/posts/sync';
                     payload['_method'] = 'put';
                     console.log(link);
-                    return;
                     try {
                         const {
                             data

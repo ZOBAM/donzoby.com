@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Ixudra\Curl\Facades\Curl;
 
 class PostController extends Controller
 {
@@ -127,6 +128,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->post_images;
         return $post;
     }
 
@@ -452,15 +454,22 @@ class PostController extends Controller
             'source' => ['required', Rule::in(['live', 'local'])],
         ]);
         if ($request->source == 'live') {
+            // get post from server
+            $live_post = Curl::to('https://www.donzoby.com/api/posts/' . $request->id)->withContentType('application/json')->returnResponseObject()->get();
+            $live_post = json_decode($live_post->content, 1);
+
             // sync from live to local
             $post = Post::find($request->id);
             if ($post) { //post exists locally, just update it
-                $post->update($request->toArray());
-                $this->delete_removed_images($request->id, $request->post_images);
-                $this->sync_post_images($request->id, $request->post_images);
+                $post->update($live_post);
+                $this->delete_removed_images($request->id, $live_post['post_images']);
+                $this->sync_post_images($request->id, $live_post['post_images']);
             } else { // post does not exist locally, create it
+                $request->merge([
+                    'post' => $live_post,
+                ]);
                 $post = $this->add_post_with_consistent_id($request);
-                $this->download_post_images($request->post_images);
+                $this->download_post_images($request->id, $live_post['post_images']);
             }
             return response()->json([
                 'status' => 'testing',

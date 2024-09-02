@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\{Post_image, Post_sync};
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -77,6 +78,11 @@ class PostSyncController extends Controller
             if ($request->has('removed_images')) {
                 var_dump($request->removed_images);
                 foreach ($request->removed_images as $image) {
+                    $db_image = Post_image::where('link', $image)->first();
+                    if ($db_image) {
+                        $db_image->delete(); // delete from db
+                    }
+
                     Log::info('------Removed image::' . json_encode($request->removed_images));
                     if (file_exists($image)) {
                         Log::info('found image file and about to delete:::' . $image);
@@ -96,5 +102,19 @@ class PostSyncController extends Controller
                 'message' => 'An error occurred while syncing post.',
             ], 500);
         }
+    }
+
+    public function update_sync_status(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'exist:posts,id'],
+        ]);
+        $last_sync = Post_sync::where('post_id', $request->id)->latest()->first();
+        $last_sync->synced = true;
+        $last_sync->save();
+        return [
+            'status' => 'success',
+            'message' => 'post sync status successfully updated',
+        ];
     }
 }
