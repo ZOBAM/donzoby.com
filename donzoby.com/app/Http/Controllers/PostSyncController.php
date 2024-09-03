@@ -14,12 +14,14 @@ class PostSyncController extends Controller
     {
         try {
             // Log::info('Received data::' . json_encode($request->all()));
+            $target_post = null;
             if ($request->has('is_new_post') || $request->has('just_syncing')) {
                 // if post already exist for just_syncing action, just update
                 $post_exists = Post::find($request->id);
                 if ($post_exists) {
                     Log::info('^^^^^^^^^^^^^Just syncing and post exists^^^^^^^^^^');
                     $post_exists->update($request->toArray());
+                    $target_post = $post_exists;
                 } else {
                     $last_post_id = Post::latest('id')->first()->id;
 
@@ -47,6 +49,7 @@ class PostSyncController extends Controller
                         ], 422);
                     }
                     $post = Post::create($request->toArray() + ['author_id' => 1]);
+                    $target_post = $post;
                 }
             } else { // it is post edit
                 // update the post
@@ -59,6 +62,7 @@ class PostSyncController extends Controller
                     ], 422);
                 }
                 $post->update($request->toArray());
+                $target_post = $post;
             }
             // if there are uploaded images for the post, process it
             if ($request->has('added_images')) {
@@ -90,6 +94,11 @@ class PostSyncController extends Controller
                     }
                 }
             }
+            // update sync status
+            $post_sync_array = $request->toArray()['post_sync'];
+            $post_sync_array['synced'] = true;
+            $target_post->post_syncs()->create($post_sync_array);
+
             return [
                 'status' => 'success',
                 'message' => 'post successfully synced',
@@ -107,8 +116,9 @@ class PostSyncController extends Controller
     public function update_sync_status(Request $request)
     {
         $request->validate([
-            'id' => ['required', 'exist:posts,id'],
+            'id' => ['required', 'exists:posts,id'],
         ]);
+
         $last_sync = Post_sync::where('post_id', $request->id)->latest()->first();
         $last_sync->synced = true;
         $last_sync->save();
