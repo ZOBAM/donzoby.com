@@ -102,15 +102,12 @@ trait GlobalTrait
                 'message' => 'Post out of sync. Next post id is ' . ($last_post_id + 1) . ' and received id is ' . $request->id . '.',
             ];
         }
-        $author_id = $request->has('author_id') ? $request->author_id : 1;
         $post = Post::create($request->post);
-        // if post has images, download them
-        if ($request->has('post_images') && count($request->post_images))
-            return [
-                'status' => 'success',
-                'message' => 'post successfully added',
-                'data' => $post,
-            ];
+        return [
+            'status' => 'success',
+            'message' => 'post successfully added',
+            'data' => $post,
+        ];
     }
 
     /**

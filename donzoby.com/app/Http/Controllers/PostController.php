@@ -468,9 +468,16 @@ class PostController extends Controller
                 $request->merge([
                     'post' => $live_post,
                 ]);
-                $post = $this->add_post_with_consistent_id($request);
+                $post = $this->add_post_with_consistent_id($request)['data'];
                 $this->download_post_images($request->id, $live_post['post_images']);
             }
+            // update post sync status
+            // for live
+            $response = Curl::to('https://www.donzoby.com/api/update-sync-status')->withData(['id' => $post->id])->returnResponseObject()->post();
+            // for local
+            $response = json_decode($response->content);
+            $post->post_syncs()->create($response->data->toArray());
+
             return response()->json([
                 'status' => 'testing',
                 'message' => 'syncing from live to local',

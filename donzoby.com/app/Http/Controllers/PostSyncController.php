@@ -120,11 +120,20 @@ class PostSyncController extends Controller
         ]);
 
         $last_sync = Post_sync::where('post_id', $request->id)->latest()->first();
+        if (!$last_sync || $last_sync->synced == true) {
+            $last_sync = Post_sync::create([
+                'post_id' => $request->id,
+                'what_changed' => ['all'],
+                'change_origin' => 'live',
+            ]);
+        }
         $last_sync->synced = true;
+        $last_sync->sync_attempts += 1;
         $last_sync->save();
         return [
             'status' => 'success',
             'message' => 'post sync status successfully updated',
+            'data' => $last_sync,
         ];
     }
 }

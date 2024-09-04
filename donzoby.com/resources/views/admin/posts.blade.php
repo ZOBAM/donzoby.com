@@ -218,7 +218,7 @@
                         console.log('message::', data.message);
                         this.toastMessage = data.message;
                         // if it is live, update post sync status
-                        if (!this.isLocal) {
+                        /* if (!this.isLocal) {
                             try {
                                 const {
                                     data
@@ -235,7 +235,7 @@
                                 this.toastMessage = 'updating post sync status failed';
                                 toastTrigger.click();
                             }
-                        }
+                        } */
                         setTimeout(() => {
                             location.reload();
                         }, 500);
