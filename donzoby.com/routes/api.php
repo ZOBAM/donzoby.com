@@ -35,5 +35,7 @@ Route::get('/check-response', function () {
     $response = Curl::to('https://www.donzoby.com/api/test')->returnResponseObject()->get();
     // Log::info($response);
     $response = json_decode($response->content);
+    $response_array = (array) $response->data;
+    var_dump($response_array);
     return $response;
 });

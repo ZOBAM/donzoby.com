@@ -217,28 +217,9 @@
                         console.log(data);
                         console.log('message::', data.message);
                         this.toastMessage = data.message;
-                        // if it is live, update post sync status
-                        /* if (!this.isLocal) {
-                            try {
-                                const {
-                                    data
-                                } = await axios.post(
-                                    'https://www.donzoby.com/api/update-sync-status', {
-                                        id: postID
-                                    }
-                                );
-                                if (data.status == "success") {
-                                    this.toastMessage = data.message;
-                                    toastTrigger.click();
-                                }
-                            } catch (error) {
-                                this.toastMessage = 'updating post sync status failed';
-                                toastTrigger.click();
-                            }
-                        } */
                         setTimeout(() => {
                             location.reload();
-                        }, 500);
+                        }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
                         this.toastMessage = "post sync failed";

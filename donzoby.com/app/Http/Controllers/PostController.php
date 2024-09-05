@@ -476,7 +476,7 @@ class PostController extends Controller
             $response = Curl::to('https://www.donzoby.com/api/update-sync-status')->withData(['id' => $post->id])->returnResponseObject()->post();
             // for local
             $response = json_decode($response->content);
-            $post->post_syncs()->create($response->data->toArray());
+            $post->post_syncs()->create((array)$response->data);
 
             return response()->json([
                 'status' => 'testing',
