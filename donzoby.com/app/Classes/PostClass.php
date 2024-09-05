@@ -3,6 +3,7 @@
 namespace App\Classes;
 
 use App\Models\Post;
+use App\Models\Post_sync;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -48,10 +49,15 @@ class PostClass
             $this->post = Post::find($this->post->id);
 
             // save sync to db
-            $post_sync = $this->post->post_syncs()->create([
-                'what_changed' => $this->what_changed,
-                'change_origin' => $this->is_local ?  'local' : 'live',
-            ]);
+            // if last post sync is not synced, just update else create new sync record
+            $post_sync = Post_sync::where('post_id', $this->post->id)->latest()->first();
+            if ($post_sync && $post_sync->synced) {
+                $this->post->post_syncs()->create([
+                    'what_changed' => $this->what_changed,
+                    'change_origin' => $this->is_local ?  'local' : 'live',
+                ]);
+                $post_sync = Post_sync::where('post_id', $this->post->id)->latest()->first();
+            }
             // for now, syncing is only for local (from local to server)
             if (!$this->is_local) return;
 
@@ -77,6 +83,11 @@ class PostClass
             }
 
             $changed_fields['added_images'] = $this->what_changed['added_images'] ?? null;
+            // add the post sync data
+            $changed_fields['post_sync'] = $post_sync->toArray();
+            Log::info('+++++++++++++++++++++++++++++++++++++++++');
+            Log::info($changed_fields);
+            Log::info('+++++++++++++++++++++++++++++++++++++++++');
 
             // check if new images were added and upload files
             $request = Curl::to('https://www.donzoby.com/api/sync-post')->withData($changed_fields);

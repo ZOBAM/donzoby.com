@@ -42,7 +42,9 @@
                         <td>{{ $pageNo * 10 + $nos++ }}</td>
                         <td>{{ $post->subject->course->name }}</td>
                         <td>{{ $post->subject->name }}
-                            <br><a href="{{ url('post/' . $post->id) }}"> Preview <i class="fa fa-expand"></i></a>
+                            <br><a
+                                href="{{ url('/' . $post->subject->course->slug . '/' . $post->subject->slug . '/' . $post->slug) }}">
+                                Preview <i class="fa fa-expand"></i></a>
                         </td>
                         <td>
                             {{ $post->topic }} <br>
@@ -75,16 +77,21 @@
                         </td>
                         <td>
                             <a href="{{ url('posts/' . $post->id . '/edit') }}"><i class="fa fa-edit"></i> Edit</a>
-                            @if ($is_local)
-                                @if ($post->is_up_to_date)
-                                    <button
-                                        class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
-                                        style="cursor: not-allowed">syncPost</button>
-                                @else
-                                    <button
-                                        class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800"
-                                        @click="syncPost({{ $post->id }})" disabled>syncPost</button>
-                                @endif
+
+                            @if ($post->is_up_to_date)
+                                <button
+                                    class="tw-text-blue-500 tw-font-light tw-border tw-border-gray-100 tw-p-1 tw-rounded-md tw-cursor-not-allowed "
+                                    style="cursor: not-allowed" disabled>up-to-date</button>
+                            @else
+                                <button
+                                    class="tw-text-blue-500 tw-font-bold tw-border tw-border-gray-300 tw-p-1 tw-rounded-md hover:tw-text-white hover:tw-bg-gray-800 tw-whitespace-nowrap"
+                                    @click="syncPost({{ $post->id }})">syncPost
+                                    @if ($is_local)
+                                        <i class="fas fa-arrow-up"></i>
+                                    @else
+                                        <i class="fas fa-arrow-down"></i>
+                                    @endif
+                                </button>
                             @endif
                             <form method="POST" action="{{ url('posts/' . $post->id) }}">
                                 {{ csrf_field() }}
@@ -119,15 +126,27 @@
 
             Alpine.data('post', () => ({
                 loading: false,
+                isLocal: {{ Js::from($is_local) }},
+                posts: {{ Js::from($posts) }},
                 postForm: {
                     post_id: null,
                     sort_direction: null,
                 },
                 toastMessage: 'Hail Christ',
                 isEditing: false,
+                endPoints: [{
+                        link: 'https://www.donzoby.net/api/test',
+                        isOnline: false,
+                    },
+                    {
+                        link: 'https://www.donzoby.com/api/test',
+                        isOnline: false,
+                    }
+                ],
 
                 async init() {
-                    // console.log('post alpine initiated');
+                    console.log('post is local: ', this.isLocal);
+                    this.checkConnection();
                 },
 
                 // Getters
@@ -164,17 +183,33 @@
                 },
                 // sync post
                 async syncPost(postID) {
+                    await this.checkConnection();
                     this.postForm = {
-                        just_sync_post: true
+                        source: this.isLocal ? 'local' : 'live',
+                        id: postID,
                     };
                     console.log(this.postForm);
                     // return;
                     this.loading = true;
                     const payload = this.postForm;
-                    let link = '/posts/' + postID;
+                    // if it is live and local is offline, return
+                    if (!this.isLocal && !this.endPoints[0].isOnline) {
+                        this.loading = false;
+                        this.toastMessage = "local not online";
+                        toastTrigger.click();
+                        return;
+                    }
+                    // if it is local and live is offline, return
+                    if (this.isLocal && !this.endPoints[1].isOnline) {
+                        this.loading = false;
+                        this.toastMessage = "live not online";
+                        toastTrigger.click();
+                        return;
+                    }
+                    let link = this.isLocal ? '/api/posts/sync' :
+                        'https://www.donzoby.net/api/posts/sync';
                     payload['_method'] = 'put';
-                    console.log(payload);
-                    // return;
+                    console.log(link);
                     try {
                         const {
                             data
@@ -183,7 +218,7 @@
                         console.log('message::', data.message);
                         this.toastMessage = data.message;
                         setTimeout(() => {
-                            // location.reload();
+                            location.reload();
                         }, 2500);
                     } catch (error) {
                         console.log('Error submitting post: ', error);
@@ -193,6 +228,20 @@
                         toastTrigger.click();
                     }
                 },
+                async checkConnection() {
+                    // run through endPoints to check if it is online
+                    for (const endPoint of this.endPoints) {
+                        try {
+                            const response = await axios.get(endPoint.link);
+                            // console.log(response);
+                            if (response.statusText == 'OK') {
+                                endPoint.isOnline = true;
+                            }
+                        } catch (e) {
+                            // console.log('error occurred while checking endPoint:');
+                        }
+                    }
+                }
             }));
         });
     </script>

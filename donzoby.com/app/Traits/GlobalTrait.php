@@ -2,8 +2,12 @@
 
 namespace App\Traits;
 
+use App\Models\Post;
+use App\Models\Post_image;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Ixudra\Curl\Facades\Curl;
 
 trait GlobalTrait
 {
@@ -66,5 +70,103 @@ trait GlobalTrait
     public function is_local(Request $request): bool
     {
         return !str_contains($request->url(), '.com/');
+    }
+
+    /**
+     * add_post_with_consistent_id
+     */
+    public function add_post_with_consistent_id(Request $request)
+    {
+        $last_post_id = Post::latest('id')->first()->id;
+
+        // add dummy (unpublished) posts till $id-1 while last post id + 1 < $request->id
+        while ($last_post_id + 1 < $request->id) {
+            $dummy_post = Post::create([
+                "topic" => "dummy",
+                "content" => "dummy",
+                "status" => "unpublished",
+                "description" => "dummy",
+                "tags" => "dummy",
+                "type"  => "course-series",
+                "subject_id" => $request->subject_id,
+                "author_id" => 1,
+                'comment_count' => 0,
+                'slug' => 'dummy' . $last_post_id + 1,
+            ]);
+            $last_post_id = $dummy_post->id;
+        }
+        // if last post id + 1 is not equal to received id, the post is out of sync, return error
+        if ($last_post_id + 1 != $request->id) {
+            return [
+                'status' => 'error',
+                'message' => 'Post out of sync. Next post id is ' . ($last_post_id + 1) . ' and received id is ' . $request->id . '.',
+            ];
+        }
+        $post = Post::create($request->post);
+        return [
+            'status' => 'success',
+            'message' => 'post successfully added',
+            'data' => $post,
+        ];
+    }
+
+    /**
+     * sync_post_images
+     */
+    public function sync_post_images(int $post_id, array $post_images)
+    {
+        $existing_post_images = Post_image::where('post_id', $post_id)->get();
+        $existing_post_image_links = array_map(function ($link) {
+            return $link['link'];
+        }, $existing_post_images->toArray());
+
+        $new_images = array_filter($post_images, function ($image) use ($existing_post_image_links) {
+            return !in_array($image['link'], $existing_post_image_links);
+        });
+        if (count($new_images)) {
+            $this->download_post_images($post_id, $new_images);
+        }
+    }
+
+    /**
+     * download_post_images
+     * @return bool
+     */
+    public function download_post_images(int $post_id, array $post_images): bool
+    {
+        $error_downloading_images = false;
+        foreach ($post_images as $post_image) {
+            try {
+                $image_extension = last(explode('.', $post_image['link']));
+                $response = Curl::to(config('app.live_url') . $post_image['link'])->allowRedirect()->withContentType("image/$image_extension")->download($post_image['link']);
+                Post_image::create($post_image + ['post_id' => $post_id]);
+            } catch (Exception $e) {
+                $error_downloading_images = true;
+                Log::error('An error occurred while downloading post images::' . $e->getMessage());
+                Log::error($e);
+            }
+        }
+        return $error_downloading_images;
+    }
+
+    /**
+     * delete_removed_images
+     */
+    public function delete_removed_images(int $post_id, array $post_images)
+    {
+        // delete images that have been removed from post
+        $post_db_images = Post_image::where('post_id', $post_id)->get();
+        $post_images_links = array_map(function ($image) {
+            return $image['link'];
+        }, $post_images);
+        foreach ($post_db_images as $image) {
+            if (!in_array($image->link, $post_images_links)) {
+                $removed_link = $image->link;
+                $image->delete();
+                if (file_exists($removed_link)) {
+                    unlink($removed_link);
+                }
+            }
+        }
     }
 }
